@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fc815ce5-a0f5-423c-9c43-fa3c32ee6a5a" name="Default Changelist" comment="" />
+    <list default="true" id="fc815ce5-a0f5-423c-9c43-fa3c32ee6a5a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/a.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/death_valley_2014.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sitka_weather_07-2014.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sitka_weather_2014.csv" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
