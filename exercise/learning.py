@@ -81,30 +81,91 @@
 #     po.join()
 
 #多线程(互斥锁)
-import threading
-num=0
-def test1():
-    global num
-    if mutex.acquire():
-        for i in range(100000):
-            num=num+1
-    print(num)
-    mutex.release()
-def test2():
-    global num
-    if mutex.acquire():
-        for i in range(100000):
-            num = num + 1
-    print(num)
-    mutex.release()
-if __name__=="__main__":
-    print(threading.current_thread().name)
-    mutex=threading.Lock()#一个锁对象
-    p1=threading.Thread(target=test1)
-    p1.start()
-    p2=threading.Thread(target=test2)
-    p2.start()
-    #p1.join()#主线程速度快于子线程
-    #p2.join()
-    print(num)
+# import threading
+# num=0
+# def test1():
+#     global num
+#     if mutex.acquire():
+#         for i in range(100000):
+#             num=num+1
+#     print(num)
+#     mutex.release()
+# def test2():
+#     global num
+#     if mutex.acquire():
+#         for i in range(100000):
+#             num = num + 1
+#     print(num)
+#     mutex.release()
+# if __name__=="__main__":
+#     print(threading.current_thread().name)
+#     mutex=threading.Lock()#一个锁对象
+#     p1=threading.Thread(target=test1)
+#     p1.start()
+#     p2=threading.Thread(target=test2)
+#     p2.start()
+#     #p1.join()#主线程速度快于子线程
+#     #p2.join()
+#     print(num)
+# from queue import Queue
+# import threading
+# import time
+# class Pro(threading.Thread):
+#     def run(self):
+#         global qu
+#         count=0
+#         while True:
+#             if qu.qsize()<100:
+#                 for i in range(100):
+#                     count+=1
+#                     msg="生成产品"+str(count)
+#                     qu.put(msg)
+#                     print(msg)
+#             time.sleep(1)
+# class Con(threading.Thread):
+#     def run(self):
+#         global qu
+#         while True:
+#             if qu.qsize()>50:
+#                 for i in range(3):
+#                     msg=self.name+"消费了"+qu.get()
+#                     print(msg)
+#             time.sleep(1)
+# if __name__=="__main__":
+#     qu=Queue()
+#     for i in range(60):
+#         qu.put('初始产品'+str(i))
+#     for i in range(2):
+#         p=Pro()
+#         p.start()
+#     for i in range(5):
+#         p=Con()
+#         p.start()
 
+#本地线程变量(ThreadLocal)
+import threading
+#创建全局ThreadingLocal对象
+threadLocal=threading.local()
+
+class Student:
+    def __init__(self,name):
+        self.name=name
+    def __str__(self):
+        return "<Student %s>"%self.name
+def deal_student():
+    #获取当前线程相关联的student
+    std=threadLocal.student
+    print("hello,",threading.current_thread().name)
+
+def deal_thread(name):
+    print("线程{0}执行任务，参数为{1}".format(threading.current_thread().name,name))
+    #当前线程绑定student对象到ThreadLocal
+    std=Student(name)
+    threadLocal.student=std
+    deal_student()
+
+if __name__=="__main__":
+    t1=threading.Thread(target=deal_thread,args=("KiKi",),name="Thread_KiKi")
+    t2 = threading.Thread(target=deal_thread, args=("HaoHao",), name="Thread_HaoHao")
+    t1.start()
+    t2.start()
