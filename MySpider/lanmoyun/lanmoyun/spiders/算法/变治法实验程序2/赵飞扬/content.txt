@@ -1,0 +1,60 @@
+高斯消去：
+package com.company;
+
+public class Main {
+   public static void main(String[] args) {
+       double[][] U = new double[][] {
+               { 2, -1, 1/*, 1*/ },
+               { 4, 1, -1/*, 5 */},
+               { 1, 1, 1/*, 0 */}
+       };
+       double[][] L = new double[U.length][U.length];
+       L = Elimi(U);
+       System.out.println("矩阵U：");
+       showArray(U);
+       System.out.println("矩阵L：");
+       showArray(L);
+   }
+   public static double[][] Elimi(double[][] a) {
+       int row = a.length;
+       double[][] L = new double[row][row];
+       for(int i = 0; i < row; i++){
+           for(int j = i+1; j < row; j++){
+               L[i][j] = 0;
+           }
+       }
+       for(int i = 0; i < row; i++){
+           L[i][i] = 1;
+       }
+       for (int i = 0; i < row; i++) {
+           int pivotrow = i;
+           for (int j = i + 1; j < row; j++) {
+               if (Math.abs(a[j][i]) > Math.abs(a[pivotrow][i])) {
+                   pivotrow = j;
+               }
+           }
+           for (int k = i; k < a[i].length; k++) {
+               double temp = a[i][k];
+               a[i][k] = a[pivotrow][k];
+               a[pivotrow][k] = temp;
+           }
+
+           for (int j = i + 1; j < row; j++) {
+               double scale = a[j][i] / a[i][i];
+               L[j][i] = scale;
+               for (int k = i; k < a[i].length; k++) {
+                   a[j][k] = a[j][k] - a[i][k] * scale;
+               }
+           }
+       }
+       return L;
+   }
+   public static void showArray(double[][] a) {
+       for (int i = 0; i < a.length; i++) {
+           for (double tem : a[i]) {
+               System.out.print(tem + "\t");
+           }
+           System.out.println();
+       }
+   }
+}

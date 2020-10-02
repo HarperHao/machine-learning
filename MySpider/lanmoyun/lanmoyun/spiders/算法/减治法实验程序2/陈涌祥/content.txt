@@ -1,0 +1,15 @@
+#减治法直接插入排序
+import random
+ori = []
+sort = []
+for i in range(10):
+   ori.append(random.randint(0,100))
+sort.append(ori[0])
+for i in ori[1:-1]:
+   for j in sort[::]:
+       if j > i:
+           sort.insert(sort.index(j),i)
+           break
+   if j <= i:
+       sort.append(i)
+print(sort)

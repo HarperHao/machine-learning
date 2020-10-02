@@ -1,0 +1,60 @@
+实验名称：Johnson-Trotter(JT)算法生成排列
+实验目的：了解JT算法的运行机制，选定元素应该怎么移动，以及元素的方向怎么改变。
+实验题目：使用Java语言，JT算法全排列的解决。
+实验源代码：
+package JT全排列;
+
+import java.util.ArrayList;
+
+public class Demo {
+
+   public static void main(String[] args) {
+       ArrayList arr = permutation("1234");
+       System.out.println(arr);
+   }
+
+   private static void swap(char[] arr, int i, int j) {
+       char temp = arr[i];
+       arr[i] = arr[j];
+       arr[j] = temp;
+   }
+
+   private static ArrayList permutation(String str) {
+       ArrayList<String> arr = new ArrayList<>();
+       char[] str2Chars = str.toCharArray();
+       //交换时的临时变量
+       char temp;
+       //循环次数，记录排好的元素个数
+       long times = 1;
+       //pos即将被调换的元素，pos+1向前移动的元素
+       int pos = str2Chars.length-2;
+       //改变方向
+       int increment = -1;
+       for(int i=1; i < str2Chars.length+1; i++){
+           times *= i;
+       }
+       for(int i = 1; i < times; i++){
+           swap(str2Chars, pos, pos + 1);
+           arr.add(new String(str2Chars));
+           pos += increment;
+
+           //非最大元素移动
+           //左边界判断条件
+           if(pos == -1){
+               increment = 1;
+               pos = 0;
+               swap(str2Chars, str2Chars.length - 2, str2Chars.length - 1);
+               arr.add(new String(str2Chars));
+               i++;
+           }else if(pos == str2Chars.length - 1){ //右边界判断条件
+               increment = -1;
+               pos = str2Chars.length-2;
+               swap(str2Chars, 0, 1);
+               arr.add(new String(str2Chars));
+               i++;
+           }
+       }
+       return arr;
+   }
+
+}

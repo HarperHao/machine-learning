@@ -1,0 +1,51 @@
+最长公共子序列问题
+// 在s1和s2的公共子序列时，如有s1m-1==s2n-1，则进一步解决一个子问题，找s10，s11，…，s1m-2和s20，s21，…，s2m-2的一个最长公共子序列；如果s1m-1!=s2n-1，则要解决两个子问题，找出“s10，s11，…，s1m-2”和“s20，s21，…，s2n-1”的一个最长公共子序列和找出“s10，s11，…，s1m-1”和“s20，s21，…，s2n-2”的一个最长公共子序列，再取两者中较长者作为s1和s2的最长公共子序列。引进一个二维数组a[][]，用a[i][j]记录s1[i]与s2[j] 的LCS 的长度，s2[i][j]记录a[i][j]是通过哪一个子问题的值求得的，以决定搜索的方向,自底向上进行递推计算。计算a[i,j]之前，a[i-1][j-1]，a[i-1][j]与a[i][j-1]均已计算出来。此时我们根据s1[i] = s2[j]还是s1[i] != s2[j]，就可以计算出a[i][j]。
+import java.util.Scanner;
+
+public class Lcs {
+
+public static void main(String[] args) {
+
+       Scanner in = new Scanner(System.in);
+       System.out.println("输入第一个字符串：");
+       String s1 = in.nextLine();
+       System.out.println("输入第二个字符串：");
+       String s2 = in.nextLine();
+       int l1 = s1.length();
+       int l2 = s2.length();
+       int[][] a = new int[l1 + 1][l2 + 1];
+       for (int i = 1; i < l1 + 1; i++)
+           for (int j = 1; j < l2 + 1; j++)
+               if (a[i - 1][j] == a[i][j - 1] && s1.charAt(i - 1) == s2.charAt(j - 1)&& a[i - 1][j] == a[i - 1][j - 1])
+                   a[i][j] = a[i - 1][j] + 1;
+               else
+                   a[i][j] = Math.max(a[i - 1][j], a[i][j - 1]);
+       int max = a[l1][l2];
+       StringBuilder sb = new StringBuilder();
+       while (max > 0) {
+           if (a[l1 - 1][l2] == a[l1][l2 - 1] && a[l1 - 1][l2] + 1 == a[l1][l2]) {
+               sb.append(s1.charAt(l1 - 1));
+               max--;
+               l1--;
+               l2--;
+           }
+          else {
+               if (a[l1][l2 - 1] == a[l1][l2])
+                   l2--;
+               else
+                   l1--;
+           }
+       }
+       System.out.println("最长公共子序列:"+sb.reverse().toString());
+   }
+}
+
+
+
+/*运行结果
+输入第一个字符串：
+qsdjfeu23ffh28jjf
+输入第二个字符串：
+sgdyehnmxc23fewd
+最长公共子序列:sde23f
+*/

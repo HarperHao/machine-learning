@@ -1,0 +1,11 @@
+def huona2(List,a):
+   Sum=1
+   for i in range(len(List)):
+       Sum*=Sum
+       if List[i]==1:
+           Sum*=a
+   return Sum
+
+if __name__=='__main__':
+   List=[1,1,0,1]#13的二进制幂
+   print(huona2(List,a=3))#求3^13次方

@@ -1,0 +1,150 @@
+#include<cstdio>
+#include<algorithm>
+using namespace std;
+typedef struct AVLTreeNode
+{
+   int data;
+   int height;  
+   struct AVLTreeNode *left;
+   struct AVLTreeNode *right;
+
+}AVLTree;
+
+int GetNodeHeight(AVLTree *nod)
+{
+   if (nod != NULL)    
+   {
+       if (nod->left == NULL && nod->right == NULL)    
+       {
+           return 1;    
+       }
+       else if (GetNodeHeight(nod->right) > GetNodeHeight(nod->left))    
+       {
+           return (nod->right)->height + 1;
+       }
+       else    
+       {
+           return (nod->left)->height + 1;
+       }
+   }
+   else    
+   {
+       return 0;
+   }
+}
+
+AVLTree *AddNewNode(AVLTree *nod, int NewData)
+{
+   AVLTree *p = NULL;
+
+   if (nod == NULL)
+   {
+       if ((nod = (AVLTree *)malloc(sizeof(AVLTree))) == NULL)    
+       {
+           printf("内存不足");
+           exit(0);
+       }
+       nod->data = NewData;
+       nod->left = NULL;
+       nod->right = NULL;
+       nod->height = GetNodeHeight(nod);  
+   }
+   else if (NewData > nod->data)    
+   {
+       nod->right = AddNewNode(nod->right, NewData);
+       nod->height = GetNodeHeight(nod);
+       
+       if (GetNodeHeight(nod->right) - GetNodeHeight(nod->left) > 1)  
+       {
+
+       }
+
+       return nod;
+   }
+   else if (NewData < nod->data)
+   {
+       nod->left = AddNewNode(nod->left, NewData);
+       nod->height = GetNodeHeight(nod);
+
+       if (GetNodeHeight(nod->left) - GetNodeHeight(nod->right)  > 1)  
+       {
+
+       }
+
+       return nod;
+   }
+   else if (NewData == nod->data)
+   {
+       printf("不允许插入重复值");
+       exit(0);
+   }
+   
+   return nod;
+}
+
+void PreOrder_Traverse(AVLTree *nod)
+{
+   if (nod != NULL)
+   {
+       printf("data = %d height = %d\n", nod->data, nod->height);
+       PreOrder_Traverse(nod->left);
+       PreOrder_Traverse(nod->right);
+   }
+}
+
+AVLTree * LL_Rotation(AVLTree *nod)
+{
+   AVLTree *temp;
+   temp = nod->left;    
+
+   nod->left = nod->left->right;  
+   temp->right = nod;    
+
+   nod->height = GetNodeHeight(nod);    
+   temp->height = GetNodeHeight(temp);    
+
+   return temp;
+}
+
+AVLTree * RR_Rotation(AVLTree *nod)
+{
+   AVLTree *temp;
+   temp = nod->right;    
+
+   nod->right = nod->right->left;
+   temp->left = nod;
+
+   nod->height = GetNodeHeight(nod);  
+   temp->height = GetNodeHeight(temp);    
+
+   return temp;
+}
+
+AVLTree * LR_Rotation(AVLTree *nod)
+{
+   nod->left = RR_Rotation(nod->left);
+   nod = LL_Rotation(nod);
+
+   return nod;
+}
+
+AVLTree * RL_Rotation(AVLTree *nod)
+{
+   nod->right = LL_Rotation(nod->right);
+   nod = RR_Rotation(nod);
+
+   return nod;
+}
+int main()
+{
+AVLTree *nod= NULL;
+int key=1,n,i;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+{
+printf("输出\n");
+scanf("%d",&key);
+nod=AddNewNode(nod,key);
+PreOrder_Traverse(nod);
+}
+}

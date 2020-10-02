@@ -1,0 +1,15 @@
+求解最长公共子序列：
+def lcs(A, B):
+   c = [([0] * (len(B) + 1)) for i in range(len(A) + 1)]
+   for i in range(1, len(A) + 1):
+       for j in range(1, len(B) + 1):
+           if A[i - 1] == B[j - 1]:
+               c[i][j] = c[i - 1][j - 1] + 1
+           else:
+               c[i][j] = max(c[i - 1][j], c[i][j - 1])
+   for _ in c:
+       print(_)
+   print(c[len(A)][len(B)])
+myListA = ['B', 'D', 'C', 'A', 'B', 'A']
+myListB = ['A', 'B', 'C', 'B', 'D', 'A', 'B']
+lcs(myListA, myListB)

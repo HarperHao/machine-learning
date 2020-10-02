@@ -1,0 +1,290 @@
+//AVL树的插入和删除
+#include<stdio.h>
+#include<malloc.h>
+#include<math.h>
+
+typedef struct AVLTREE {
+int data;
+int height;
+struct AVLTREE* leftChlid;
+struct AVLTREE* rightChild;
+}AVLTREE;
+
+typedef unsigned char boolean;  
+#define TRUE            1  
+#define FALSE           0  
+
+static int i = 1;
+
+void showBtreeByLeft(AVLTREE* head);  
+void showBtreeByMid(AVLTREE* head);
+AVLTREE* left_Left_Rotation(AVLTREE* root);
+AVLTREE* right_Right_Rotation(AVLTREE* root);
+AVLTREE* left_Right_Rotation(AVLTREE* root);
+AVLTREE* right_Left_Rotation(AVLTREE* root);
+AVLTREE* insertPoint(int data, AVLTREE* root);
+AVLTREE* deletePoint(int data, AVLTREE* root);
+int getHeight(AVLTREE* root);
+int max(int data1, int data2);
+AVLTREE* getMaxNum(AVLTREE* root);
+AVLTREE* getMinNum(AVLTREE* root);
+void destroy(AVLTREE* root);
+
+void destroy(AVLTREE* root) {
+if(root == NULL) {
+return;
+}
+
+root->leftChlid = NULL;
+root->rightChild = NULL;
+root = NULL;
+}
+
+AVLTREE* getMinNum(AVLTREE* root) {
+if(root == NULL) {
+return NULL;
+}
+
+while(root->leftChlid != NULL) {
+root = root->leftChlid;
+}
+return root;
+}
+
+AVLTREE* getMaxNum(AVLTREE* root) {
+if(root == NULL) {
+return NULL;
+}
+
+while(root->rightChild != NULL) {
+root = root->rightChild;
+}
+return root;
+}
+
+int max(int data1, int data2) {
+return ((data1 > data2) ? data1 : data2);
+}
+
+int getHeight(AVLTREE* root) {
+if(root == NULL)
+return -1;
+else
+return root->height;
+}
+
+AVLTREE* deletePoint(int data, AVLTREE* root) {
+// 根为空 或者 没有要删除的节点，直接返回NULL
+if(root == NULL || data == NULL) {
+return NULL;
+}
+
+// 待删除的节点在root的左子树
+if(data < root->data) {
+root->leftChlid = deletePoint(data, root->leftChlid);
+// 删除节点后，若AVL树失去平衡，则进行相应的调节
+if(abs(getHeight(root->rightChild) - getHeight(root->leftChlid)) == 2) {
+AVLTREE* p = root->rightChild;
+
+if(getHeight(p->leftChlid) > getHeight(p->rightChild)) {
+root = right_Left_Rotation(root);
+} else {
+root = right_Right_Rotation(root);
+}
+}
+// 待删除的节点在root的右子树
+} else if(data > root->data) {
+root->rightChild = deletePoint(data, root->rightChild);
+// 删除节点后，若AVL树失去平衡，则进行相应的调节
+if(abs(getHeight(root->leftChlid) - getHeight(root->rightChild)) == 2) {
+AVLTREE* p = root->leftChlid;
+if(getHeight(p->rightChild) > getHeight(p->leftChlid)) {
+root = left_Right_Rotation(root);
+} else {
+root = left_Left_Rotation(root);
+}
+}
+// root就是要删除的节点
+} else if(data == root->data) {
+//左右孩子非空
+if(root->leftChlid && root->rightChild) {
+
+if(getHeight(root->leftChlid) > getHeight(root->rightChild)) {
+// 如果root的左子树比右子树高；
+               // 则找出root的左子树中的最大节点
+               //   将该最大节点的值赋值给root
+               //   删除该最大节点
+               // 这类似于用root的左子树中最大节点做root的替身
+               // 删除root的左子树中最大节点之后，AVL树仍然是平衡的
+AVLTREE* max = getMaxNum(root->leftChlid);
+root->data = max->data;
+root->leftChlid = deletePoint(max->data, root->leftChlid);
+} else {
+// 如果root的左子树比右子树低；
+               // 则找出root的左子树中的最小节点
+               //   将该最小节点的值赋值给root
+               //   删除该最小节点
+               // 这类似于用root的右子树中最小节点做root的替身
+               // 删除root的左子树中最小节点之后，AVL树仍然是平衡的
+AVLTREE* min = getMinNum(root->rightChild);
+root->data = min->data;
+root->rightChild = deletePoint(min->data, root->rightChild);
+}
+}
+
+else {
+//这种情况为左孩子为空右孩子不为空、或者右孩子为空左孩子不为空、左右孩子都为空时的处理方法
+//直接通过一个三目运算，即可完美解决
+AVLTREE* temp = root;
+
+root = root->leftChlid ? root->leftChlid : root->rightChild;
+
+destroy(temp);
+}
+}
+
+return root;
+}
+/*
+当一个节点的左右孩子高度差为2时，说明树需要旋转
+至于是单旋转还是双旋转,得看插入的位置是左子树还是右子树
+然后根据相应结构，选择单旋转或者双旋转
+*/
+AVLTREE* insertPoint(int data, AVLTREE* root) {
+//如果节点为空，那么创建一个节点
+if(root == NULL) {
+root = (AVLTREE *)malloc(sizeof(AVLTREE));
+root->data = data;
+root->height = 0;
+root->leftChlid = root->rightChild = NULL;
+}
+//插入节点小于当前节点时
+else if(data < root->data) {
+root->leftChlid = insertPoint(data, root->leftChlid);
+
+if(getHeight(root->leftChlid) - getHeight(root->rightChild) == 2) {
+if(data < root->leftChlid->data)
+root = left_Left_Rotation(root);
+else
+root = left_Right_Rotation(root);
+}
+}
+//插入节点大于当前节点时
+else if(data > root->data) {
+root->rightChild = insertPoint(data, root->rightChild);
+if(getHeight(root->rightChild) - getHeight(root->leftChlid) == 2) {
+if(data > root->rightChild->data)
+root = right_Right_Rotation(root);
+else
+root = right_Left_Rotation(root);
+}
+}
+//插入节点等于当前节点时
+else if(data == root->data) {
+return NULL;
+}
+
+root->height = max(getHeight(root->leftChlid), getHeight(root->rightChild)) + 1;
+return root;
+}
+
+AVLTREE* right_Left_Rotation(AVLTREE* root) {
+root->rightChild = left_Left_Rotation(root->rightChild);
+
+return right_Right_Rotation(root);
+}
+
+AVLTREE* left_Right_Rotation(AVLTREE* root) {
+root->leftChlid = right_Right_Rotation(root->leftChlid);
+
+return left_Left_Rotation(root);
+}
+
+AVLTREE* right_Right_Rotation(AVLTREE* root) {
+AVLTREE* newRoot = NULL;
+
+newRoot = root->rightChild;
+root->rightChild = newRoot->leftChlid;
+newRoot->leftChlid = root;
+
+root->height = max(getHeight(root->leftChlid),getHeight(root->rightChild)) + 1;
+newRoot->height = max(getHeight(newRoot->rightChild), root->height) + 1;
+
+return newRoot;
+}
+
+AVLTREE* left_Left_Rotation(AVLTREE* root) {
+AVLTREE* newRoot = NULL;
+
+newRoot = root->leftChlid;
+root->leftChlid = newRoot->rightChild;
+newRoot->rightChild = root;
+
+root->height = max(getHeight(root->leftChlid),getHeight(root->rightChild)) + 1;
+newRoot->height = max(getHeight(newRoot->leftChlid), root->height) + 1;
+
+return newRoot;
+}
+
+void showBtreeByMid(AVLTREE* head) {  
+   if(head == NULL) {  
+       return;  
+   }  
+   showBtreeByMid(head->leftChlid);  
+   printf("%d ", head->data);  
+   showBtreeByMid(head->rightChild);  
+}  
+ 
+void showBtreeByLeft(AVLTREE* head) {  
+   if(head == NULL) {  
+       return;  
+   }  
+
+   printf("%d ", head->data);  
+   showBtreeByLeft(head->leftChlid);  
+   showBtreeByLeft(head->rightChild);  
+}
+
+void main(void) {
+AVLTREE* root = NULL;
+//先创建一个树
+root = insertPoint(20,root);
+root = insertPoint(10,root);
+root = insertPoint(25,root);
+root = insertPoint(8,root);
+   root = insertPoint(24,root);
+root = insertPoint(30,root);
+root = insertPoint(29,root);
+printf("按先序输出可得：\n");
+showBtreeByLeft(root);
+printf("\n");
+printf("按中序输出可得：\n");
+showBtreeByMid(root);
+printf("\n");
+
+//删除节点
+int n;
+printf("\n输入要删除的节点：");
+scanf("%d",&n);
+root = deletePoint(n,root);
+printf("\n");
+printf("删除后按先序输出可得：\n");
+showBtreeByLeft(root);
+printf("\n");
+printf("删除后按中序输出可得：\n");
+showBtreeByMid(root);
+printf("\n");
+
+//插入新节点
+int m;
+printf("\n输入要插入的结点：");
+scanf("%d",&m);
+root = insertPoint(m,root);
+printf("\n");
+printf("插入后按先序输出可得：\n");
+showBtreeByLeft(root);
+printf("\n");
+printf("插入后按中序输出可得：\n");
+showBtreeByMid(root);
+printf("\n");
+}

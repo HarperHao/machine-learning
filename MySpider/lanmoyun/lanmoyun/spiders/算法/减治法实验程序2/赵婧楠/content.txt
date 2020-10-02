@@ -1,0 +1,55 @@
+'''
+拓扑排序
+满足每个顶点只出现一次而且图中没有回路
+1，从图中选出一个入度为0的点作为序列的下一顶点
+2，从图中删除该顶点及其所有的出边
+3，反复执行上面2步骤
+直到选出图中所有顶点或者再也找不到入度不为0的顶点
+'''
+'''
+v表示顶点
+e表示边
+返回入度为0的顶点，并且删除该点及其出度边，如果v列表中没有顶点就返回None，若图中有环就返回-1
+'''
+def indegree(v, e):
+   if v == []:
+       return None
+   v_list = v[:]#赋值v list值
+   for i in e:
+       if i[1] in v_list:
+           v_list.remove(i[1])
+   if v_list == []:
+       return -1
+
+   for j in v_list:
+       for i in range(len(e)):
+           if j in e[i]:
+               e[i] = 'Del'  # 占位，之后删掉
+   #更新e列表
+   if e:
+       new_e = set(e)
+       new_e.remove('Del')
+       e[:] = list(new_e)
+   if v:
+       for j in v_list:
+           v.remove(j)
+   return v_list
+
+
+def Sort(v, e):
+   result = []
+   while True:
+       nodes = indegree(v, e)
+       if nodes == None:
+           break
+       if nodes == -1:
+           print('there\'s a circle.')
+           return None
+       result.extend(nodes)
+   return result
+
+
+v = ['a', 'b', 'c', 'd', 'e']
+e = [('a', 'b'), ('a', 'd'), ('b', 'c'), ('d', 'c'), ('d', 'e'), ('e', 'c')]
+topo = Sort(v, e)
+print(topo)

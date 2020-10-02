@@ -1,0 +1,154 @@
+二叉树节点所包含的元素来自可排序项的集合，每个节点一个元素，使得所有左子树中的元素都小于等于子树根节点的元素，而所有右子树中的元素都大于等于它，是实现字典的数据结构。
+class Node:
+   def __init__(self,value):
+       self.value=value
+       self.parent=None
+       self.left=None
+       self.right=None
+   def add_parent(self,parent):
+       self.parent=parent
+   def add_left(self,left):
+       self.left=left
+   def add_right(self,right):
+       self.right=right
+   def __str__(self):
+       if self.left is not None and self.right is not None:
+           return str(self.value)+" l:"+str(self.left)+" r:"+str(self.right)
+       elif self.left is not None and self.right is None:
+           return str(self.value)  + " l:" + str(self.left)
+       elif self.left is None and self.right is not None:
+           return str(self.value)  + " r:" + str(self.right)
+       else:
+           return str(self.value)
+
+class BST:
+   def __init__(self):
+       self.root=None
+   def __str__(self):
+       if self.root is not None:
+           return str(self.root)
+       else:
+           return None
+   def insert(self, value):
+       new_node = Node(value)
+       root_node = self.root
+       if root_node is None:
+           self.root = new_node
+       else:
+           while root_node is not None:
+               new_node.parent = root_node
+               if new_node.value < root_node.value:
+                   root_node = root_node.left
+               else:
+                   root_node = root_node.right
+           if new_node.value < new_node.parent.value:
+               new_node.parent.left = new_node
+           else:
+               new_node.parent.right = new_node
+   def mid_through(self,node):
+       if node is not None:
+           if node.left is not None:
+               self.mid_through(node.left)
+           print(node.value)
+           if node.right is not None:
+               self.mid_through(node.right)
+   def search_recurrent(self,start_node,value):
+       if start_node.value == value:
+           return start_node
+       elif value<start_node.value:
+           if start_node.left is not None:
+               return self.search_recurrent(start_node.left,value)
+           else:
+               return None
+       else:
+           if start_node.right is not None:
+               return self.search_recurrent(start_node.right, value)
+           else:
+               return None
+   def search_cycle(self,value):
+       start_node=self.root
+       while start_node is not None and start_node.value!=value:
+           if value<start_node.value:
+               start_node=start_node.left
+           else:
+               start_node=start_node.right
+       return start_node
+   def min_node(self,node):
+       while node.left is not None:
+           node=node.left
+       return node
+   def max_node(self,node):
+       while node.right is not None:
+           node=node.right
+       return node
+   def success(self,node):
+       if node.right is not None:
+           return self.min_node(node.right)
+       else:
+           parent=node.parent
+           child=node
+           while parent is not None and child.value==parent.right.value:
+               child=parent
+               parent=parent.parent
+           return parent
+   def predecess(self,node):
+       if node.left is not None:
+           return self.max_node(node.left)
+       else:
+           parent = node.parent
+           child = node
+           while parent is not None and child.value == parent.left.value:
+               child = parent
+               parent = parent.parent
+           return parent
+   def delete(self,node):
+       if node.left is None and node.right is None:
+           if node.value==node.parent.left.value:
+               node.parent.left=None
+           elif node.value==node.parent.right.value:
+               node.parent.right=None
+       elif node.left is not None and node.right is None:
+           if node.value==node.parent.left.value:
+               node.parent.left=node.left
+           elif node.value==node.parent.right.value:
+               node.parent.right=node.left
+       elif node.left is None and node.right is not None:
+           if node.value==node.parent.left.value:
+               node.parent.left=node.right
+           elif node.value==node.parent.right.value:
+               node.parent.right=node.right
+       else:
+           successor=self.success(node)
+           if successor.value==node.right.value:
+               successor.left=node.left
+               if node.value == node.parent.left.value:
+                   node.parent.left = successor
+               elif node.value == node.parent.right.value:
+                   node.parent.right = successor
+           else:
+               if successor.value == successor.parent.left.value:
+                   successor.parent.left = successor.right
+               elif successor.value == successor.parent.right.value:
+                   successor.parent.right = successor.right
+               node.value=successor.value
+
+if __name__=="__main__":
+  bst=BST()
+  bst.insert(0)
+  bst.insert(4)
+  bst.insert(2)
+  bst.insert(1)
+  bst.insert(7)
+  bst.insert(5)
+  bst.insert(6)
+  bst.insert(3)
+  bst.insert(8)
+  bst.mid_through(bst.root)
+  print(bst.min_node(bst.root))
+  print(bst.max_node(bst.root))
+  node4=bst.search_recurrent(bst.root,4)
+  print(node4)
+  print(bst.success(node4))
+  print(bst.predecess(node4))
+  bst.delete(node4)
+  print(bst)

@@ -1,0 +1,38 @@
+实验名称：动态规划法
+实验题目：背包问题
+实验目的：了解动态规划法与分治法类似，都是将待求解问题分成若干个子问题，先求解子问题，然后从这些子问题的解得到原问题的解，但不同的是动态规划经分解的子问题往往不是互相独立的。
+实验思路：  图片
+源代码:
+import ast
+def bag(n,c,w,v):
+  res=[[-1 for j in range(c+1)] for i in range(n+1)]
+  for j in range(c+1):
+     res[0][j]=0
+  for i in range(1,n+1):
+     for j in range(1,c+1):
+        res[i][j]=res[i-1][j]
+        if j>=w[i-1] and res[i][j]<res[i-1][j-w[i-1]]+v[i-1]:
+           res[i][j]=res[i-1][j-w[i-1]]+v[i-1]
+  return res
+
+def show(n,c,w,res):
+  print('最大价值为:',res[n][c])
+  x=[False for i in range(n)]
+  j=c
+  for i in range(1,n+1):
+     if res[i][j]>res[i-1][j]:
+        x[i-1]=True
+        j-=w[i-1]
+  print('选择的物品为:')
+  for i in range(n):
+     if x[i]:
+        print('第',i+1,'个,',end='')
+  print('')
+
+if __name__=='__main__':
+   n=int(input("请输入物品的数量："))
+   c=int(input("最大的承受重量："))
+   w = ast.literal_eval(input("请输入各个物品的重量（使用逗号隔开）："))
+   v = ast.literal_eval(input("请输入各个物品的价值（使用逗号隔开）："))
+   res=bag(n,c,w,v)
+   show(n,c,w,res)

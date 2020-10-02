@@ -1,0 +1,47 @@
+import wx
+class LCM(wx.App):
+   def __init__(self):
+       wx.App.__init__(self)
+       self.window = wx.Frame(parent=None, pos=(500,500),size=(400, 200), title="求最小公倍数")
+       self.text=wx.TextCtrl(self.window,size=(200, 100)) #文本
+       self.result=wx.TextCtrl(self.window,style=wx.TE_READONLY,size=(200, 200),pos=(200,0)) #文本
+       self.button=wx.Button(self.window,label="生成",pos=(10,110),size=(40,30)) #按钮
+       self.button1=wx.Button(self.window,label="刷新",pos=(60,110),size=(40,30)) #按钮
+       self.button2=wx.Button(self.window,label="退出",pos=(110,110),size=(40,30)) #按钮
+       self.button.Bind(wx.EVT_BUTTON,self.__get)
+       self.button1.Bind(wx.EVT_BUTTON,self.__reFresh)
+       self.button2.Bind(wx.EVT_BUTTON,self.__exit)
+       self.window.Show()
+   def __reFresh(self,event):
+       self.__exit(event)
+       self.__init__()
+   def __exit(self,event):
+       self.window.Close()
+   def __get(self,event):
+       s=self.text.GetValue()
+       L=s.split(" ")
+       if(len(L)>1):
+           m=self.__str2int(L[0])
+           n=self.__str2int(L[1])
+           value=self.__lcm(m,n)
+           self.result.write("最小公倍数为："+str(value))
+       else:
+           self.result.write("输入错误")
+   def __lcm(self,m,n):
+       return m*n//self.__gcd(m,n)
+   def __gcd(self,m,n):
+       x = min(m,n)
+       while x>1:
+           if m%x==0 and n%x==0:
+               break
+           x-=1
+       return x
+   def __str2int(self,x):
+       a=0
+       for i in range(0,len(x)):
+           a=a*10+int(x[i])
+       return a
+
+if __name__=='__main__':
+   app=LCM()
+   app.MainLoop()

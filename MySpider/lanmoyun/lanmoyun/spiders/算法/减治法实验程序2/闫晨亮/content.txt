@@ -1,0 +1,97 @@
+#include<stdlib.h>
+#include<stdio.h>
+#define M 20
+typedef char vertextype;
+typedef struct node{      
+     int adjvex;
+     struct node *next;
+ }edgenode;
+typedef struct de        
+ {
+  edgenode* FirstEdge;
+  vertextype vertex;
+  int id;                
+ }vertexnode;
+
+typedef struct{           //AOV网络的邻接表结构
+     vertexnode adjlist[M];
+     int n,e;
+     }AovGraph;
+
+void  creat(AovGraph *g,char *filename)       //建立图的邻接表
+{ int i,j,k;
+  edgenode  *s;
+  FILE *fp;
+  fp=fopen(filename,"r");
+  if (fp)
+  {
+  fscanf(fp,"%d%d",&g->n,&g->e);  //输入图中的顶点数与边数
+  for(i=0;i<g->n;i++)                        //输入顶点值
+     {fscanf(fp,"%1s",&g->adjlist[i].vertex);
+      g->adjlist[i].FirstEdge=NULL;
+      g->adjlist[i].id=0;      
+     }
+  for(k=0;k<g->e;k++)
+       { fscanf(fp,"%d%d",&i,&j);
+        s=(edgenode*)malloc(sizeof(edgenode));
+        s->adjvex=j;
+        g->adjlist[j].id++;    
+        s->next=g->adjlist[i].FirstEdge;
+        g->adjlist[i].FirstEdge=s;
+       }
+  }
+}
+
+void print(AovGraph g)   //输出AOV的邻接表
+{  edgenode *p;
+  int i;
+ for (i=0;i<g.n;i++)
+  { printf("%c %d   ", g.adjlist[i].vertex,g.adjlist[i].id);
+    p=g.adjlist[i].FirstEdge;
+    while (p)
+     { printf("%d-->",p->adjvex);
+       p=p->next;
+     }
+    printf("\n");
+  }
+}
+
+int TopSort(AovGraph g)    //拓扑排序
+{int k=0,i,j,v, flag[M];
+  int queue[M];  
+  int front,rear;
+  edgenode* p;
+  front=rear=0;        
+  for (i=0;i<g.n;i++)  flag[i]=0;  
+   for(i=0;i<g.n;i++)     //先将所有入度为0的结点进队
+    if( g.adjlist[i].id==0 && flag[i]==0)
+        {  queue[rear++]=i;flag[i]=1; }
+   printf("\nAOV网的拓扑序列是：\n");
+   while (front<rear)  
+     {
+       v=queue[front++];  //队首元出队
+        printf("%c ",g.adjlist[v].vertex);
+        k++;  
+        p=g.adjlist[v].FirstEdge;
+        while(p)     //将所有与v邻接的顶点的入度减1
+         { j=p->adjvex;
+           if (--g.adjlist[j].id==0 && flag[j]==0)   //若入度为0则将进队
+               {queue[rear++]=j; flag[j]=1;}
+               p=p->next;
+           }
+     }
+
+   return k;    //返回输出的结点个数
+}
+int main()
+{ int k=0;
+ AovGraph g;
+ creat(&g,"aov.txt");    //AOV网保存在aov.txt
+ printf("AOV网的邻接表是：\n");
+ print(g);
+ k=TopSort(g);
+ if(k<g.n)
+ printf("\n该图存在环！\n");
+
+ return 0;
+}

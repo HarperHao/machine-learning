@@ -1,0 +1,17 @@
+import sys
+def sub_list(alist):
+   result = -sys.maxsize
+   local = 0
+   for i in alist:
+       local = max(local + i, i)
+       result = max(result, local)
+   return result
+
+n = int(input("请输入序列元素个数："))
+print("输入序列元素：")
+alist = []
+for i in range(n):
+   alist.append(int(input()))
+sum = sub_list(alist)
+print("最大连续子序列和为",end='')
+print(sum)

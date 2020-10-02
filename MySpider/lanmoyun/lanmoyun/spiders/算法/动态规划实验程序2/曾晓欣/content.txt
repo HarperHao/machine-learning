@@ -1,0 +1,53 @@
+import numpy as np
+
+
+def MatrixChain():
+   for i in range(0, len(matrix)):
+       m[i][i] = 0
+       s[i][i] = 0
+
+   for i in range(2, len(matrix)+1):
+       for j in range(0, len(matrix)-i+1):
+           k = i + j - 1
+           m[j][k] = m[j+1][k] + p[j]*p[j+1]*p[k+1]
+           s[j][k] = j
+           for l in range(j+1, k):
+               temp = m[j][l] + m[l+1][k] + p[j]*p[l+1]*p[k+1]
+               if temp < m[j][k]:
+                   m[j][k] = temp
+                   s[j][k] = l
+   print("The number of multiplication:")
+   print(m)
+   print("The position of the parenthesis:")
+   print(s)
+
+
+def Traceback(j, k, q, s):
+   if j == k:
+       letters = ord('A') + j
+       q.append(chr(letters))
+   else:
+       q.append('(')
+       Traceback(j, int(s[j][k]), q, s)
+       Traceback(int(s[j][k] + 1), k, q, s)
+       q.append(')')
+
+
+if __name__ == '__main__':
+   matrix = [[30, 35], [35, 15], [15, 5], [5, 10], [10, 20], [20, 25]]
+   print(matrix)
+   p = []
+   q = []
+   for i in range(0, len(matrix)):
+       if i == 0:
+           p.append((matrix[0][0]))
+           p.append(matrix[0][1])
+       else:
+           p.append(matrix[i][1])
+   print(p)
+   m = np.zeros((len(matrix), len(matrix)))
+   s = np.zeros((len(matrix), len(matrix)))
+   MatrixChain()
+   Traceback(0, len(matrix)-1, q, s)
+   print("The optimal order is:")
+   print(''.join(q))

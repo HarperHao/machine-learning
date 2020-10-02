@@ -1,0 +1,28 @@
+def partition(nums=list):
+   pi = nums[0]
+   lo = [x for x in nums[1:] if x < pi]
+   hi = [x for x in nums[1:] if x >= pi]
+   return lo,pi,hi
+
+# 查找第 k 小的元素
+def solve(nums,key):
+   #分解
+   lo,pi,hi = partition(nums)
+
+   n = len(lo)
+   #解决
+   if n == key:
+       return pi
+   #递归分治
+   elif n < key:
+       return solve(hi,key-n-1)
+   #递归分治
+   else:
+       return solve(lo,key)
+
+if __name__ == '__main__':
+   lis = [1,45,78,96,32,10,25,55,5,64,98]
+   print("第6小的元素是：")
+   print(solve(lis,6))
+   print("第8小的元素是：")
+   print(solve(lis,8))

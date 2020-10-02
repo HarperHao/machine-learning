@@ -1,0 +1,20 @@
+#最长公共子序列问题
+def LCS(A,B):
+   n,m=len(A),len(B)
+   a=[0]
+   b=[0]
+   a=a+list(map(str,A))
+   b=b+list(map(str,B))
+   L=[[0]*(m+1) for _ in range(n+1)]
+   for i in range(1,n+1):
+       for j in range(1,m+1):
+           if (a[i]==b[j]):
+               L[i][j]=L[i-1][j-1]+1
+           else:
+               L[i][j]=max(L[i][j-1],L[i-1][j])
+   return L[n][m]
+# A="xyxxzxyzxy"
+# B='zxzyyzxxyxxz'
+A=input("输入字符串1：")
+B=input("输入字符串2：")
+print(LCS(A,B))

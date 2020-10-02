@@ -1,0 +1,22 @@
+def halffind(a, c, low, high):
+   mid = (low + high) // 2
+   if c == a[mid]:
+       return mid + 1
+   elif low > high:
+       return False
+
+   elif c > a[mid]:
+       return halffind(a, c, low + 1, high)
+   else:
+       return halffind(a, c, low, high - 1)
+
+
+if __name__ == "__main__":
+a = [11, 22, 35, 36, 51, 99, 188]  
+c = int(input('Please enter the number you want to find:'))
+   if c not in a:
+       print('当前输入元素不在列表中！')
+   else:
+       print('The position of the requried number in the list is:')
+       answer = halffind(a, c, 0, len(a) - 1)
+       print(answer)

@@ -1,0 +1,32 @@
+全排列：
+#include<stdio.h>
+int BinarySearch(int l,int r,int K,int  A[]);
+int main()
+{
+int i,K,A[20];
+for (i=0;i<=19;i++){
+A[i]=i+20;
+printf("%d ",A[i]);
+}
+printf("\n输入要查找的数：");
+scanf("%d",&K);
+printf("%d\n",BinarySearch(0,19,K,A));
+return 0;
+}
+
+int BinarySearch(int l,int r,int K,int A[])
+{
+int  m;
+while(l<=r){
+m=(l+r)/2;
+if(K==A[m]){
+return m;
+}else if(K<A[m]){
+r=m-1;
+}else{
+l=m+1;
+}
+
+}
+return -1;
+}

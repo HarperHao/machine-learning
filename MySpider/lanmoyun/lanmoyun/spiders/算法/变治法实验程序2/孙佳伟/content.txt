@@ -1,0 +1,21 @@
+#高斯消去
+A = [[1,3,3],[-2,3,-5],[2,5,6]]
+B = [4,0,1]
+
+def Gaussian(A,B):
+   lenth = len(A)
+   for i in range(1,lenth):
+       for j in range(i,lenth):
+           delta = A[j][i-1]/A[i-1][i-1]
+           for k in range(i-1,lenth):
+               A[j][k] = A[j][k] - A[i-1][k]*delta
+           B[j] = B[j]-B[i-1]*delta
+   B[lenth-1] = B[lenth-1]/A[lenth-1][lenth-1]
+   for i in range(lenth-2,-1,-1):
+       for j in range(lenth-1,i,-1):
+           B[i] = B[i]- A[i][j]*B[j]
+       B[i] = B[i]/A[i][i]
+   return B
+
+C = Gaussian(A, B)
+print('方程解为',C)

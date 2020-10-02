@@ -1,0 +1,48 @@
+实验源代码
+#include <stdio.h>
+#include <stdlib.h>
+void sift(int *a,int n,int m)
+{
+   int i,j,f;
+   i=n;
+   j=2*i;
+   a[0]=a[n];      
+   f=0;
+   while((j<=m)&&(f==0))
+   {
+       if ((j<m)&&(a[j+1]<a[j]))  
+       j++;
+       if (a[0]<=a[j])
+f =1;          
+else
+       {
+           a[i]=a[j];                  
+i=j;            
+           j=2*j;        
+       }
+   }
+   a[i]=a[0];
+}
+void sort(int *a)
+{
+   int i;
+   for(i=5;i>=1;i--)
+   {
+       sift(a,i,10);      }
+   for (i=10;i>=2;i--)       {
+       a[0]=a[i];        
+       a[i]=a[1];
+       a[1]=a[0];      
+       sift(a,1,i-1);    
+   }
+}
+
+int main()
+{
+   int a[10]={0,1,17,5,7,34,8,29,4,85};
+   int i;
+   sort(a);
+   for(i=1;i<10;i++)
+       printf("%d ",a[i]);
+   return 0;
+}

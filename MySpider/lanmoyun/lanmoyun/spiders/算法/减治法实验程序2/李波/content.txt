@@ -1,0 +1,43 @@
+×ÖµäĞòÈ«ÅÅÁĞ
+#include <stdio.h>
+#include <string.h>
+#define M 1000
+int a[M];
+
+void fun(int a[],int m,int n)
+{
+int i,j;
+if(m==n+1)
+{
+for(i=1;i<=n;i++)
+printf("%d ",a[i]);
+putchar('\n');
+}
+else
+{
+for(i=1;i<=n;i++)
+{
+int k=1;
+for(j=1;j<m;j++)
+{
+if(a[j]==i)
+k=0;
+}
+if(k)
+{
+a[m]=i;
+fun(a,m+1,n);
+}
+}
+}
+}
+int main()
+{
+int n;
+while(scanf("%d",&n))
+{
+memset(a,M,sizeof(int));
+fun(a,1,n);
+}
+return 0;
+}

@@ -1,0 +1,29 @@
+动态规划法求解最大上升子序列
+import copy
+str=[5, 3, 4, 8, 6, 7,9]  
+def find(str):    
+   long=1    
+   status = []    
+   sub=[]    
+   for index in range(len(str)):      
+       status.append(1)        
+       pre=0        
+       for preIndex in range(index):          
+           if(str[preIndex]<=str[index] and status[preIndex]+1>status[index]):                
+               status[index]=status[preIndex]+1                
+               pre=preIndex # print("pre",pre)      
+       if(status[index]>long):            
+           long=status[index]        
+       if(long==1):            
+           sub.append([str[index]])        
+       else:            
+           new=copy.copy(sub[pre])            
+           new.append(str[index])            
+           sub.append(new)            # print(new)    
+   print(str)    
+   print(long)    
+   print(status)    
+   print(sub)  
+   
+if __name__=="__main__":    
+   find(str)

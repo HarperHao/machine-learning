@@ -1,0 +1,27 @@
+减治法：约瑟夫斯问题
+实验目的：了解减治法的基本思想是将规模为n 的问题一直进行递减，进行求解，最后建立子问题的解与原问题的解的关系。
+解题思路： 根据约瑟夫斯的递推公式L(n,m) = (L(n-1),m+m)mod n，每次数到m就淘汰一个人，取余
+m = int(input())
+n = int(input())
+#m,n = 41,3
+a=[0]
+b=[0]
+for i in range(1,m+1):
+   a.append(i)
+while len(a)> 2:
+   print("本次留下：")
+   m = len(a)
+   for i in range(1,m):
+       if i % n != 0 :
+           try:
+               b.append(a[i])
+           except:
+               continue
+   if (i+1)% n == 0:
+       b.remove(b[(i+1)% n + 1])
+   if (i+2)% n == 0:
+       b.remove(b[(i+2)%n + 2])
+
+   print(b)
+   a = b
+   b = [0]

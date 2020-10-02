@@ -1,0 +1,47 @@
+动态规划法解决最短路径问题：
+
+def find_lowest_dist_node(dist):
+   lowest_dist = float('inf')
+   lowest_dist_node = None
+   for node in dist:  
+       value = dist[node]
+       if (value < lowest_dist and node not in add):
+           lowest_dist = value
+           lowest_dist_node = node
+   return lowest_dist_node  
+def handle(dist):
+   while True:
+       node = find_lowest_dist_node(dist)
+       if node is None:  
+           break
+       for i in graph[node]:
+           if (dist[node] + graph[node][i] < dist[i]):
+               dist[i] = dist[node] + graph[node][i]  
+               PATH[i] = node  
+       add.append(node)  
+   print("dist: ", dist)
+   print("PATH: ", PATH)
+graph = {}
+graph['A'] = {}
+graph['A']['B'] = 6
+graph['A']['C'] = 2
+graph['B'] = {}
+graph['B']['D'] = 1
+graph['C'] = {}
+graph['C']['D'] = 5
+graph['C']['B'] = 3
+graph['D'] = []  
+dist = {}
+dist['A'] = 0  
+x = float('inf')  
+dist['B'] = 6  
+dist['C'] = 2
+dist['D'] = x
+PATH = {}
+PATH['A'] = -1
+PATH['B'] = 'A'  
+PATH['C'] = 'A'
+PATH['D'] = -1
+add = []
+add.append('A')
+handle(dist)

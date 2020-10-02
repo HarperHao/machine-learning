@@ -1,0 +1,43 @@
+import numpy as np
+def LCS(s1:str,s2:str) :
+   m = len(s1)#i
+   n = len(s2)#j
+   if m>n:
+       s1,s2=s2,s1
+       m,n=n,m
+   C=np.zeros([m+1,n+1])
+   for i in range(1,m+1) :
+       for j in range(1,n+1) :
+           if s1[i-1] == s2[j-1] :
+               C[i,j] = C[i-1,j-1] + 1
+           else :
+               C[i,j] = max(C[i,j-1],C[i-1,j])
+   print(C)
+   print("他们的最长公共子序列长度是 ",int(C[m][n]))
+   m1 = m
+   n1 = n
+   Lcs=[]
+   print("他们的最长公共子序列之一是: ")
+   for i in range(int(C[m][n])):
+       while True:
+           if s1[m1-1] == s2[n1-1] :
+               Lcs.append(s1[m1-1])
+               n1 -= 1
+               m1 -= 1
+               break
+           else :
+               if C[m1][n1] == C[m1][n1-1] :
+                   n1 -= 1
+               elif C[m1][n1] == C[m1-1][n1]:
+                   m1 -= 1
+   for i in range(len(Lcs)-1,-1,-1) :
+       print(Lcs[i],end='')
+
+def main() :
+   s1=input("输入第一个序列：")
+   s2 = input("输入第一个序列：")
+   # s1='13456778'
+   # s2='357486782'
+   LCS(s1,s2)
+if __name__ == '__main__':
+   main()

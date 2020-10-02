@@ -1,0 +1,62 @@
+Floyd求最短路径：
+#include <iostream>
+#include <vector>
+
+#define MAX 9999
+using namespace std;
+
+
+void Floyd(vector<vector<int> >& g, vector<vector<int> >& p) {
+int n = g.size();
+for (int i = 1; i < n; i++) {
+for (int j = 1; j < n; j++) {
+if (i == j)
+continue;
+for (int k = 1; k < n; k++) {
+if (g[i][j] > g[i][k] + g[k][j]) {
+g[i][j] = g[i][k] + g[k][j];
+p[i][j] = k;
+}
+}
+}
+}
+}
+
+
+void printPath(vector<vector<int> >& p, int a, int b) {
+int k = p[a][b];
+if (k == -1)
+return;
+printPath(p, a, k);
+cout << "-> " << k;
+printPath(p, k, b);
+}
+
+int main() {
+int vexNum, edgeNum;
+cout << "输入顶点数量和边的数量：";
+cin >> vexNum >> edgeNum;
+
+vector<vector<int> > graph(vexNum + 1, vector<int>(vexNum + 1, MAX));
+vector<vector<int> > path(vexNum + 1, vector<int>(vexNum + 1, -1));
+
+for (int i = 1; i <= vexNum; i++)
+graph[i][i] = 0;
+cout << "输入邻接边及权值：（边a 边b 权值w）" << endl;
+for (int i = 0; i < edgeNum; i++) {
+int a, b, w;
+cin >> a >> b >> w;
+graph[a][b] = w;
+}
+Floyd(graph, path);
+int a, b;
+cout << "输入你要查询的最短路径 a->b：（顶点a 顶点b）";
+cin >> a >> b;
+if (graph[a][b] == MAX)
+cout << "从" << a << "到" << b << "没有路径。" << endl;
+cout << "从" << a << "到" << b << "最短路径为：" << graph[a][b] << endl;
+cout << a;
+printPath(path, a, b);
+cout << "-> " << b << endl;
+return 0;
+}

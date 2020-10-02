@@ -1,0 +1,41 @@
+‘’’
+实验名称：利用类实现二叉排序树的建树，查找，插入
+‘’’
+import random
+class Node:
+  def __init__(self, data):
+      self.data = data
+      self.lchild = None
+      self.rchild = None
+class BST:
+  def __init__(self, node_list):
+      self.root = Node(node_list[0])
+      for data in node_list[1:]:
+          self.insert(data)
+  def search(self, node, parent, data):
+      if node is None:
+          return False, node, parent
+      if node.data == data:
+          return True, node, parent
+      if node.data > data:
+          return self.search(node.lchild, node, data)
+      else:
+          return self.search(node.rchild, node, data)
+  def insert(self, data):
+      flag, n, p = self.search(self.root, self.root, data)
+      if not flag:
+          new_node = Node(data)
+          if data > p.data:
+              p.rchild = new_node
+          else:
+              p.lchild = new_node
+  def preOrderTraverse(self, node):
+      if node is not None:
+          print(node.data)
+          self.preOrderTraverse(node.lchild)
+          self.preOrderTraverse(node.rchild)
+a = [random.randint(0,10) for i in range(10)]
+print(a)
+bst = BST(a)
+print("前序遍历结果:")
+bst.preOrderTraverse(bst.root)

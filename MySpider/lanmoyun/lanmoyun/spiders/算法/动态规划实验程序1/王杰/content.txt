@@ -1,0 +1,32 @@
+动态规划的三要素:最优子结构,边界和状态转移函数,最优子结构是指每个阶段的最优状态可以从之前某个阶段的某个或某些状态直接得到(子问题的最优解能够决定这个问题的最优解),边界指的是问题最小子集的解(初始范围),状态转移函数是指从一个阶段向另一个阶段过度的具体形式,描述的是两个相邻子问题之间的关系(递推式)。
+import timeit
+
+def climb1(n):
+
+  if n <= 2:
+      return n
+
+  return climb1(n-1)+climb1(n-2)
+
+def climb2(n):
+
+  if n <= 2:
+      return n
+  a = 1   # 边界
+  b = 2   # 边界
+  temp = 0
+  for i in range(3, n + 1):
+      temp = a + b    # 状态转移
+      a = b    # 最优子结构
+      b = temp    # 最优子结构
+  return temp
+
+if __name__ == '__main__':
+  print(climb1(12))
+  print(climb2(12))
+
+  tt1 = timeit.repeat("climb1(12)", setup="from __main__ import climb1", number=1000)
+  print(min(tt1))
+
+  tt2 = timeit.repeat("climb2(12)", setup="from __main__ import climb2", number=1000)
+  print(min(tt2))

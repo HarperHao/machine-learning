@@ -1,0 +1,22 @@
+def f(n):
+   if n == 1:
+       return 1
+   if n == 2:
+       return 2
+   if n == 3:
+       return 1
+   if n == 4:
+       return 2
+   if n == 5:
+       return 1
+
+   h = [1, 3, 5]
+   for x in range(6, n + 1):  # 从下往上的思维解决
+       minx = n
+       for i in range(3):
+           coun = f(x - h[i]) + 1  # 从下往上的思维解决
+           if minx > coun:
+               minx = coun
+   return minx
+n=int(input("请输入要组成的金额数："))
+print("最少要用%d枚硬币"%f(n))

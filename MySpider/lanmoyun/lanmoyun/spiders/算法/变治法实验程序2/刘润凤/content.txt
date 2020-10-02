@@ -1,0 +1,56 @@
+实验名称   变治法-堆排序
+实验目的   学习变治法的原理和方法，并熟练运用。
+               熟悉并掌握堆排序原理及过程。
+实验题目   实现堆排序。
+实验源代码
+
+from collections import deque
+import random
+
+# 直接交换堆顶元素和最后元素
+def swap_param(L, i, j):
+   L[i], L[j] = L[j], L[i]
+   return L
+
+# 堆调整函数.
+def heap_adjust(L, start, end):
+   temp = L[start]
+   i = start
+   j = 2 * i
+   # 调整完整棵树树之前一直进行循环
+   while j <= end:
+       # 保证 j 取到较大子树的坐标
+       if (j < end) and (L[j] < L[j + 1]):
+           j += 1
+       # 如果根节点小于子树的值，就把根节点和较大的子树的值进行交换
+       if temp < L[j]:
+           L[i] = L[j]
+           i = j
+           j = 2 * i
+       else:
+           break
+   L[i] = temp
+
+def heap_sort(L):
+   # 因为引入了一个辅助空间，所以使L_length = len(L) - 1
+   L_length = len(L) - 1
+   # 第一个循环做的事情是把序列调整为一个大根堆(heap_adjust函数)
+   first_sort_count = L_length // 2
+   for i in range(first_sort_count):
+       heap_adjust(L, first_sort_count - i, L_length)
+   # 第二个循环是把堆顶元素和堆末尾的元素交换(swap_param函数)，然后把剩下的元素调整为一个大根堆(heap_adjust函数)
+   for i in range(L_length - 1):
+       L = swap_param(L, 1, L_length - i)
+       heap_adjust(L, 1, L_length - i - 1)
+   return [L[i] for i in range(1, len(L))]
+
+def main():
+   # 使用collections库里提供了链表结构deque初始化一个无序序列
+   lst = [random.randrange(100) for i in range(20)]
+   print("未排序：", lst)
+   L = deque(lst)
+   L.appendleft(0)
+   print("已排序：", heap_sort(L))
+
+if __name__ == '__main__':
+   main()

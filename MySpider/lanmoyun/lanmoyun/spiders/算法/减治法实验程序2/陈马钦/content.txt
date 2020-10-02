@@ -1,0 +1,35 @@
+import random
+
+def shuzu():
+   f = []
+   num = random.randint(10, 20) #随机生成10-20个数据
+   for i in range(num):
+       x = random.randint(0, 50)
+       f.append(x)
+   return f
+
+#折半插入排序
+def binary_sort(f):
+   for i in range(len(f)):
+       index = f[i]
+       low = 0
+       hight = i - 1
+       while low <= hight:
+           mid = (low + hight) // 2
+           if index > f[mid]:
+               low = mid + 1
+           else:
+               hight = mid - 1
+       # 跳出循环后 low, mid 都是一样的, hight = low - 1
+       for j in range(i, low, -1):
+           f[j] = f[j - 1]
+       f[low] = index
+return f
+
+f2 = shuzu()
+print("随机创建的数组如下:")
+print(f2)
+binary_sort(f2)
+print('\n')
+print("折半排序后的数组如下:")
+print(f2)

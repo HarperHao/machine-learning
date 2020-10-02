@@ -1,0 +1,77 @@
+约瑟夫环问题
+#include<stdio.h>
+#include<stdlib.h>
+#define FAIL 0
+#define SUCCESS 1
+typedef struct gamenode
+{
+   int number;
+   struct gamenode* next;
+} node;
+//读入初值
+int gets(int* sum,int* count,int* alive)
+{
+   printf("总人数:");
+scanf("%d",sum);
+   printf("报到的数字:");
+scanf("%d",count);
+   printf("存活的人数:",*sum);
+   if(*alive>=0&&*alive<=*sum)
+{
+scanf("%d",alive);
+}
+   return SUCCESS;
+}
+int fun(int n,int k,int s)
+{
+   int i=0,*p=NULL,sum=n-k,j=1,o=0,pr=0;
+   if ((p=(int*)malloc(sizeof(int)*n))==NULL)
+   {
+printf("FAIL!\n");
+return FAIL;
+   }
+   for(i=0;i<n;i++)
+   {
+       p[i]=1;
+   }
+   i=0;
+   while(1)
+   {
+       if (sum==0)
+       break;
+       if (j==s&&p[i]==1)
+       {  
+           p[i]=0;
+           j=1;
+           --sum;
+       }
+       else if(p[i]==1)
+       {  
+j++;
+       }
+       i++;
+       i=i%n;    
+   }
+   printf("alive:");
+   for(i=0;i<n;i++)
+   {
+       if(p[i]==1)
+       printf("%d ",i+1);
+   }
+   printf("\nkill:");
+   for(i=0;i<n;i++)
+   {
+       if(p[i]==0)
+       printf("%d ",i+1);
+   }
+   free(p);
+printf("\n");
+   return SUCCESS;
+}
+int main()
+{
+   int sum=0,count=0,alive=0,i=0;
+   gets(&sum,&count,&alive);
+   fun(sum,alive,count);
+   return 0;
+}

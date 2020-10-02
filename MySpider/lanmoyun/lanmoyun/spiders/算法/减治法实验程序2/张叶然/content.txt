@@ -1,0 +1,37 @@
+约瑟夫斯问题
+//N（1-n）个人围成一圈，杀死序号为X倍数的人，第一圈结束后规模减少了1/X，直到只剩一个人。
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+public class ysfs {
+   public static void main(String[] args) {
+    List alist = new ArrayList();
+    System.out.println("请输入总人数：");
+    Scanner sca = new Scanner(System.in);
+    int N = sca.nextInt();
+    System.out.println("请输入杀死的人：");
+    int X = sca.nextInt();
+    System.out.println("按顺序输出死亡的人：");
+    for(int i=0 ;i<N;i++){
+    alist.add(i+1); }
+    int i=-1;
+    int countX=0;
+    while(alist.size()!=0){
+    ++i;
+    if(i== alist.size()){
+    i=0;
+    }
+    ++countX;  
+    if(countX==X){
+    if(alist.size()!=1)    
+    System.out.print(alist.get(i)+ " ");
+    else {
+    System.out.print("\n最后一个人是：");
+    System.out.print(alist.get(i));}
+    alist.remove(i);
+    countX=0;
+    i--;
+    }
+    }
+    }
+   }

@@ -1,0 +1,46 @@
+#最长回文子串
+import wx
+class get_longest_Palind(wx.App):
+   def __init__(self):
+       wx.App.__init__(self)
+       self.window = wx.Frame(parent=None, pos=(500,500),size=(500, 300), title="最长回文子串")
+       self.text=wx.TextCtrl(self.window,size=(500, 100)) #文本
+       self.result=wx.TextCtrl(self.window,style=wx.TE_READONLY | wx.TE_MULTILINE,size=(500, 150),pos=(0,150)) #文本
+       self.button=wx.Button(self.window,label="生成",pos=(100,110),size=(40,30)) #按钮
+       self.button1=wx.Button(self.window,label="刷新",pos=(200,110),size=(40,30)) #按钮
+       self.button2=wx.Button(self.window,label="退出",pos=(300,110),size=(40,30)) #按钮
+       self.button.Bind(wx.EVT_BUTTON,self.__get)
+       self.button1.Bind(wx.EVT_BUTTON,self.__reFresh)
+       self.button2.Bind(wx.EVT_BUTTON,self.__exit)
+       self.window.Show()
+   def __reFresh(self,event):
+       self.__exit(event)
+       self.__init__()
+   def __exit(self,event):
+       self.window.Close()
+   def __get(self,event):
+       S=self.text.GetValue()
+       S=self.__getLongPalind(S)
+       self.result.write("最长回文子串为："+S)
+   def __getLongPalind(self,S):
+       length = len(S)
+       dp = []
+       for i in range(0, length):
+           d = []
+           for j in range(0, length):
+               d.append([])
+           dp.append(d)
+       i = length - 2
+       left, right = 0, 0
+       while i >= 0:
+           dp[i][i] = True
+           for j in range(i + 1, length):
+               if S[i] == S[j] and (j - i < 3 or dp[i + 1][j - 1]):
+                   dp[i][j] = True
+               if dp[i][j] and right - left < j - i:
+                   left, right = i, j
+           i -= 1
+       return S[left:right + 1]
+if __name__=='__main__':
+   app=get_longest_Palind()
+   app.MainLoop()

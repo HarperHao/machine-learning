@@ -1,0 +1,35 @@
+def maxvalue(n,c,w,v):
+   """
+    测试数据：
+    n = 6  物品的数量，
+    c = 10 书包能承受的重量，
+    w = [2, 2, 3, 1, 5, 2] 每个物品的重量，
+    v = [2, 3, 1, 5, 4, 3] 每个物品的价值
+    """
+   #价值表初始化
+   value=[[0 for i in range(c+1)] for k in range(n+1)]
+   for i in range(1,n+1):
+       for k in range(1,c+1):
+           #表格一行一行的填写
+           value[i][k]=value[i-1][k]
+           #判断是否可以替换，替换时，需要用到上一行的价值
+           if k>=w[i-1] and (value[i][k] < value[i-1][k-w[i-1]]+v[i-1]):
+               value[i][k]=value[i-1][k-w[i-1]]+v[i-1]
+   return value
+def findbag(n,c,w,v):
+   value2=maxvalue(6, 10, w, v)
+   numbag=list()
+   for i in range(n,0,-1):
+       if value2[i][c]!=value2[i-1][c]:
+           numbag.append(i)
+           c=c-w[i-1]
+   for k in numbag:
+       print('第{}个'.format(k),end=' ')
+   print('放到背包中')
+if __name__ == '__main__':
+   w = [2, 2, 3, 1, 5, 2]
+   v = [2, 3, 1, 5, 4, 3]
+   value1=maxvalue(6, 10, w, v)
+   for i in value1:
+       print(i)
+   findbag(6,10,w,v)

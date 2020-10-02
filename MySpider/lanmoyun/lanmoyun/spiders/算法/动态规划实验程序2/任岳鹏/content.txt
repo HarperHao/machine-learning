@@ -1,0 +1,32 @@
+# 0-1背包问题
+def bag(n, c, w, v):
+   value = [[0 for j in range(c + 1)] for i in range(n + 1)]
+   for i in range(1, n + 1):
+       for j in range(1, c + 1):
+           if j < w[i - 1]:
+               value[i][j] = value[i - 1][j]
+           else:
+               value[i][j] = max(value[i - 1][j], value[i - 1][j - w[i - 1]] + v[i - 1])
+   # 背包总容量够放当前物体，取最大价值
+   return value
+def show(n, c, w, value):
+   print('最大价值为:', value[n][c])
+   x = [0 for i in range(n)]
+   j = c
+   for i in range(n, 0, -1):
+       if value[i][j] > value[i - 1][j]:
+           x[i - 1] = 1
+           j -= w[i - 1]
+   print('背包中所装物品为:')
+   for i in range(n):
+       if x[i]:
+           print('第', i+1, '个,', end='')
+if __name__=='__main__':
+   n = int(input("请输入物品的数量："))
+   c = int(input("请输入书包能够承受的重量："))
+   w = input("请依次输入每个物品的重量：")
+   wlist = [int(x) for x in w.split()]
+   v = input("请依次输入每个物品的价值：")
+   vlist = [int(x) for x in v.split()]
+   value = bag(n,c,wlist,vlist)
+   show(n, c, wlist, value)

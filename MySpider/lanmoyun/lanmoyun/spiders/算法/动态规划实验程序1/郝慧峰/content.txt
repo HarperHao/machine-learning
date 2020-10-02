@@ -1,0 +1,30 @@
+#0-1背包问题 动态规划
+import numpy as np
+
+items = [(1, 10), (2, 12), (2, 15), (3, 20)]  #列表0为重量 1为价值
+biggest_weight = int(input("请输入背包容量: "))
+n = len(items)                                     #列表长度
+def bag(items, n, biggest_weight):
+   l = np.zeros((n+1, biggest_weight + 2), 'uint8') #创建5*6矩阵
+   for i in range(1, biggest_weight + 2):       #将背包容量依次填入列表顶
+       l[0][i] = i-1
+   for j in range(0, n+1):             # 物品编号（列表下标）填入左侧  中间为背包价值
+       l[j][0] = j
+   for x in range(1, n+1):         #一层一层填写表格
+       for y in range(2, biggest_weight + 2):
+           if x == 1 and items[l[x][0] - 1][0] > l[0][y]:   #容量小于第一个物品重量 价值为0
+               break
+           if x == 1 and items[l[x][0]-1][0] <= l[0][y]:    #第一层 容量大于等于第一个物品重量 付给其价值
+               l[x][y] = items[l[x][0]-1][1]
+           if x != 1 and items[l[x][0]-1][0] >= l[0][y]:     #非第一层小于该层物品重量 等于上层价值
+               l[x][y] = l[x-1][y]
+           if x != 1 and items[l[x][0]-1][0] <= l[0][y]:   #  非第一层大于等于该层物品重量 比较加入本层物品和不加的价值取较大值
+               x_1 = l[0][y]
+               y_2 = items[l[x][0]-1][0]
+               price_max = max(l[x-1][y], items[l[x][0]-1][1] + l[x-1][x_1 - y_2 + 1])
+               l[x][y] = price_max
+   return l
+l = []
+l = bag(items, n, biggest_weight)
+print(l)
+print('放入背包最大的价值为{}'.format(l[n][biggest_weight+1]))

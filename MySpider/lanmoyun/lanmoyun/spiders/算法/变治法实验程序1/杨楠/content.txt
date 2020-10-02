@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+//筛选算法，k为调整位置，m为堆的大小
+void sift(int *a,int k,int m)
+{
+   int i,j,finished;
+   i=k;
+   j=2*i;
+   a[0]=a[k];       //a[0]空间空出，用来存放要调整位置的值
+   finished=0;
+   while((j<=m)&&(!finished))
+   {
+       if ((j<m)&&(a[j+1]<a[j]))  //求出较小的点，用j标记
+       j++;
+       if (a[0]<=a[j]) finished =1;    //满足堆的条件，跳出循环
+       else
+       {
+           a[i]=a[j];      //交换使三个中最小的点放在堆顶点
+           i=j;            
+           j=2*j;          //继续调整儿子是堆顶点的堆，使其满足堆的条件。
+       }
+   }
+   a[i]=a[0];
+}
+void heapsort(int *a)
+{
+   int i;
+   for(i=5;i>=1;i--)
+   {
+       sift(a,i,10);   //for循环完成了对所有元素建堆，方式是从下往上。
+   }
+   for (i=10;i>=2;i--)   //i表示当前堆的大小，即等待排序的元素的个数
+   {
+       a[0]=a[i];        
+       a[i]=a[1];
+       a[1]=a[0];       //将堆中最小元素与最后一个元素进行交换
+       sift(a,1,i-1);    //从根节点处继续调整建堆
+   }
+}
+
+int main()
+{
+   int a[10]={10,13,23,5,17,9,8,46,4,12};
+   int i=0;
+   heapsort(a);
+   for(i=1;i<10;i++)
+   {
+       printf("%d ",a[i]);
+   }
+   return 0;
+}

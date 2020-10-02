@@ -1,0 +1,117 @@
+实验源代码
+#include<stdio.h>
+#define da 5005
+#define maxs 25
+typedef int juli1[maxs];
+typedef int qianqu[maxs];
+typedef struct
+{
+char vertex[maxs];
+int edges[maxs][maxs];
+int n,e;
+}tu;
+void jiantu(tu *g)
+{
+int i,j,w;
+printf("输入点数与路的数目：\n");
+scanf("%d%d",&g->n,&g->e);
+printf("输入点名称：\n");
+for(i=0;i<g->n;i++)
+{
+g->vertex[i]=getchar();
+getchar();
+}
+for(i=0;i<g->n;i++)
+{
+for(j=0;j<g->n;j++)
+{
+if(i==j)
+g->edges[i][j]=0;
+else
+g->edges[i][j]=da;
+}
+}
+getchar();
+for(int k=0;k<g->e;k++)
+{
+int m,n;
+printf("请输入其中两点之间的距离\n");
+scanf("%d%d%d",&m,&n,&w);
+g->edges[m][n]=w;
+}
+printf("\n");
+}
+void dijkstra(tu g,juli1 d,qianqu p)
+{
+int v0,min,v;
+printf("请输入您选择的源点：   ");
+scanf("%d",&v0);
+printf("\n");
+int biaoji[maxs];
+for(int v=0;v<g.n;v++)
+{
+biaoji[v]=0;
+d[v]=g.edges[v0][v];
+if(d[v]<da&&d[v]!=0)
+p[v]=v0;
+else
+p[v]=-1;
+}
+biaoji[v0]=1;d[v0]=0;
+for(int i=1;i<g.n;i++)
+{
+min=da;
+for(int k=0;k<g.n;++k)
+if(biaoji[k]==0&&d[k]<min)
+{
+v=k;
+min=d[k];
+}
+printf("本次加入的结点是:%c,最短距离是：%d\n",g.vertex[v],min);
+if(min==da)
+return;
+biaoji[v]=1;
+for(int k=0;k<g.n;++k)
+{
+if(biaoji[k]==0&&(min+g.edges[v][k]<d[k]))
+{
+d[k]=min+g.edges[v][k];
+p[k]=v;
+}
+}
+}
+printf("\n");
+}
+void shuchu1(tu g,juli1 d,qianqu p)
+{
+int zhan[maxs];
+int top=-1,pre;
+for(int i=0;i<g.n;i++)
+{
+printf("距离第%c个目的地的距离是：%d\n",g.vertex[i],d[i]);
+zhan[++top]=i;
+pre=p[i];
+while(pre!=-1)
+{
+zhan[++top]=pre;
+pre=p[pre];
+}
+printf("经过的城市依次是：");
+while(top>0)
+{
+printf("%d   ",zhan[top--]);
+}
+printf("\n");
+}
+printf("\n");
+}
+int main()
+{
+tu g;
+juli1 d1;
+qianqu p;
+jiantu(&g);
+dijkstra(g,d1,p);
+shuchu1(g,d1,p);
+return 0;
+}

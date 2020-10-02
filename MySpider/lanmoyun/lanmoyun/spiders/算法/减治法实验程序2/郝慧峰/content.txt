@@ -1,0 +1,28 @@
+挤压序
+import  random
+
+def random_point(n):  # 生成随机数
+   points_num = list(range(1000))
+   points = random.sample(points_num, n)
+   return points
+
+def get_key(n):
+   list_1 = ['0', '1']
+   j = 0
+   for i in range(1,n):
+       left = ['0'+i for i in list_1]
+       right = ['1'+i for i in list_1[::-1]]
+       list_1 = left + right
+   for k in range(len(list_1)):
+       list_2 = str(list_1[k])
+       j = j + 1
+       print([p[i] for i in range(n) if list_2[i] == '1'])
+   print("一共 %d 个" %(j))
+
+a = input("输入集合元素个数(尽量20以内）：")
+n = int(a)
+p = random_point(n)
+print(p)
+n = len(p)
+print("子集为：")
+get_key(n)

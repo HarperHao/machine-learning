@@ -1,0 +1,131 @@
+实验名称：单源最短路径
+实验目的：学习单源最短路径的执行过程
+实验题目：实现单源最短路径，了解单源最短路径的应用
+实验源代码：
+package 单元最短路径;
+
+// 边
+class Edge{
+   Vertex target;
+   double weight;
+   Edge(Vertex target, double weight){
+       this.target = target;
+       this.weight = weight;
+   }
+}
+
+import java.util.*;
+public class Vertex implements Comparable<Vertex>{
+
+   //点名
+   public String name;
+
+   // 临边
+   ArrayList<Edge> neighbours;
+
+   // 连接点
+   LinkedList<Vertex> path;
+
+   double minDistance = Double.POSITIVE_INFINITY;
+   public Vertex previous;
+   @Override
+   public int compareTo(Vertex other){
+       return Double.compare(minDistance,other.minDistance);
+   }
+   Vertex(String name){
+       this.name = name;
+       neighbours = new ArrayList<>();
+       path = new LinkedList<>();
+   }
+   @Override
+   public String toString(){
+       return name;
+   }
+}
+
+class Graph {
+   private ArrayList<Vertex> vertices;
+   Graph(int numberVertices){
+       vertices = new ArrayList<>(numberVertices);
+       for(int i=0;i<numberVertices;i++){
+           vertices.add(new Vertex("v"+Integer.toString(i)));
+       }
+   }
+
+   void addEdge(int src, int dest, int weight){
+       Vertex s = vertices.get(src);
+       Edge new_edge = new Edge(vertices.get(dest),weight);
+       s.neighbours.add(new_edge);
+   }
+
+   ArrayList<Vertex> getVertices() {
+       return vertices;
+   }
+
+   Vertex getVertex(int vert){
+       return vertices.get(vert);
+   }
+}
+
+public class Dijkstra{
+
+   public static void main(String[] arg){
+
+       Dijkstra obj = new Dijkstra();
+
+       // 创建图
+       Graph g = new Graph(9);
+
+       g.addEdge(0, 1, 4); g.addEdge(0, 7, 8);
+       g.addEdge(1, 2, 8); g.addEdge(1, 7, 11); g.addEdge(2, 1, 8);
+       g.addEdge(2, 8, 2); g.addEdge(2, 5, 4); g.addEdge(2, 3, 7);
+       g.addEdge(3, 2, 7); g.addEdge(3, 5, 14); g.addEdge(3, 4, 9);
+       g.addEdge(4, 3, 9); g.addEdge(4, 5, 10);
+       g.addEdge(5, 4, 10); g.addEdge(5, 3, 9); g.addEdge(5, 2, 4); g.addEdge(5, 6, 2);
+       g.addEdge(6, 7, 1); g.addEdge(6, 8, 6); g.addEdge(6, 5, 2);
+       g.addEdge(7, 0, 8); g.addEdge(7, 8, 7); g.addEdge(7, 1, 11); g.addEdge(7, 6, 1);
+       g.addEdge(8, 2, 2); g.addEdge(8, 7, 7); g.addEdge(8, 6, 6);
+
+       // 以0为源点寻找最短路径
+       obj.calculate(g.getVertex(0));
+
+       // 打印最短路径
+       for(Vertex v:g.getVertices()){
+           System.out.print("Vertex - "+v+" , Dist - "+ v.minDistance+" , Path - ");
+           for(Vertex pathvert:v.path) {
+               System.out.print(pathvert+" ");
+           }
+           System.out.println(""+v);
+       }
+
+   }
+
+   private void calculate(Vertex source){
+
+       source.minDistance = 0;
+       PriorityQueue<Vertex> queue = new PriorityQueue<>();
+       queue.add(source);
+
+       while(!queue.isEmpty()){
+
+           Vertex u = queue.poll();
+
+           for(Edge neighbour:u.neighbours){
+               Double newDist = u.minDistance+neighbour.weight;
+
+               if(neighbour.target.minDistance>newDist){
+                   // 从队列中删除节点以更新距离值。
+                   queue.remove(neighbour.target);
+                   neighbour.target.minDistance = newDist;
+
+                   // 采取到现在为止访问的路径并添加新的节点。
+                   neighbour.target.path = new LinkedList<>(u.path);
+                   neighbour.target.path.add(u);
+
+                   // 重新输入新距离的节点。
+                   queue.add(neighbour.target);
+               }
+           }
+       }
+   }
+}

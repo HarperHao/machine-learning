@@ -1,0 +1,40 @@
+#0/1背包问题的动态规划
+def knapsack(S, v, C):
+   slect=[]
+   t = len(S)
+   V = [[''] *(C+1)for _ in range(t)]
+   for i in range(0, t):
+       V[i][0] = 0
+   for j in range(0, C+1):
+       V[0][j] = 0
+   for i in range(1,t):
+       for j in range(1, C+1):
+           if j<S[i]:
+               V[i][j] = V[i-1][j]
+           else:
+               V[i][j] = max(V[i-1][j], V[i-1][j-S[i]]+v[i])
+   m,n=t-1,C
+   while V[m][n]!=0:
+       if V[m-1][n]<V[m][n]:
+           slect.append(m)
+           n=n-S[m]
+           m=m-1
+       else:
+           m=m-1
+   print("动态规划表")
+   for _ in range(0,t):
+       print(V[_])
+   print("选中的是：",slect)
+   return V[t-1][C]
+
+
+num=int(input("请输入物品件数："))
+c=int(input("背包容量："))
+s=[0]
+v=[0]
+for _ in range(0,num):
+   v.append(int(input("第%d件物品的价值："%_)))
+   s.append(int(input("第%d件物品的体积："%_)))
+print("物品体积",s)
+print("物品价值",v)
+print(knapsack(s,v,c))

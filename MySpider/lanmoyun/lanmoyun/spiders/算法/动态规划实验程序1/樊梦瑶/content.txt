@@ -1,0 +1,77 @@
+0—1背包问题：
+def fun(n,c,w,v):
+   value=[[0 for j in range(c+1)] for i in range(n+1)]
+   for i in range(1,n+1):
+       for j in range(1,c+1):
+           value[i][j]=value[i-1][j]
+           if j>=w[i- 1] and value[i][j]<value[i-1][j-w[i-1]]+v[i-1]:
+               value[i][j]=value[i-1][j -w[i-1]]+v[i-1]
+   return value
+
+def show(n,c,w,value):
+   print('最大价值为:',value[n][c])
+   x=[False for i in range(n)]
+   j=c
+   for i in range(n,0,-1):
+       if value[i][j]>value[i - 1][j]:
+           x[i-1]=True
+           j=j-w[i - 1]
+   print('背包中所装物品为:')
+   for i in range(n):
+       if x[i]:
+           print('第',i+1,'个,', end='')
+
+if __name__ == '__main__':
+   n=6
+   c=10
+   w=[1,2,63,5,7,5]
+   v=[2, 3, 1, 5, 4, 3]
+   value=fun(n,c,w,v)
+   show(n,c,w,value)
+
+矩阵连乘问题：
+import random
+from pandas import *
+
+n=int(input("输入矩阵数："))
+matrix=[[0]*2 for i in range(n)]
+for i in range(n):
+   if i==0:
+       matrix[i][0]=random.randrange(100)
+       matrix[i][1]=random.randrange(100)
+   else:
+       matrix[i][0]=matrix[i - 1][1]
+       matrix[i][1]=random.randrange(100)
+m=[[0]*n for i in range(n)]
+s=[[0]*n for j in range(n)]
+
+def fun(t):
+   for i in range(t):
+       m[i][i]=0
+   for r in range(1,t):
+       for i in range(t-r):
+           j=i+r
+           m[i][j]=m[i+1][j]+matrix[i][0]*matrix[i][1]*matrix[j][1]
+           s[i][j]=i+1
+           for k in range(i + 1, j):
+               judge=m[i][k]+m[k+1][j]+matrix[i][0]*matrix[k][1]*matrix[j][1]
+               if judge<m[i][j]:
+                   m[i][j]=judge
+                   s[i][j]=k+1
+
+def show(left,right):
+   if left==right:
+       print("A"+str(left+1), end='')
+   else:
+       print("(", end='')
+       show(left, s[left][right]-1)
+       show(s[left][right], right)
+       print(")", end='')
+fun(n)
+x=DataFrame(m,index=list(range(1,n+1)),columns=list(range(1,n+1)))
+y=DataFrame(s,index=list(range(1,n+1)),columns=list(range(1,n+1)))
+print(matrix)
+print("数乘次数：\n",x)
+print("括号位置：\n",y)
+print("最终结果：")
+show(0, n-1)

@@ -1,0 +1,113 @@
+堆排序问题（java）
+package com.liuzhen.heapsort;
+
+public class HeapSort {
+   /*将array[a]和array[b]、array[c]中最大值进行比较，如果较小则将array[a]与array[b]、array[c]中最大值
+   进行交换，否则直接返回数组array*/
+   public static int[] getMaxA(int[] array,int a,int b ,int c){
+       int temp = 0;
+       if(array[b] >= array[c]){
+           if(array[a] < array[b]){
+               temp = array[a];
+               array[a] = array[b];
+               array[b] = temp;
+           }
+       }
+       else{
+           if(array[a] < array[c]){
+               temp = array[a];
+               array[a] = array[c];
+               array[c] = temp;
+           }
+       }
+       return array;
+   }
+   
+   //根据堆排序父母优势规则，返回一个给定长度的数组的成堆结果
+   public static int[] getHeapSort(int[] array , int len){
+       boolean judge = true;
+       while(judge){
+           //根据堆排序父母优先规则，对数组array进行排序
+           for(int i = 1;i <= len/2;i++){
+              if((2*i+1) < len)  
+                  array = getMaxA(array,i,(2*i),(2*i+1));
+              if((2*i) == len-1){    //当2*i == len-1时，说明array[i]只有一个左孩子节点a[2*i]
+                  int temp = 0;
+                  if(array[i] < array[2*i]){
+                      temp = array[i];
+                      array[i] = array[2*i];
+                      array[2*i] = temp;
+                  }
+              }
+           }
+           
+           //遍历数组array，一旦出现根节点小于其叶子节点时，跳出for循环
+           int j;
+           for(j = 1;j < len/2;j++){
+               if((2*j+1) < len){
+                   if(array[j] < array[2*j])
+                       break;
+                   if(array[j] < array[2*j+1])
+                       break;
+               }
+               if((2*j) == len-1){
+                   if(array[j] < array[2*j])
+                       break;
+               }
+           }
+           
+           if(j == len/2)  //如果j==len/2，说明遍历结果符合堆排序规则，直接结束while循环
+               judge = false;
+       }        
+       return array;
+   }
+   
+   //使用数组成堆，对一个数组元素进行从小到大排序，并返回排序后的结果
+   public static int[] getResultSort(int[] array , int len){
+       array =  getHeapSort(array , len);           //首先对数组进行堆排序处理
+       int temp = 0;        //数组值交换中间变量
+       int sortLen = len;   //排序过程中，需要重新进行堆排序的数组长度，并初始化为array的总长度
+       while(sortLen > 2){    
+//            for(int i = 1;i < len;i++)
+//                System.out.print(array[i]+"\t");
+//            System.out.println();
+           temp = array[1];             //交换array[0]和array[sortLen-1]的值，即把最大的值放在未排序的数组最后一位
+           array[1] = array[sortLen-1];
+           array[sortLen-1] = temp;            
+           sortLen = sortLen - 1;                   //交换成功后，未排序的数组长度自动减1            
+           array = getHeapSort(array,sortLen);      //对未排序的数组，重新进行堆排序        
+       }        
+       return array;
+   }
+   
+   //初始化一个长度为n的随机数组
+   public static int[] initArray(int n){
+       int[] result = new int[n];
+       result[0] = 0;
+       for(int i = 1;i < n;i++)
+           result[i] = (int)(Math.random()*1000); //采用随机函数随机生成0~1000之间的数
+       return result;        
+   }
+   
+   public static void main(String args[]){
+       int[] array = {0,1,4,5,3,5,23,45,12,23,34,56,78,23,24,25}; //此处定义数组，对array[1]到array[len-1]进行排序
+       int len = array.length;
+       int[] result = getResultSort(array,len);
+       System.out.println("手动输入数组，使用堆排序，最终排序结果：");
+       for(int i = 1;i < len;i++){
+           System.out.print(result[i]+"\t");
+       }
+       
+       System.out.println();
+       System.out.println();
+       int[] oneArray = initArray(1000);
+       int len1 = 1000;
+       int[] result1 = getResultSort(oneArray,len1);
+       System.out.println("系统随机生成的长度为1000的数组(其值均在0~1000之间)，使用堆排序，最终排序结果：");
+       for(int j = 1;j < len1;j++){
+           System.out.print(result1[j]+"\t");
+           if(j%15 == 0)
+               System.out.println();
+       }    
+   }
+}

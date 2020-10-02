@@ -1,0 +1,16 @@
+#预排序
+def panduan(n):
+   for i in  range (n-1):
+
+       if (A[i] == A[i + 1]) :
+           return False
+
+   return True
+A =[] #初始化列表
+for i in range(6):#一个for循环
+   num= int(input("input a number please: "))#控制输入转为int
+   A.append(num)#放入列表
+A.sort()#排序
+print(A)#输出
+n = len(A)
+print(panduan(n))

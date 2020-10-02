@@ -1,0 +1,119 @@
+具体步骤：
+1、首先将L矩阵初始化为单位矩阵
+2、U矩阵的第一行与A矩阵的第一列一样，因此把A 矩阵的第一行赋值给U矩阵
+3、L矩阵的第一列等于A 矩阵的第一列除以U矩阵的第一行第一列的数，从而得到L矩阵的第一列
+4、U矩阵按行迭代计算
+5、L按列跌代计算，而且U 要优先L一步
+
+package suanfa;
+
+public class Lu {
+
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+double[][] A = { { 1,1,1 }, { 1,2,3 }, { 1,5,1 } };
+double[][] U = new double[3][3];
+double[][] L = new double[3][3];
+double[][] UN = new double[3][3];
+double[][] LN = new double[3][3];
+System.out.println("A矩阵");
+print(A);
+int size = 3;
+// 将L矩阵赋值为单位矩阵
+for (int i = 0; i < size; i++) {
+L[i][i] = 1.0;
+}
+// 将A矩阵的第一行附给u矩阵
+for (int j = 0; j < size; j++) {
+U[0][j] = A[0][j];
+}
+// 创建L矩阵的第一列
+for (int i = 1; i < size; i++) {
+L[i][0] = A[i][0] / U[0][0];
+}
+//创建其他行列
+for (int k = 1; k < size; k++) {
+// U按行迭代
+for (int j = k; j < size; j++) {
+// sum(L_kt*U_tj),t
+double s = 0.0;
+for (int t = 0; t < k; t++) {
+s += L[k][t] * U[t][j];
+}
+// U_kj = A_kj - s
+U[k][j] = A[k][j] - s;
+}
+// L按列迭代
+for (int i = k; i < size; i++) {
+// sum(L_it*U_tk),t
+double s = 0.0;
+for (int t = 0; t < k; t++) {
+s += L[i][t] * U[t][k];
+}
+// L_ik = (A_ik - s) / U_kk
+L[i][k] = (A[i][k] - s) / U[k][k];
+}
+}
+
+// 创建L的逆矩阵LN
+for (int j = 0; j < size; j++) {
+for (int i = j; i < size; i++) {
+if (i == j) LN[i][j] = 1 / L[i][j];
+else if (i < j) LN[i][j] = 0;
+else {
+double s = 0.0;
+for (int k = j; k < i; k++) {
+s += L[i][k] * LN[k][j];
+}
+LN[i][j] = -LN[j][j] * s;
+}
+}
+}
+
+// calculate U_inv
+for (int j = 0; j < size; j++) {
+for (int i = j; i >= 0; i--) {
+if (i == j) UN[i][j] = 1 / U[i][j];
+else if (i > j) UN[i][j] = 0;
+else {
+double s = 0.0;
+for (int k = i + 1; k <= j; k++) {
+s += U[i][k] * UN[k][j];
+}
+UN[i][j] = -1 / U[i][i] * s;
+}
+}
+}
+//计算A 的逆矩阵
+double[][] AN = new double[3][3];
+for (int i = 0; i < size; i++) {
+for (int j = 0; j < size; j++) {
+for (int k = 0; k < size; k++) {
+AN[i][j] += UN[i][k] * LN[k][j];
+}
+}
+}
+System.out.println("L矩阵");
+print(L);
+System.out.println("U矩阵");
+print(U);
+System.out.println("L逆矩阵");
+print(LN);
+System.out.println("U逆矩阵");
+print(UN);
+System.out.println("A的逆矩阵");
+print(AN);
+}
+
+public static void print(double[][] M) {
+for (int i = 0; i < M.length; i++) {
+for (int j = 0; j < M[0].length; j++) {
+System.out.printf("%8.2f ", M[i][j]);
+}
+System.out.println();
+}
+System.out.println();
+}
+
+
+}

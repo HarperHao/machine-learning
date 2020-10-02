@@ -1,0 +1,23 @@
+graph = {
+   "A": ["B", "C"],
+   "B": ["A", "C", "D"],
+   "C": ["A", "B", "D", "E"],
+   "D": ["B", "C", "E", "F"],
+   "E": ["C", "D"],
+   "F": ["D"],
+}
+def BFS(graph,vertex):
+   queue = []
+   queue.append(vertex)
+   looked = set()
+   looked.add(vertex)
+   while(len(queue)>0):
+       temp = queue.pop(0)
+       nodes = graph[temp]
+       for w in nodes:
+           if w not in looked:
+               queue.append(w)
+               looked.add(w)
+       print(temp, end=' ')
+print("BFS£º", end=" ")
+BFS(graph, "A")

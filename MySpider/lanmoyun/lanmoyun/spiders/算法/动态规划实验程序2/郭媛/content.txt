@@ -1,0 +1,54 @@
+用动态规划法构造Huffman树得到Huffman编码
+import copy
+class Node:
+   def __init__(self, name, weight):
+       self.name = name
+       self.weight = weight
+       self.left = None
+       self.right = None
+       self.parent = None
+   def isleftchild(self):
+       return self.parent.left == self
+def create_nodes(weights, labels):  #创建叶子节点
+   if(len(weights) != len(labels)):
+       print('error!名字和权值不符!')
+   nodes = []
+   for i in range(len(labels)):
+       nodes.append( Node(labels[i],weights[i]) )
+   return nodes
+def Huffman(nodes):  #创建哈夫曼树
+   tree_nodes = nodes.copy()
+   while len(tree_nodes) > 1:
+       tree_nodes.sort(key=lambda node: node.weight) #权值升序排列
+       new_left = tree_nodes.pop(0)
+       new_right = tree_nodes.pop(0)
+       new_node = Node(None, (new_left.weight + new_right.weight))
+       new_node.left = new_left
+       new_node.right = new_right
+       new_left.parent = new_right.parent = new_node
+       tree_nodes.append(new_node)
+   tree_nodes[0].parent = None
+   return tree_nodes[0] #返回根节点
+def Huffman_code(root, nodes):
+   codes = {}
+   for node in nodes:
+       code=''
+       name = node.name
+       while node.parent != None:
+           if node.isleftchild():
+               code = '0' + code
+           else:
+               code = '1' + code
+           node = node.parent
+       codes[name] = code
+   return codes
+
+if __name__ == '__main__':
+   labels = ['a','b','c','d','e','f']
+   weights = [9,12,6,3,5,15]
+   nodes = create_nodes(weights,labels) #创建初始叶子节点
+   root =  Huffman(nodes)
+   codes = Huffman_code(root, nodes)
+print('得到的Huffman编码如下：')
+   for i in codes.keys():
+       print(i,': ',codes[i])

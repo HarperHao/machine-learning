@@ -1,0 +1,56 @@
+0-1背包问题：
+#include<iostream>
+#include <algorithm>
+using namespace std;
+
+
+int w[5] = { 0 , 2 , 3 , 4 , 5 };
+int v[5] = { 0 , 3 , 4 , 5 , 6 };
+int bagV = 8;
+int dp[5][9] = { { 0 } };
+int item[5];
+
+void findMax() {
+for (int i = 1; i <= 4; i++) {
+for (int j = 1; j <= bagV; j++) {
+if (j < w[i])
+dp[i][j] = dp[i - 1][j];
+else
+dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - w[i]] + v[i]);
+}
+}
+}
+
+void findWhat(int i, int j) {
+if (i >= 0) {
+if (dp[i][j] == dp[i - 1][j]) {
+item[i] = 0;
+findWhat(i - 1, j);
+}
+else if (j - w[i] >= 0 && dp[i][j] == dp[i - 1][j - w[i]] + v[i]) {
+item[i] = 1;
+findWhat(i - 1, j - w[i]);
+}
+}
+}
+
+void print() {
+cout << "动态规划表：" << endl;
+for (int i = 0; i < 5; i++) {
+for (int j = 0; j < 9; j++) {
+cout << dp[i][j] << ' ';
+}
+cout << endl;
+}
+cout <<"\n最优解情况："<< endl;
+for (int i = 0; i < 5; i++)
+cout << item[i] << ' ';
+cout << endl;
+}
+
+int main(){
+findMax();
+findWhat(4, 8);
+print();
+return 0;
+}

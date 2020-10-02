@@ -1,0 +1,83 @@
+import turtle
+n = 50  
+x = -250
+y = 200
+def fun(a, b):
+   lena = len(a)
+   lenb = len(b)
+   c = [[0 for i in range(lenb + 1)] for j in range(lena + 1)]
+   flag = [[0 for i in range(lenb + 1)] for j in range(lena + 1)]
+   for i in range(lena):
+       for j in range(lenb):
+           if a[i] == b[j]:
+               c[i + 1][j + 1] = c[i][j] + 1
+               flag[i + 1][j + 1] = 'ok'
+           elif c[i + 1][j] > c[i][j + 1]:
+               c[i + 1][j + 1] = c[i + 1][j]
+               flag[i + 1][j + 1] = 'left'
+           else:
+               c[i + 1][j + 1] = c[i][j + 1]
+               flag[i + 1][j + 1] = 'up'
+   return c, flag
+
+def a_print(flag,a,i,j):
+   if i == 0 or j == 0:
+       return
+   if flag[i][j] == 'ok':
+       a_print(flag,a,i-1,j-1)
+       print(a[i-1],end='')
+   elif flag[i][j] == 'left':
+       a_print(flag,a,i,j-1)
+   else:
+       a_print(flag,a,i-1,j)
+
+def draw(length: float, fill_color: str, put):
+   turtle.pendown()
+   turtle.begin_fill()
+   turtle.fillcolor(fill_color)
+   for index in range(4):
+       turtle.forward(length)
+       turtle.left(90)
+   turtle.fd(20)
+   turtle.write(put,align = 'center',font = '13')
+   turtle.end_fill()
+   turtle.penup()
+def print_strings(a,b):
+   xx= x
+   yy = y+n
+   j,k = 0.5*n,0.5*n
+   for i in a:
+       j += n
+       turtle.penup()
+       turtle.goto(xx+j,yy)
+       turtle.write(i,align = 'center',font = '18')
+   for i in b:
+       k += n
+       turtle.penup()
+       turtle.goto(xx-5,yy-k)
+       turtle.write(i,align = 'center',font = '18')
+def b_draw():
+   ii = 0
+   jj = 0
+   turtle.speed(20)
+   turtle.pensize(2)
+   turtle.penup()
+   for i in range(len(a)+1):
+       for j in range(len(b)+1):
+           turtle.goto(x + j * n, y - i * n)
+           if flag[i][j] == 'ok' and i>ii and j>jj:
+               draw(n, "green", str(c[i][j]))
+               ii == i
+               jj = j
+           else:
+               draw(n, "blue",str(c[i][j]))
+   turtle.done()
+
+if __name__ == '__main__':
+   a = input("请输入待匹配字符串：")
+   b = input("请输入匹配字符串：")
+   print_strings(b,a)
+   print("两个字符的最长公共子序列为：",end="")
+   c,flag = fun(a,b)
+   a_print(flag, a, len(a), len(b))
+   b_draw()

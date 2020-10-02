@@ -1,0 +1,60 @@
+public class MultipleTest {
+public static void main(String[] args) {
+int[] w = {0,10, 3, 4, 5};
+int[] v = {0,3, 4, 6, 7};
+//第i个物品对应的个数
+int[] mount = {0,5,1,2,1};
+int m = 10;
+int n = 4;
+int[][] maxValue = new int[5][16];
+
+for (int i=1; i<=n; i++) {
+for (int j=0; j<=m; j++) {
+if (i > 1) {
+maxValue[i][j] = maxValue[i-1][j];
+if (j/w[i] >= 1) {
+int maxTmp = 0;  
+//for (int k=1; k<=j/w[i]; k++) {    
+//多重背包与完全背包的区别只在内循环这里
+for (int k=1; k<=j/w[i] && k<=mount[i]; k++) {
+if (maxValue[i-1][j-k*w[i]] + k*v[i] > maxTmp) {
+maxTmp = maxValue[i-1][j-k*w[i]] + k*v[i];
+}
+}
+maxValue[i][j] = max(maxValue[i][j], maxTmp);
+}
+} else {
+if (j/w[1] >= 1) {
+maxValue[1][j] = j/w[1] * v[1];
+}
+}
+}
+}
+
+System.out.println("4个物品在背包承重为10的情况下的组合的最大价值为："+maxValue[n][m]);
+System.out.println();
+
+// 打印背包的不同承重量
+System.out.print("   " + "\t");
+for (int i=0; i<=m; i++) {
+System.out.print(i + "\t");
+}
+System.out.println();
+
+// 打印01背包算法 得到的状态矩阵值
+for (int i=1; i<=n; i++) {
+System.out.print("i="+ i +"\t");
+for (int j=0; j<=m; j++) {
+System.out.print(maxValue[i][j]+"\t");
+}
+System.out.println();
+}
+}
+
+public static int max(int a, int b) {
+if (a > b) {
+return a;
+}
+return b;
+}
+}

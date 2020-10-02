@@ -1,0 +1,18 @@
+减治法约瑟夫环问题
+def josephus(n, k):
+   if k == 1:
+       print('survive:', n)
+       return
+   p = 0
+   people = list(range(1, n + 1))
+   while True:
+       if len(people) == 1:
+           break
+       p = (p + (k - 1)) % len(people)
+       print('kill:', people[p])
+       del people[p]
+   print('survive:', people[0])
+
+
+if __name__ == '__main__':
+   josephus(41, 3)

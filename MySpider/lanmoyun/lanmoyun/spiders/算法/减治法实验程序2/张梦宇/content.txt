@@ -1,0 +1,24 @@
+#通用版约瑟夫斯问题
+a = [1]
+def loop(n,M):
+m = 0
+number = 0
+for i in range(2,n + 1):
+a.append(i)
+i = 0
+while i < n:
+if a[i]>0:
+m = m+1
+if m == M:
+print("-->person %d is out"%a[i])
+a[i] = 0
+m = 0
+number = number + 1
+if number == n:
+break
+if i == len(a) - 1:
+i = -1
+i += 1
+n = int(input("输入数字n："))
+M = int(input("输入数字M："))
+loop(n,M)

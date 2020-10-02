@@ -1,0 +1,20 @@
+def permutations(n):
+   indices = list(range(n))
+   print(indices)
+   while True:
+       low_index = n-1
+       while low_index > 0 and indices[low_index-1] > indices[low_index]:
+           low_index -= 1
+       if low_index == 0:
+           break
+       low_index -= 1
+       high_index = low_index+1
+       while high_index < n and indices[high_index] > indices[low_index]:
+           high_index += 1
+       high_index -= 1
+       indices[low_index], indices[high_index] = indices[
+           high_index], indices[low_index]
+       indices[low_index+1:] = reversed(indices[low_index+1:])
+       print(indices)
+
+permutations(3)

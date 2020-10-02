@@ -1,0 +1,20 @@
+学会用动态规划解决01背包问题:
+w = [0]
+v = [0]
+n=int(input("输入待选择的物品数"))
+for i in range(n):
+  w.append(int(input("输入第%d个物品的重量" % i)))
+  v.append(int(input("输入第%d个物品的价值" % i)))
+bagV = int(input("输入背包的大小"))
+dp = [[0 for i in range(bagV+1)] for i in range(n+1)]
+for i in range(5):
+   for j in range(bagV + 1):
+       if j < w[i]:
+           dp[i][j] = dp[i - 1][j];
+       else:
+           dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - w[i]] + v[i]);
+for i in range(n+1):
+   res = []
+   for j in range(bagV+1):
+       res.append(dp[i][j])
+   print(res)

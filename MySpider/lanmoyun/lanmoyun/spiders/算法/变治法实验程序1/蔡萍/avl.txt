@@ -1,0 +1,396 @@
+
+#include<stdio.h>                     
+#include<stdlib.h>                     
+#include<malloc.h>                   
+        
+#define MAXSIZE 100                    
+#define OK      1                      
+#define ERROR   0    
+typedef struct BSTNode {           
+    ElemType        data;               
+    int             height;             
+    struct BSTNode  *lchild,*rchild;  
+}BSTNode,*BSTree; 
+typedef BSTree Position;                
+        
+typedef struct                          //定义栈的结构体 
+{ 
+    BSTree          *base;              
+    BSTree          *top;               
+    int             stacksize;          
+}Stack; 
+        
+typedef struct                          //定义队列的结构体 
+{ 
+    BSTree          *front;             
+    BSTree          *rear;             
+    int             queuesize;         
+}Queue; 
+        
+Status InsertBST(BSTree &T,ElemType e); //实现树的节点的插入 
+Status PreOrderTraverse(BSTree T);      //实现树的递归前序遍历 
+Status InOrderTraverse(BSTree T);       //实现树的递归中序遍历 
+Status PostOrderTraverse(BSTree T);     //实现树的递归后序遍历 
+Status AllOrderTraverse(BSTree T);      //实现三种递归遍历的打印  
+Status PostsSearch(BSTree T,ElemType e);//实现二叉树中给定关键字的查找 
+Status SwapSubtree(BSTree T);           //实现结点左右子树的交换
+Status DeleteBST(BSTree &T,ElemType e); //实现树的节点的删除 
+int    TreeHeight(BSTree T);            //实现树的高度的求值 
+int    Max(int a,int b);                //实现两个数中求最大值 
+Position MinElemSearch(BSTree T);       //实现最小元素的查找 
+BSTree LeftRotate(BSTree g);            //实现二叉树一次右旋转操作 
+BSTree RightRotate(BSTree g);           //实现二叉树一次左旋转操作 
+BSTree L_RRotate(BSTree g);             //实现一次先左旋转再右旋转操作 
+BSTree R_LRotate(BSTree g);             //实现一次先右旋转再左旋转操作 
+Status CreatStack(Stack &S);            //实现栈的建立 
+Status CreatQueue(Queue &Q);            //实现队列的建立 
+        
+Status InsertBST(BSTree &T,ElemType e)  //实现在二叉树中插入新结点的函数 
+{ 
+    if(T==NULL)                         
+    { 
+        T=(BSTree)malloc(sizeof(BSTNode)); 
+        if(!T)                         
+        return ERROR; 
+        T->data=e; 
+        T->height=0;                   
+        T->lchild=T->rchild=NULL; 
+    } 
+    else if(e<T->data)                   
+    { 
+        InsertBST(T->lchild,e);        
+        if(TreeHeight(T->lchild)-TreeHeight(T->rchild)==2) 
+        {                               
+            if(e<T->lchild->data)      
+            T=LeftRotate(T); 
+            else                       
+            T=L_RRotate(T); 
+        } 
+    } 
+    else if(e>T->data)                  //如果输入的元素比节点数据大，则向右插入 
+    { 
+        InsertBST(T->rchild,e);         //递归调用该函数本身 
+        if(TreeHeight(T->rchild)-TreeHeight(T->lchild)==2) 
+        {                               //判断二叉树是否出现不平衡状态，是则进入该分支 
+            if(e>T->rchild->data)       //若输入的数据比右孩子结点的数据大，则进行左旋转 
+            T=RightRotate(T); 
+            else                        //否则先进行右旋转再左旋转 
+            T=R_LRotate(T); 
+        } 
+    }                                   //如果输入数据与节点数据相等，不需要进行操作 
+    T->height=Max(TreeHeight(T->lchild),TreeHeight(T->rchild))+1; 
+    return OK;                          //最后需要记录节点高度 
+} 
+        
+Status PreOrderTraverse(BSTree T)       //实现递归前序遍历函数 
+{ 
+    if(T!=NULL)                         //判断是否为空树 
+    { 
+        printf("%d ",T->data); 
+        PreOrderTraverse(T->lchild); 
+        PreOrderTraverse(T->rchild); 
+    } 
+    return OK; 
+} 
+        
+Status InOrderTraverse(BSTree T)        //实现递归中序遍历函数 
+{ 
+    if(T!=NULL)                         //判断是否为空树 
+    { 
+        InOrderTraverse(T->lchild); 
+        printf("%d ",T->data); 
+        InOrderTraverse(T->rchild); 
+    } 
+    return OK; 
+} 
+        
+Status PostOrderTraverse(BSTree T)      //实现递归后序遍历函数 
+{ 
+    if(T!=NULL)                         //判断是否为空树 
+    { 
+        PostOrderTraverse(T->lchild); 
+        PostOrderTraverse(T->rchild); 
+        printf("%d ",T->data); 
+    } 
+    return OK; 
+} 
+        
+Status AllOrderTraverse(BSTree T)       //实现各种递归遍历打印函数 
+{ 
+    printf("\n\t递归前序遍历如下：\n\t"); 
+    PreOrderTraverse(T); 
+    printf("\n"); 
+    printf("\n\t递归中序遍历如下：\n\t"); 
+    InOrderTraverse(T); 
+    printf("\n"); 
+    printf("\n\t递归后序遍历如下：\n\t"); 
+    PostOrderTraverse(T); 
+    printf("\n"); 
+    return OK; 
+}   
+Status PostsSearch(BSTree T,ElemType e) //实现在二叉树中查找给定关键字函数 
+{ 
+    if(T!=NULL)                         //判断二叉树是否为空 
+    { 
+        if(e==T->data)                  //判断查找值是否与节点数据相等 
+        return OK; 
+        else if(e<T->data) 
+        return PostsSearch(T->lchild,e);//查找值小于节点数据，则进入左子树查找 
+        else
+        return PostsSearch(T->rchild,e);//查找值大于节点数据，则进入右子树查找 
+    } 
+    else
+    return ERROR; 
+} 
+        
+Status SwapSubtree(BSTree T)            //实现交换各结点的左右子树函数 
+{ 
+    BSTree temp;                        //定义临时变量 
+    if(T!=NULL)                         //判断二叉树是否为空 
+    { 
+        temp=T->lchild; 
+        T->lchild=T->rchild; 
+        T->rchild=temp; 
+        SwapSubtree(T->lchild); 
+        SwapSubtree(T->rchild); 
+    } 
+    return OK; 
+} 
+        
+int TreeDepth(BSTree T)                 //实现求二叉树的深度函数 
+{ 
+    int deep,ldeep=0,rdeep=0; 
+    if(T!=NULL)                         //判断二叉树是否为空 
+    { 
+        ldeep=TreeDepth(T->lchild); 
+        rdeep=TreeDepth(T->rchild); 
+        deep=Max(ldeep,rdeep)+1; 
+    } 
+    else return 0; 
+    return deep; 
+} 
+        
+int TotalNodeNum(BSTree T)              //实现统计总的结点数函数 
+{ 
+    int sum=0,lsum=0,rsum=0; 
+    if(T!=NULL)                         //判断二叉树是否为空 
+    { 
+        lsum=TotalNodeNum(T->lchild); 
+        rsum=TotalNodeNum(T->rchild); 
+        sum=lsum+rsum+1; 
+        return sum; 
+    } 
+    else return 0; 
+} 
+        
+int LeafNodeNum(BSTree T)               //实现统计叶子结点数函数 
+{ 
+    int dot=0,ldot=0,rdot=0; 
+    if(T!=NULL)                         //判断二叉树是否为空 
+    { 
+        if(T->lchild==NULL&&T->rchild==NULL)    //判断是否只含有一个节点 
+        dot=1; 
+        else
+        { 
+            ldot=LeafNodeNum(T->lchild); 
+            rdot=LeafNodeNum(T->rchild); 
+            dot=ldot+rdot; 
+        } 
+    } 
+    else return 0; 
+    return dot; 
+} 
+        
+Status DeleteBST(BSTree &T,ElemType e)  //实现在二叉树中删除某结点的函数 
+{ 
+    Position temp;                       
+    if(T==NULL)                      
+    return ERROR; 
+    else if(e<T->data)                  
+    return DeleteBST(T->lchild,e);      
+    else if(e>T->data)                   
+    return DeleteBST(T->rchild,e);     
+    else                                
+    { 
+        if(T->lchild!=NULL&&T->rchild!=NULL) 
+        {                                  
+            temp=MinElemSearch(T->rchild);   
+            T->data=temp->data;              
+            DeleteBST(T->rchild,T->data);    
+        } 
+        else                            
+        { 
+            temp=T; 
+            if(T->lchild==NULL)          
+            T=T->rchild; 
+            else if(T->rchild==NULL)   
+            T=T->lchild; 
+            free(temp); 
+        } 
+        return OK; 
+    } 
+} 
+        
+int TreeHeight(BSTree T)                //实现求树的高度的函数 
+{ 
+    if(T==NULL)                         
+    return -1; 
+    else
+    return T->height; 
+} 
+        
+int Max(int a,int b)                    //实现求较大值的函数 
+{ 
+    return a>b?a:b;                     //三元运算符，哪个值大返回哪个 
+} 
+        
+Position MinElemSearch(BSTree T)        //实现查找最小元素的函数 
+{ 
+    if(T==NULL)                         //判断二叉树是否为空 
+    return NULL; 
+    else if(T->lchild==NULL)            //判断是否为没有子树的情况 
+    return T; 
+    else
+    return MinElemSearch(T->lchild); 
+} 
+    
+BSTree LeftRotate(BSTree g)             //实现树的向右旋转函数 
+{ 
+    BSTree temp; 
+    temp=g->lchild; 
+    g->lchild=temp->rchild; 
+    temp->rchild=g; 
+    temp->height=Max(TreeHeight(temp->lchild),g->height)+1; 
+    g->height=Max(TreeHeight(g->lchild),TreeHeight(g->rchild))+1; 
+    return temp;                        //返回新的根节点 
+}      
+BSTree RightRotate(BSTree g)            //实现树的向左旋转函数 
+{ 
+    BSTree temp; 
+    temp=g->rchild; 
+    g->rchild=temp->lchild; 
+    temp->lchild=g; 
+    g->height=Max(TreeHeight(g->lchild),TreeHeight(g->rchild))+1; 
+    temp->height=Max(TreeHeight(g->rchild),g->height)+1; 
+    return temp;                        //返回新的根节点 
+} 
+
+BSTree L_RRotate(BSTree g)              //实现树的向左旋转再向右旋转函数 
+{ 
+    g->lchild=RightRotate(g->lchild);   //先左旋转 
+    return LeftRotate(g);               //再右旋转 
+} 
+   
+BSTree R_LRotate(BSTree g)              //实现树的向右旋转再向左旋转函数 
+{ 
+    g->rchild=LeftRotate(g->rchild);    //先右旋转 
+    return RightRotate(g);              //再左旋转 
+} 
+        
+Status CreatStack(Stack &S)             //实现栈的建立函数 
+{ 
+    S.base=(BSTree*)malloc(MAXSIZE*sizeof(BSTree)); 
+    if(!S.base)                         //判断是否建立失败 
+    return ERROR; 
+    S.top=S.base; 
+    S.stacksize=MAXSIZE; 
+    return OK; 
+} 
+        
+Status CreatQueue(Queue &Q)             //实现队列的建立函数 
+{ 
+    Q.front=(BSTree*)malloc(MAXSIZE*sizeof(BSTree)); 
+    if(!Q.front)                        
+    return ERROR; 
+    Q.rear=Q.front; 
+    Q.queuesize=MAXSIZE; 
+    return OK; 
+} 
+        
+int main()                              //主函数 
+{ 
+    ElemType k,e,d; 
+    int     i,n,ch; 
+    char    c; 
+    BSTree  T=NULL; 
+    Stack   S; 
+    Queue   Q; 
+    printf("\n\t运行本程序需要先构造一个二叉树！\n"); 
+    printf("\n\t请输入需要插入的元素个数："); 
+    scanf("%d",&n); 
+    if(n==0) 
+    { 
+        printf("\n\t成功创建一个空二叉树！",n); 
+        c=getchar();                    
+        c=getchar();                     
+    } 
+    else
+    { 
+        printf("\n\t请输入要插入的%d个元素：",n); 
+        for(i=0;i<n;i++)                 
+        { 
+            scanf("%d",&e); 
+            InsertBST(T,e);            
+        } 
+        printf("\n\t成功创建该二叉树！",n); 
+        c=getchar();                    
+        c=getchar();                   
+    } 
+        
+    while(1)                            
+    { 
+        printf("实现AVL的各种算法  \n"); 
+        printf("请从下面的操作中选择一项  \n");   
+        printf("1.在AVL中插入新结点\n"); 
+        printf("2.实现递归的前序、中序、后序遍历AVL \n");
+        printf("3.在AVL中查找给定关键字\n"); 
+        printf("4.在AVL中删除某结点\n"); 
+        printf("0.退出本程序\n"); 
+        printf("\n\t你的选择是："); 
+        scanf("%d",&ch); 
+        switch(ch)                      //进入选择 
+        { 
+            case 1:                  
+            printf("\n\t请输入你想要插入的元素："); 
+            scanf("%d",&e); 
+            if(InsertBST(T,e)==OK) 
+            printf("\n\t成功插入元素%d！\n",e); 
+            else
+            printf("\n\t插入元素%d失败！\n",e); 
+            break; 
+            case 2:                     //调用打印各种递归遍历的函数 
+            printf("\n\t平衡二叉树的各种递归遍历如下：\n"); 
+            AllOrderTraverse(T); 
+            break;
+            case 3:                     //调用关键字查找的函数 
+            printf("\n\t请输入你想要查找的关键字："); 
+            scanf("%d",&k); 
+            if(PostsSearch(T,k)==OK)    //返回查找的值，成功返回1，失败则返回0 
+            printf("\n\t成功找到关键字%d！\n",k); 
+            else
+            printf("\n\t没有找到关键字%d！\n",k); 
+            break;
+            case 4:                     //调用删除结点的函数 
+            printf("\n\t请输入你想要删除的元素："); 
+            scanf("%d",&d); 
+            if(DeleteBST(T,d)==OK) 
+            printf("\n\t成功删除元素%d！\n",d); 
+            else
+            printf("\n\t删除失败，没有找到元素%d！\n",d); 
+            break; 
+            case 0:                     //输入0，则推出本程序 
+            return 0; 
+            break; 
+            default:                    //如果输入非法字符，则进入该分支 
+            c=getchar();                //用来吸收多余字符 
+            printf("\n\a\t输入错误，请重新输入！\n"); 
+            break; 
+        } 
+        scanf("%c",&c);                 //用来吸收多余字符 
+        printf("\n\t按任意键继续，或按“n”退出！你的选择是："); 
+        scanf("%c",&c); 
+        if(c=='n') 
+        return 0; 
+    } 
+    return 0; 
+}

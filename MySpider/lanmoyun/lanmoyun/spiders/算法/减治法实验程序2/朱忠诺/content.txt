@@ -1,0 +1,22 @@
+import itertools
+
+
+class Solution:
+   def __init__(self, nums):
+       self.result = self.subsets(nums)
+
+   def subsets(self, nums):
+       result = []
+       for i in range(len(nums) + 1):
+           A = list(itertools.combinations(nums, i))
+           for j in A:
+               result.append(list(j))
+
+       return result
+
+
+if __name__ == '__main__':
+   nums = [1,2,3,4,5]
+   solution = Solution(nums)
+   List = solution.result
+   print(List)

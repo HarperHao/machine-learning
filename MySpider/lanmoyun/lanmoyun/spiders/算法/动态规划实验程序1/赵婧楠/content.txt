@@ -1,0 +1,29 @@
+01背包问题解决过程
+在前N件物品中选出若干件物品放在背包中，要求前N件物品中选取若干件物品放入所剩空间为W 的背包中所能获得的额最大价值
+选取过程包括放和不放两个决策
+因此可以写出动态转移方程
+第一，包的容量比该商品体积小，装不下，此时的价值与前i-1个的价值是一样的，即B(i,j)=B(i-1,j)；
+第二，还有足够的容量可以装该商品，但装了也不一定达到当前最优价值，所以在装与不装之间选择最优的一个，即B(i,j)=max｛ B(i-1,j)，B(i-1,j-w(i))+v(i) ｝
+
+def packge(v,w,max_size):
+   n=len(w)
+   B=[[0]*(max_size+1) for _ in range(n+1)]
+   List=[]
+   for i in range(1,n+1):
+       for j in range(1,max_size+1):
+           if w[i-1]<=max_size:
+               B[i][j]=max(B[i-1][j],v[i-1]+B[i-1][max_size-w[i-1]])
+           else:
+               B[i][j]=B[i-1][j]
+   remain=max_size
+
+   for i in range(n,0,-1):
+       if B[i][remain]>B[i-1][remain]:
+           List.append(i-1)
+           remain -=w[i-1]
+   return B[-1][-1],List
+if __name__=='__main__':
+   v=[3,4,5,8,10]
+   w=[2,3,4,5,9]
+   max_size=20
+   print(packge(v,w,max_size))

@@ -1,0 +1,83 @@
+import numpy as np
+
+
+def LU():
+   for i in range(0, row):
+       L[i][i] = 1
+       for j in range(0, row):
+           U[0][j] = A[0][j]
+           if i != 0:
+               L[i][0] = A[i][0]/U[0][0]
+
+   for i in range(1, row):
+       for j in range(i, row):
+           t1 = 0
+           for k in range(0, i):
+               t1 = t1 + L[i][k]*U[k][j]
+           U[i][j] = A[i][j] - t1
+
+       for j in range(i+1, row):
+           t2 = 0
+           for k in range(0, i):
+               t2 = t2 + L[j][k]*U[k][i]
+           L[j][i] = (A[j][i] - t2)/U[i][i]
+   print("Matrix L is:")
+   print(L)
+   print("Matrix U is:")
+   print(U)
+
+
+def inverse():
+   for i in range(0, row):
+       u[i][i] = 1/U[i][i]
+       for j in range(i-1, -1, -1):
+           s = 0
+           for k in range(j+1, i+1):
+               s = s + U[j][k]*u[k][i]
+           u[j][i] = -(s/U[j][j])
+
+   for i in range(0, row):
+       l[i][i] = 1
+       for j in range(i+1, row):
+           for k in range(i, j):
+               l[j][i] = l[j][i] - L[j][k]*l[k][i]
+   print("the inverse matrix of Matrix U is:")
+   print(u)
+   print("the inverse matrix of Matrix L is:")
+   print(l)
+   for i in range(0, row):
+       for j in range(0, row):
+           for k in range(0, row):
+               a[i][j] += u[i][k]*l[k][j] # AµÄÄæ¾ØÕó=UµÄÄæ¾ØÕó*LµÄÄæ¾ØÕó
+   print("the result of inverse(U)*inverse(L) is")
+   print(a)
+
+
+def verify():
+   A1 = np.zeros((3, 3))
+   print("the result of L*U is:")
+   for i in range(0, row):
+       for j in range(0, row):
+           for k in range(0, row):
+               A1[i][j] += L[i][k]*U[k][j]
+   print(A1)
+
+
+if __name__ == '__main__':
+   row = 3
+   A = np.array([[2, -1, 1],
+                 [4, 1, -1],
+                 [1, 1, 1]])
+   print("Matrix A is:")
+   print(A)
+   print("the inverse A is:")
+   a1 = np.linalg.inv(A)  #numpyÄ£¿éÇóAµÄÄæ¾ØÕó
+   print(a1)
+   L = np.zeros((3, 3))
+   U = np.zeros((3, 3))
+   l = np.zeros((3, 3))
+   u = np.zeros((3, 3))
+   a = np.zeros((3, 3))
+   LU()
+   inverse()
+   verify()

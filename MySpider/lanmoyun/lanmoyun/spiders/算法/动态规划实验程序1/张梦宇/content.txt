@@ -1,0 +1,36 @@
+#动态规划 0-1背包问题
+import numpy as np
+
+class article:
+weight = 0
+value = 0
+def __init__(self, v, w):
+self.value = v
+self.weight = w
+
+class Package:
+capacity = 0
+def __init__(self, c):
+self.capacity = c
+def bag_0_1(self, art):
+num = len(art)
+art.insert(0, article(0, 0))
+bag=np.zeros((num + 1, self.capacity + 1),dtype = np.int32)
+for i in range(1, num + 1):
+for j in range(1, self.capacity + 1):
+if art[i].weight <= j:
+bag[i][j]=max(bag[i - 1][j - art[i].weight] + art[i].value,bag[i - 1][j])
+else:
+bag[i][j]=bag[i - 1][j]
+print("背包数组为：")
+print(bag)
+return bag[-1,-1]
+
+art = []
+weight=[2,1,3,2]
+value=[12,10,20,15]
+for i in range(len(weight)):
+art.append(article(value[i], weight[i]))
+n = int(input("请输入背包容量："))
+bag1 = Package(n)
+print("最大价值为：", bag1.bag_0_1(art))

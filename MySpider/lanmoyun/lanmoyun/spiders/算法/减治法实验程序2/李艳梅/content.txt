@@ -1,0 +1,49 @@
+#include<iostream>
+using namespace std;
+#define M 99
+int a[M];
+void select(int left,int right,int n)
+{
+int temp,t;
+int i=left,j=right;
+temp=a[left];
+while(i!=j)
+{
+while(a[j]>temp&&i<j)
+j--;
+if(i<j)
+{
+a[i]=a[j];
+i++;
+}
+while(a[i]<temp&&i<j)
+i++;
+if(i<j)
+{
+a[j]=a[i];
+j--;
+}
+}
+a[i]=temp;
+if(i==n)
+return; //如果跟需要差找的位数相等就是需要查询的
+else if(i<n)  //如果下于需要查询的位数，则从下一个开始查询
+select(i+1,right,n);
+else    //如果大于查询的位数，则从left开始到right的上一个开始
+select(left,i-1,n);
+}
+int main()
+{
+int n,m;
+cout<<"输入数组大小：";
+cin>>n; cout<<"输入数组："<<endl;
+int temp;
+for(int i=1;i<=n;i++)
+cin>>a[i];
+cout<<"输入选择的数（第几小的数）：";
+cin>>m;
+select(1,n,m);   //传入开始的数和结束的数，需要寻找的数 跟快速排序类似
+temp=a[m];
+cout<<"中值是："<<temp<<endl;
+return 0;
+}

@@ -1,0 +1,72 @@
+#矩阵  UL分解求逆
+def create():
+   a = []
+   n = (int)(input('矩阵规模：'))
+   for i in range(n):
+       x = []
+       x = input('输入第%d行:'%(i+1)).split()
+       for j in range(n):
+          x[j] = (int)(x[j])
+       a.append(x)
+   return a,n
+def LU(x,n):
+   for i in range(n-1):
+       for j in range(i+1,n):
+           z = x[j][i]/x[i][i]
+           x[j][i] = z
+           for k in range(i+1,n):
+               x[j][k] = x[j][k] - z*x[i][k]
+   return x
+def solveL(x,n):
+   for i in range(n):
+       d = 0
+       if i == 0:
+           continue
+       else:
+           for j in range(i):
+               d = d + x[j][n] * x[i][j]
+           x[i][n] = x[i][n]-d
+   return x
+def solveU(x,n):
+   for i in range(n-1,-1,-1):
+       d = 0
+       if i == n-1:
+           x[i][n] = x[i][n]/x[i][i]
+       else:
+           for j in range(i+1,n):
+               d = d + x[j][n] * x[i][j]
+           x[i][n] = (x[i][n]-d)/x[i][i]
+   return x
+def create1(m,n):
+   x = []
+   for i in range(n):
+       ls = []
+       ls.extend(m)
+       for j in range(n):
+           if j == i:
+               ls[j] = ls[j] + [1]
+           else:
+               ls[j] = ls[j] + [0]
+       x.append(ls)
+   return x
+
+if __name__ == '__main__':
+   m, n = create()
+   for i in  m:
+       print(i)
+   m0 = create1(m, n)
+   for i in  m0:
+       print(i)
+   d = 0
+   for x in m0:
+       x = LU(x, n)
+       x = solveL(x, n)
+       x = solveU(x, n)
+       for i in range(n):
+           m[i][d] = x[i][n]
+       d += 1
+   print('逆矩阵：')
+   for u in m:
+       for i in u:
+           print('%8.3f' % i, end='')
+       print()

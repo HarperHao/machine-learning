@@ -1,0 +1,51 @@
+队形安排问题
+#include<iostream>
+using namespace std;
+
+//计算以list[i]为结尾的递增数组的最大长度length[i]
+void getLength(int n, double *list, int *length)
+{
+length[0] = 0;
+for (int i = 1; i <= n; i++)
+{
+length[i] = 0;
+for(int j=0;j<i;j++)if(list[i]>list[j] && length[i]<length[j]+1)length[i] = length[j] + 1;
+}
+}
+
+void change(double *list, int n) //把数组反过来
+{
+for (int i = 1, j = n; i < j; i++, j--)
+{
+double s = list[i] + list[j];
+list[i] = s - list[i];
+list[j] = s - list[j];
+}
+}
+
+int main()
+{
+int n;
+cout << "输入n和n个正数\n";
+cin >> n;
+double *list = new double[n + 1];
+list[0] = 0;
+for (int i = 1; i <= n; i++)cin >> list[i];
+int *length1 = new int[n + 1], *length2 = new int[n + 1];
+getLength(n, list, length1);
+change(list, n);
+getLength(n, list, length2);
+int lengthmax = 0; //最大长度
+int index = 0; //最大长度对应的最大数的下标
+for (int i = 1; i <= n; i++)
+{
+if (length1[i] + length2[n + 1 - i] > lengthmax)
+{
+lengthmax = length1[i] + length2[n + 1 - i];
+index = i;
+}
+}
+cout << "合唱队形最大长度为" << lengthmax-1 << "\n最高者是第" <<index<<"个，高"<< list[index+1];
+system("pause>nul");
+return 0;
+}

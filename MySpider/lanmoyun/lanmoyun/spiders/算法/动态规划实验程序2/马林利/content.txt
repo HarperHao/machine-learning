@@ -1,0 +1,96 @@
+0/1背包问题
+#include<iostream>
+#include<stack>
+#include<vector>
+using namespace std;
+stack<int> KnapSack(int c, vector<int> w, vector<int> v, int& max_m)
+{
+   vector<vector <int> > m(w.size(), vector<int>(c + 1));
+   stack<int> res;
+   int i, j;
+   max_m = 0;
+   for (j = 0; j < c + 1; j++) //对于m[n][j]，
+       if (j < w[w.size() - 1])
+           m[w.size() - 1][j] = 0;  //当j<w[n]时，物品n不能放入背包中，此时背包的价值为0。
+       else
+           m[w.size() - 1][j] = v[v.size() - 1];  //当j>=w[n]时，物品n可以放入背包，此时背包的价值为v[n]
+
+   for (i = w.size() - 2; i >= 0; i--) //对于m[i][j]，
+   {
+       for (j = 0; j < c + 1; j++)
+           if (j < w[i])          //当j<w[i]时，物品i不能放入背包中，此时背包的价值为m[i+1][j]。
+               m[i][j] = m[i + 1][j];
+           else                //当j>=w[i]时，物品n可以放入背包
+           {
+               int m1 = m[i + 1][j];  //当物品i不放入背包时，能达到的最大价值为m[i+1][j]
+               int m2 = m[i + 1][j - w[i]] + v[i];  //当物品i放入背包后，对于物品i+1到n，能达到的最大价值为m[i+1][j-w[i]]+v[i]
+               m[i][j] = m1 > m2 ? m1 : m2;         //两者取其大者        
+           }
+   }
+   cout << "最优值矩阵:"<<endl;
+   for(i=0;i<w.size();i++)
+   {
+      for(j=1;j<c+1;j++)
+         cout<<m[i][j]<<"    ";
+      cout <<endl;
+   }
+   cout <<endl;
+       
+   j = c;
+   for (i = 0; i < w.size() - 1; i++)
+   {
+       if (m[i][j] != m[i + 1][j])
+       {
+           res.push(i + 1);
+           max_m += v[i];
+           j = j - w[i];
+       }
+   }
+   if (m[w.size() - 1][j] != 0)
+   {
+       res.push(w.size());
+       max_m += v[w.size() - 1];
+   }
+
+   return res;
+}
+int main()
+{
+   vector<int> weight;
+   vector<int> value;
+   stack<int>  result;
+   int max_weight;
+   int tmp;
+   int result_m = 0;
+
+   cout << "输入背包最大容量" << endl;
+   cin >> max_weight;
+   cout << "输入物品重量,以0结束" << endl;
+   while (1)
+   {
+       cin >> tmp;
+       if (tmp != 0)
+           weight.push_back(tmp);
+       else
+           break;
+   }
+   cout << "输入物品权重,以0结束" << endl;
+   while (1)
+   {
+       cin >> tmp;
+       if (tmp != 0)
+           value.push_back(tmp);
+       else
+           break;
+   }
+   result = KnapSack(max_weight, weight, value, result_m);
+   cout << "放入背包的物品为：" << endl;
+   while (!result.empty())
+   {
+       cout <<"第"<< result.top() << "个物品，重量为： "<< weight[result.top()-1]<<endl;
+       result.pop();
+   }
+   cout << endl;
+   cout << "背包最大价值为：" << result_m << endl;
+   return 0;
+}

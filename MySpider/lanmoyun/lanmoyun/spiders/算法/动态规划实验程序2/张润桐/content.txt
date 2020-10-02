@@ -1,0 +1,49 @@
+import numpy as np
+
+
+def fun(n, notfull_w, w, v):
+   a = np.array([[0] * (notfull_w + 1)] * (n + 1))
+   for i in range(1, n + 1):
+       for j in range(1, notfull_w + 1):
+           if w[i - 1] > j:
+               a[i, j] = a[i - 1, j]
+           else:
+               a[i, j] = max(a[i - 1, j], v[i - 1] + a[i - 1, j - w[i - 1]])
+   print('最大价值为：' + str(a[n, notfull_w]))
+   Maxv(v, n, a[n, notfull_w])
+
+
+def Maxv(v, n, v1):
+   a = np.array([[True] * (v1 + 1)] * (n + 1))
+   for i in range(0, n + 1):
+       a[i][0] = True
+   for i in range(1, v1 + 1):
+       a[0][i] = False
+
+   for i in range(1, n + 1):
+       for j in range(1, v1 + 1):
+           if v[i - 1] > j:
+               a[i, j] = a[i - 1, j]
+           else:
+               a[i, j] = a[i - 1, j] or a[i - 1, j - v[i - 1]]
+
+   if a[n, v1]:
+       i = n
+       result = []
+       while i >= 0:
+           if a[i, v1] and not a[i - 1, v1]:
+               result.append(v[i - 1])
+               v1 -= v[i - 1]
+           if v1 == 0:
+               break
+           i -= 1
+       print(result)
+   else:
+       print("Error")
+
+
+if __name__ == "__main__":
+   weight = [1, 6, 5, 3, 2, 4]
+   value = [2, 5, 4, 3, 1, 9]
+   notfull_w = int(input("请输入最大容量："))
+   fun(len(weight), notfull_w, weight, value)

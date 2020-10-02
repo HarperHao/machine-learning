@@ -1,0 +1,58 @@
+import wx
+class max_increase_seq(wx.App):
+   def __init__(self):
+       wx.App.__init__(self)
+       self.window = wx.Frame(parent=None, pos=(500,500),size=(500, 300), title="求最长递增子序列")
+       self.text=wx.TextCtrl(self.window,size=(500, 100)) #文本
+       self.result=wx.TextCtrl(self.window,style=wx.TE_READONLY | wx.TE_MULTILINE,size=(500, 150),pos=(0,150)) #文本
+       self.button=wx.Button(self.window,label="生成",pos=(100,110),size=(40,30)) #按钮
+       self.button1=wx.Button(self.window,label="刷新",pos=(200,110),size=(40,30)) #按钮
+       self.button2=wx.Button(self.window,label="退出",pos=(300,110),size=(40,30)) #按钮
+       self.button.Bind(wx.EVT_BUTTON,self.__get)
+       self.button1.Bind(wx.EVT_BUTTON,self.__reFresh)
+       self.button2.Bind(wx.EVT_BUTTON,self.__exit)
+       self.window.Show()
+   def __reFresh(self,event):
+       self.__exit(event)
+       self.__init__()
+   def __exit(self,event):
+       self.window.Close()
+   def __get(self,event):
+       s=self.text.GetValue()
+       L=s.split(" ")
+       self.__str2int(L)
+       temp,num=self.__max_seq(L)
+       self.result.write("最长为："+str(num)+"\n")
+       self.result.write("序列为（其中一种）："+str(temp))
+
+   def __max_seq(self,L):
+       num, bt = 0, 0
+       res, temp = [], []
+       for i in range(0, len(L)):
+           temp.append([])
+           res.append(0)
+
+       temp[0].append(L[0])
+       res[0] = 1
+       for i in range(1, len(L)):
+           res[i] = 1
+           temp[i].append(L[i])
+           for j in range(0, i):
+               if L[j] <= L[i] and res[i] <= (res[j] + 1):
+                   temp[i] = []
+                   for k in temp[j]:
+                       temp[i].append(k)
+                   temp[i].append(L[i])
+                   res[i] = res[j] + 1
+                   if num < res[i]:
+                       bt = i
+                       num = res[i]
+       return temp[bt], num
+
+   def __str2int(self,L):
+       for i in range(0,len(L)):
+           L[i]=int(L[i])
+
+if __name__=='__main__':
+   app=max_increase_seq()
+   app.MainLoop()

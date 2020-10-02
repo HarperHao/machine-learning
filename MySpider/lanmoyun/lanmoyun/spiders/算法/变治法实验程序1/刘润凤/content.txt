@@ -1,0 +1,94 @@
+实验名称  变治法-平衡查找树
+实验目的  学习变治法的原理和方法，并熟练运用。
+              掌握平衡查找树的实现。
+实验题目  实现平衡查找树。
+实验源代码
+
+class AVLnode:
+   def __init__(self, d, h=0, l=None, r=None):
+       self.data = d
+       self.lchild, self.rchild = l, r  # 左右孩子
+       self.tree_high = h  # 以该结点为根的树的高度，单结点树高度为1
+# 递归地把结点值和高度写入数组对应的位置
+def __setL(p, L, i):
+   L[i] = (p.data, p.tree_high)
+   if p.lchild is not None:
+       __setL(p.lchild, L, i * 2)
+   if p.rchild is not None:
+       __setL(p.rchild, L, i * 2 + 1)
+# 按满编二叉树的形状打印 以p为根的树，空的叶子结点用（-1，-1）表示
+def print1(p):
+   print("(结点值，高度)")
+   L = [(-1, -1)] * (2 ** p.tree_high)  # 初始化数组为全空结点，数组长度不会超过高为tree_high满编二叉树的所有结点个数
+   __setL(p, L, 1)
+   l = 1
+   for i in range(1, 2 ** p.tree_high):  # 树的跟结点从对应数组从1开始
+       if i == 2 ** (l - 1):
+           l += 1
+           print('\n', end='')
+       print("(%d,%d) " % (L[i][0], L[i][1]), end='')
+# 中序遍历二叉搜索树，即按从小到大打印排序
+def inOrder(p):
+   if p is None:
+       return
+   inOrder(p.lchild)
+   print("(%d,%d)" % (p.data, p.tree_high), end='')
+   inOrder(p.rchild)
+
+def height(p):
+   if p is None:        return 0
+   else:        return p.tree_high
+# 单次右旋
+# 传入树的根结点p，
+# 返回旋转后的树的根结点
+def R_Rotate(p):
+   lc = p.lchild
+   p.lchild = lc.rchild
+   lc.rchild = p
+   lc.tree_high = max(height(lc.lchild), height(p)) + 1
+   p.tree_high = max(height(p.lchild), height(p.rchild)) + 1
+   return lc
+# 单次左旋
+# 传入树的根结点p，
+# 返回旋转后的树的根结点
+def L_Rotate(p):
+   rc = p.rchild
+   p.rchild = rc.lchild
+   rc.lchild = p
+   rc.tree_high = max(height(rc.rchild), height(p)) + 1
+   p.tree_high = max(height(p.lchild), height(p.rchild)) + 1
+   return rc
+# 先左旋再右旋
+def LR_Rotate(p):
+   p.lchild = L_Rotate(p.lchild)
+   return R_Rotate(p)
+# 先右旋再左旋
+def RL_Rotate(p):
+   p.rchild = R_Rotate(p.rchild)
+   return L_Rotate(p)
+# 往根结点为p的AVL树中插入元素e
+def InsertAVL(p, e):
+   if p is None:
+       p = AVLnode(e, 1, None, None)
+   elif e < p.data:  # 元素e要往左孩子子树中找位置插入
+       p.lchild = InsertAVL(p.lchild, e)
+       if height(p.lchild) - height(p.rchild) == 2:  # 元素e插入成功后如果左子树比右子树高2
+           if e < p.lchild.data:                p = R_Rotate(p)
+           else:                p = LR_Rotate(p)
+   elif e > p.data:
+       p.rchild = InsertAVL(p.rchild, e)
+       if height(p.rchild) - height(p.lchild) == 2:
+           if e > p.rchild.data:
+               p = L_Rotate(p)
+           else:
+               p = RL_Rotate(p)
+   p.tree_high = max(height(p.lchild), height(p.rchild)) + 1
+   return p
+def main():
+   a = [26, 13, 60, 45, 80, 90]
+   t = AVLnode(45, 1, None, None)
+   for x in a:        t = InsertAVL(t, x)
+   print1(t)
+   print("\n---")
+   inOrder(t)  # 输出从小到大排序结果
+main()

@@ -1,0 +1,51 @@
+1. 0-1背包问题
+//在前n件物品中，选取若干件物品放入所剩空间为w0的背包中，第n件物品放或者不放，由此可以写出动态转移方程，用f[I,j]表示在前i件物品中选择若干件放在所剩空间为j的背包里所能获得最大价值是:f[i,j]=max{f[i-1.j-wi]+pi (j>=wi), f[i-1,j]},可以自底向上地得出在前m件物品中取出若干件放进背包能获得的最大价值，也就是f[m,w]令f(i,j)表示用前i个物体装出重量为j的组合时的最大价值。
+import java.util.Scanner;
+public class Bag {
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+System.out.println("输入背包的容量：");
+int w0=in.nextInt();
+System.out.println("输入物品的个数：");
+int n=in.nextInt();
+int[] w=new int[n];
+int[] p=new int[n];
+for(int i=1;i<w.length+1;i++){
+System.out.println("输入第"+i+"个物品的重量：");
+  w[i-1]=in.nextInt();
+  System.out.println("价值：");
+  p[i-1]=in.nextInt();
+}
+       System.out.println("打印动态规划表：");
+       int a[][] = Slove(w0, n, w, p);
+       for (int i = 1; i <=n; i++) {
+           for (int j = 1; j <=w0; j++) {
+               System.out.print(a[i][j]+"\t");
+               if(j==w0){
+                   System.out.println();
+               }
+           }
+       }
+       System.out.println("背包能够容纳的最大价值为："+a[n][w0]);
+   }
+   public static int[][] Slove(int w0, int n, int[] w, int[] v) {
+       int a[][] = new int[n + 1][w0 + 1];
+       for (int i = 0; i < n + 1; i++)
+           a[i][0] = 0;
+       for (int j = 0; j < w0 + 1; j++)
+           a[0][j] = 0;
+       for (int i = 1; i < n + 1; i++) {
+           for (int j = 1; j < w0 + 1; j++) {
+               if (w[i - 1] <= j) {
+                   if (a[i - 1][j] < (a[i - 1][j - w[i - 1]] + v[i - 1]))
+                       a[i][j] = a[i - 1][j - w[i - 1]] + v[i - 1];
+                   else
+                       a[i][j] = a[i - 1][j];
+               }
+else
+                   a[i][j] = a[i - 1][j];
+           }
+       }
+       return a;
+   }
+}

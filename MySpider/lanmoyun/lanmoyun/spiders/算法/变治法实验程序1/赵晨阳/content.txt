@@ -1,0 +1,70 @@
+def gaussian_elimination(data):
+   i = 0;
+   j = 0;
+   line_size = len(data)
+   while j < line_size - 1:
+       line = data[j]
+       temp = line[j]
+       templete = []
+       for x in line:
+           x = x / temp
+           templete.append(x)
+       data[j] = templete
+       flag = j + 1
+       while flag < line_size:
+           templete1 = []
+           temp1 = data[flag][j]
+           i = 0
+           for x1 in data[flag]:
+               if x1 != 0:
+                   x1 = x1 - (temp1 * templete[i])
+                   templete1.append(x1)
+               else:
+                   templete1.append(0)
+               i += 1
+           data[flag] = templete1
+           flag += 1
+       j += 1
+   parameters = []
+   i = line_size - 1
+   flag_j = 0
+   rol_size = len(data[0])
+   flag_rol = rol_size - 2
+   while i >= 0:
+       operate_line = data[i]
+       if i == line_size - 1:
+           parameter = operate_line[rol_size - 1] / operate_line[flag_rol]
+           parameters.append(parameter)
+       else:
+           flag_j = (rol_size - flag_rol - 2)
+           temp2 = operate_line[rol_size - 1]
+           result_flag = 0
+           while flag_j > 0:
+               temp2 -= operate_line[flag_rol + flag_j] * parameters[result_flag]
+               result_flag += 1
+               flag_j -= 1
+           parameter = temp2 / operate_line[flag_rol]
+           parameters.append(parameter)
+       flag_rol -= 1
+       i -= 1
+   return parameters
+paremeters = [[2, 3, 1, 6], [1,-1, 2, -1], [1, 2, -1, 5]]
+results =gaussian_elimination(paremeters)
+print(" x1=" + str(results[2]) + "\n x2=" + str(results[1]) + "\n x3=" + str(results[0]))
+
+
+def panduan(n):
+   for i in  range (n-1):
+
+       if (A[i] == A[i + 1]) :
+           return False
+
+   return True
+A =[]
+for i in range(6):
+   num= int(input("input a number please: "))
+   A.append(num)
+A.sort()
+print(A)
+n = len(A)
+print(panduan(n))

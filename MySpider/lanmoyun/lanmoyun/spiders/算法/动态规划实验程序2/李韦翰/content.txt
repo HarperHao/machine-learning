@@ -1,0 +1,36 @@
+给定一个矩阵m，从左上角开始每次只能向右走或者向下走，最后达到右下角的位置，路径中所有数字累加起来就是路径和，返回所有路径的最小路径和
+package homeworks;
+
+public class ShortestPath {
+public static int findShortestPath(int[][] arr) {
+int[][] dp = new int[arr.length][arr[0].length];
+dp[0][0] = arr[0][0];
+for (int i = 1; i < arr.length; i++) {
+dp[i][0] = dp[i - 1][0] + arr[i][0];
+}
+for (int i = 1; i < arr[0].length; i++) {
+dp[0][i] = dp[0][i - 1] + arr[0][i];
+}
+for (int i = 1; i < arr.length; i++) {
+for (int j = 1; j < arr[0].length; j++) {
+dp[i][j] = arr[i][j] + Math.min(dp[i - 1][j], dp[i][j - 1]);
+}
+}
+return dp[arr.length - 1][arr[0].length - 1];
+}
+
+public static void print(int[][] arr) {
+for (int i = 0; i < arr.length; i++) {
+for (int j = 0; j < arr[i].length; j++) {
+System.out.print(arr[i][j] + " ");
+}
+System.out.println();
+}
+}
+
+public static void main(String[] args) {
+int[][] arr = { { 4, 1, 5, 3 }, { 3, 2, 7, 7 }, { 6, 5, 2, 8 }, { 8, 9, 4, 5 } };
+print(arr);
+System.out.println("最短路径长度：" + findShortestPath(arr));
+}
+}

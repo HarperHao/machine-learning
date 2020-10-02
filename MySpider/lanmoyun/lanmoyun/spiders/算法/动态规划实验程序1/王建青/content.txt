@@ -1,0 +1,14 @@
+1. 动态规划法中最大子序列和的python实现
+def maxSubArray(nums):
+   maxSum = None
+   tempSum = 0
+   for i in nums:
+       if maxSum == None:
+           maxSum = i
+       tempSum = max(i, tempSum + i)
+       maxSum = max(maxSum, tempSum)
+   return maxSum
+a=[-2,1,-3,4,-1,2,1,-5,4]
+print(maxSubArray(a))
+b=[12,41,-3,-11,4,-8]
+print(maxSubArray(b))

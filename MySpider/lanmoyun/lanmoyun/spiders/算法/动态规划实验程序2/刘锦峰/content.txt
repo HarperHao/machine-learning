@@ -1,0 +1,30 @@
+def lcsLength(x, y):
+   m = len(x) + 1
+   n = len(y) + 1
+   l= min(m, n)
+   a = [0 for i in range(l)]
+   for i in range(1, m):
+       b = 0
+       for j in range(1, n):
+           if x[i-1] == y[j-1]:
+               c = a[j-1] + 1
+               a[j - 1] = b
+               b = c
+           elif a[j] >= b:
+               c = a[j]
+               a[j - 1] =b
+               b =c
+           else:
+               c = b
+               a[j - 1] = b
+               b = c
+           if j == n-1:
+              a[j] = b
+              print(a)
+   return a[l - 1]
+
+x = ['A', 'C', 'B', 'B', 'A', 'B','D','B','B']
+y = ['A', 'B', 'C', 'B', 'D', 'B']
+
+count = lcsLength(x, y)
+print("其最长公共子序列长度为：", count)

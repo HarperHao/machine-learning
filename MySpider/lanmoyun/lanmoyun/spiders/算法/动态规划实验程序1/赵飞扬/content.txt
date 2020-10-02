@@ -1,0 +1,10 @@
+走楼梯问题：有十个台阶，从上往下走，一次只能走一个或两个台阶，请问总共有多少种走法？
+def get_count(n):
+   if n == 1:return 1
+   elif n == 2 :return 2
+   else:
+       l = [1,2]
+       for i in range(3,n):
+           l[0],l[1] = l[1],l[0]+l[1]
+       return l[0]+l[1]
+print(get_count(10))

@@ -1,0 +1,81 @@
+实验题目：LU分解求矩阵的逆矩阵
+问题原理：在线性代数中， LU分解(LU Factorization)是矩阵分解的一种，可以将一个矩阵分解为一个单位下三角矩阵和一个上三角矩阵的乘积。将矩阵进行LU分解成为三角矩阵，可以大大简化矩阵求逆时的时间复杂度。
+import numpy as np
+
+def caculate(Mar, n):  # 分解L和U
+   tmp = np.zeros([n, n])
+   for i in range(n):
+       tmp[0][i] = Mar[0][i]
+   for i in range(1, n):
+       tmp[i][0] = Mar[i][0] / tmp[0][0]
+   for row in range(n):
+       for j in range(row, n):
+           cnt = 0
+           for k in range(0, row):
+               cnt = cnt + tmp[row][k] * tmp[k][j]
+           tmp[row][j] = Mar[row][j] - cnt
+       for i in range(row + 1, n):
+           cnt = 0
+           for k in range(0, row):
+               cnt = cnt + tmp[i][k] * tmp[k][row]
+           tmp[i][row] = (Mar[i][row] - cnt) / tmp[row][row]
+   return tmp
+def caculateL_inv(L, n):  # 求L的逆
+   tmp = np.zeros([n, n])
+   for j in range(0, n):
+       for i in range(j, n):
+           if i == j:
+               tmp[i][j] = 1 / L[i][j]
+           elif i < j:
+               tmp[i][j] = 0
+           else:
+               cnt = 0
+               for k in range(j, i):
+                   cnt = cnt + L[i][k] * tmp[k][j]
+               tmp[i][j] -= tmp[j][j] * cnt
+   return tmp
+
+
+def caculateU_inv(U, n):  # 求U的逆
+   tmp = np.zeros([n, n])
+   for j in range(0, n):
+       for i in range(j, -1, -1):
+           if i == j:
+               tmp[i][j] = 1 / U[i][j]
+           elif i > j:
+               tmp[i][j] = 0
+           else:
+               cnt = 0
+               for k in range(i + 1, j + 1):
+                   cnt += U[i][k] * tmp[k][j]
+               tmp[i][j] = -1 / U[i][i] * cnt
+   return tmp
+A = [[2, -1, 1], [4, 1, -1], [1, 1, 1]]
+print("A矩阵")
+print(np.mat(A))
+n = len(A[0])
+LU = caculate(A, n)
+L = np.zeros([n, n])
+U = np.zeros([n, n])
+for i in range(0, n):
+   L[i][i] = 0
+for i in range(0, n):
+   L[i][i] = 1
+   if i != 0:
+       for j in range(0, i):
+           L[i][j] = LU[i][j]
+   for j in range(i, n):
+       U[i][j] = LU[i][j]
+print("\nU矩阵：")
+print(U)  # 将A分解为U和L
+print("\nL矩阵：")
+print(L)
+print("", end="\n")
+U_inv = caculateU_inv(U, n)
+L_inv = caculateL_inv(L, n)
+print("\nL的逆")
+print(L_inv)
+print("\nU的逆")
+print(U_inv)
+print("\nL的逆乘以U的逆：")
+print(np.dot(L_inv, U_inv))  # A的逆等于L的逆乘以U的逆

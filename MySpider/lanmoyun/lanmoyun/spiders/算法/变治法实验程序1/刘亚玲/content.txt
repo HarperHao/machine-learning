@@ -1,0 +1,170 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX(a,b) ((a)>(b)?(a):(b))
+int GetHeight(AVLTree t);   //获取AVL树高度
+void SingleRotateWithRight(AVLTree* t);   //右旋操作
+void SingleRotateWithLeft(AVLTree* t);    //左旋操作
+void DoubleRotateWithLeft(AVLTree* t);    //双旋操作,先左后右
+void DoubleRotateWithRight(AVLTree* t);   //双旋操作,先右后左
+void ChangeAVLLeft(AVLTree* t, int e);   //检查左子树
+void ChangeAVLRight(AVLTree* t, int e);   //检查右子树
+void Insert(AVLTree* t, int e);       //插入函数
+void CreatAVL(AVLTree* t, int* a, int n);  //创建AVL树函数
+void InOrderPrint(AVLTree t);                  //打印AVL树
+typedef struct AVLNode
+{
+int data;
+int height;
+struct AVLNode* lchild;
+struct AVLNode* rchild;
+}AVLNode, *AVLTree;
+int GetHeight(AVLTree t)   //利用递归获取AVL树的高度
+{
+if (t == NULL)
+return -1;
+else
+return (1 + MAX(GetHeight(t->lchild), GetHeight(t->rchild)));
+}
+void SingleRotateWithRight(AVLTree* t)   //右旋操作
+{
+AVLTree p = NULL;
+p = (*t)->lchild;
+(*t)->lchild = p->rchild;
+p->rchild = (*t);
+//结点的位置改变,更新结点的高度值
+(*t)->height = GetHeight(*t);
+p->height = GetHeight(p);
+*t = p;
+}
+void SingleRotateWithLeft(AVLTree* t)    //左旋操作
+{
+AVLTree p = NULL;
+p = (*t)->rchild;
+(*t)->rchild = p->lchild;
+p->lchild = (*t);
+(*t)->height = GetHeight(*t);
+p->height = GetHeight(p);
+*t = p;
+}
+void DoubleRotateWithLeft(AVLTree* t)   //LR型失衡
+{
+SingleRotateWithLeft(&((*t)->lchild));
+SingleRotateWithRight(t);
+}
+void DoubleRotateWithRight(AVLTree* t)   //双旋操作,先右后左
+{
+SingleRotateWithRight(&((*t)->rchild));
+SingleRotateWithLeft(t);
+}
+void ChangeAVLLeft(AVLTree* t, int e)   //检查左子树
+{
+Insert(&(*t)->lchild, e);
+if (GetHeight((*t)->lchild) - GetHeight((*t)->rchild) != 2)
+{
+(*t)->height = MAX(GetHeight((*t)->lchild), GetHeight((*t)->rchild)) + 1;
+return;
+}
+//AVL树不平衡  
+if (e < (*t)->lchild->data)            //LL插入到左子树左边  
+SingleRotateWithRight(&(*t));
+else
+DoubleRotateWithLeft(&(*t));      //LR插入到左子树右边，先对左子树左旋，再对当前根节点右旋  
+(*t)->height = MAX(GetHeight((*t)->lchild), GetHeight((*t)->rchild)) + 1;
+
+}
+void ChangeAVLRight(AVLTree* t, int e)   //检查左子树
+{
+Insert(&(*t)->rchild, e);
+if (GetHeight((*t)->lchild) - GetHeight((*t)->rchild) != -2)
+{
+(*t)->height = MAX(GetHeight((*t)->lchild), GetHeight((*t)->rchild)) + 1;
+return;
+}
+if (e > (*t)->rchild->data)           //插入到右子树右边  
+SingleRotateWithLeft(&(*t));
+else
+DoubleRotateWithRight(&(*t));    //插入到右子树左边，先对右子树右旋，再对当前根节点左旋  
+(*t)->height = MAX(GetHeight((*t)->lchild), GetHeight((*t)->rchild)) + 1;
+}
+void Insert(AVLTree* t, int e)       //插入函数
+{
+if (*t == NULL)
+{
+(*t) = (AVLTree)malloc(sizeof(AVLNode));
+(*t)->data = e;
+(*t)->height = 0;
+(*t)->lchild = (*t)->rchild = NULL;
+(*t)->height = MAX(GetHeight((*t)->lchild), GetHeight((*t)->rchild)) + 1;
+return;
+}
+if (e < (*t)->data)           //插入到左子树中  
+ChangeAVLLeft(t, e);
+
+if (e >(*t)->data)
+ChangeAVLRight(t, e);
+}
+void CreatAVL(AVLTree* t, int* a, int n)  //创建AVL树函数
+{
+int i = 0;
+*t = NULL;
+for (i = 0; i != n; ++i)
+Insert(t, a[i]);
+}
+void InOrderPrint(AVLTree t)
+{
+if (t == NULL)
+return;
+InOrderPrint(t->lchild);
+printf("%d ", t->data);
+InOrderPrint(t->rchild);
+}
+int main()
+{
+int n = 0;
+int i = 0;
+AVLTree t = NULL;
+int* a = NULL;
+printf("请输入AVL节点个数:");
+scanf_s("%d", &n);
+a = (int*)malloc((n+1) * sizeof(int));
+printf("请输入节点数据:\n");
+for (i = 0; i != n; ++i)
+scanf_s("%d", &a[i]);
+a[n] = 0;
+CreatAVL(&t, a, n);
+printf("该AVL树的中序遍历结果为:\n");
+InOrderPrint(t);
+t = NULL;//插入一个元素：
+printf("\n输入一个元素(插入)：\n");
+int b; printf("\n");
+scanf_s("%d", &b);
+a[n] = b;
+CreatAVL(&t, a, n+1);
+printf("该AVL树的中序遍历结果为:\n");
+InOrderPrint(t);
+//删除一个元素：
+printf("\n输入一个要删除的元素：\n");
+scanf_s("%d", &b);
+int c = 0;
+for (int i = 0; i < n + 1; i++)
+{
+if (a[i] == b) {
+c = 1;
+if (i != n) {
+for (int j = i; j < n; j++)
+a[j] = a[j + 1];
+CreatAVL(&t, a, n);
+printf("该AVL树的中序遍历结果为:\n");
+InOrderPrint(t);
+break;
+}
+else {
+CreatAVL(&t, a, n);
+printf("该AVL树的中序遍历结果为:\n");
+InOrderPrint(t);
+break; } } }
+if (c == 0)
+printf("\n该值不在树中\n");
+puts("");
+getchar();
+return 0;}

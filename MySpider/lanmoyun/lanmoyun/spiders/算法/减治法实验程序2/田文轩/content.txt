@@ -1,0 +1,107 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+void Merge(int s[],int p,int q,int r)
+{
+int n1,n2,i,j,L[100],R[100];
+n1=q-p+1;
+n2=r-q;
+for(i=1;i<=n1;i++)
+L[i]=s[p+i-1];
+for(j=1;j<=n2;j++)
+R[j]=s[q+j];
+L[n1+1]=10000;
+R[n2+1]=10000;
+i=1;
+j=1;
+for(int k=p;k<=r;k++)
+{
+if(L[i]<=R[j])
+{
+s[k]=L[i];
+i=i+1;
+}
+else
+{
+s[k]=R[j];
+j=j+1;
+}
+}
+}
+
+void Mergesort(int s[],int p,int r)
+{
+int q;
+if(p<r)
+{
+q=(p+r)/2;
+Mergesort(s,p,q);
+Mergesort(s,q+1,r);
+Merge(s,p,q,r);
+}
+}
+void swap(int s[],int a,int b)
+{
+int temp;
+temp=s[a];
+s[a]=s[b];
+s[b]=temp;
+}
+void dictsort(int s[],int n)
+{
+int i,k,j,r,num=1,m,t;
+for(i=1;i<=n;i++)
+{
+num=num*i;
+}
+for(k=num;k>0;k--)
+{
+for(i=0;i<n;i++)
+{
+printf("%d",s[i]);
+}
+printf("\n");
+for(j=n-1;j>0;j--)
+{
+if(s[j-1]<s[j])
+{
+m=j-1;
+break;
+}
+}
+for(r=n-1;r>=0;r--)
+{
+if(s[r]>s[m])
+{
+t=r;
+break;
+}
+}
+swap(s,m,t);
+Mergesort(s,m+1,n-1);
+}
+
+}
+int main()
+{
+int n,i,j,a[10];
+printf("输入元素个数: ");
+   scanf("%d",&n);
+   for(i=0;i<n;i++)
+{
+printf("输入第%d个数: ",i+1);
+scanf("%d",&a[i]);
+for(j=0;j<i;j++)
+{
+if(a[j]==a[i])
+{
+i--;
+break;
+}
+}
+}
+Mergesort(a,0,n-1);
+printf("\n");
+dictsort(a,n);
+system("pause");
+}

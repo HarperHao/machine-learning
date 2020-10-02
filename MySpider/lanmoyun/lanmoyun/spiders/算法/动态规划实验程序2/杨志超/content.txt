@@ -1,0 +1,87 @@
+实验名称：
+动态规划-矩阵连乘问题。
+实验目的：
+了解动态规划，解决矩阵连乘问题。
+实验题目：
+给定n个矩阵｛A1,A2,…,An｝，其中Ai与Ai+1是可乘的，i=1,2 ,…,n-1。(Ai的维数为pi-1×pi).如何确定计算矩阵连乘积的计算次序，使得依此次序计算矩阵连乘积需要的数乘次数最少。
+实验源代码：
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#define M 100
+struct Matrix
+{
+int row;
+int col;
+};
+Matrix matrix[100];
+int m[M][M];
+int s[M][M];
+int n;
+void MaxtrixChain(Matrix matrix[M],int n,int m[M][M],int s[M][M])
+{
+for(int r=2;r<=n;r++)
+for(int i=1;i<=n-r+1;i++)
+{
+int j=i+r-1;
+m[i][j]=m[i+1][j]+matrix[i].row*matrix[i].col*matrix[j].col;
+s[i][j]=i;
+for(int k=i+1;k<j;k++)
+{
+int t=m[i][k]+m[k+1][j]+matrix[i].row*matrix[k].col*matrix[j].col;
+if (t<m[i][j])
+{
+m[i][j]=t;
+s[i][j]=k;
+}
+}
+}
+}
+void matrixMultiply(Matrix matrix[M],int n)
+{
+bool flag=false;
+int i;
+printf("请输入每个矩阵行数与列数：\n");
+for(i=1;i<=n;i++)
+{
+printf("A%d行数:",i);
+scanf("%d",&matrix[i].row);
+printf("A%d列数:",i);
+scanf("%d",&matrix[i].col);
+}
+for(i=1;i<n;i++)
+{
+if(matrix[i].col!=matrix[i+1].row)
+{
+printf("输入的矩阵不可乘，请重新输入！\n");
+flag=true;
+break;
+}
+}
+if(flag)
+matrixMultiply(matrix,n);
+}
+void traceback(int i,int j)
+{
+if(i==j)
+printf("A%d",i);
+else
+{
+printf("(");
+traceback(i,s[i][j]);
+traceback(s[i][j]+1,j);
+printf(")");
+}
+}
+void main()
+{
+memset(m,0,sizeof(m));
+memset(s,0,sizeof(s));
+printf("请输入矩阵个数：\n");
+scanf("%d",&n);
+matrixMultiply(matrix,n);
+MaxtrixChain(matrix,n,m,s);
+printf("加括号之后：\n");
+traceback(1,n);
+printf("\n");
+}

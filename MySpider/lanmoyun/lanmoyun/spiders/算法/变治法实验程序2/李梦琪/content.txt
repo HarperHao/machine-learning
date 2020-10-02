@@ -1,0 +1,55 @@
+高斯消元问题
+#include<iostream>
+using namespace std;
+int n;
+double a[100][100],b[100],x[100];
+
+void get()
+{
+for(int i=0;i<n;i++)
+{
+for(int j=0;j<n;j++)
+cin>>a[i][j];
+cin>>b[i];
+}
+}
+
+void reckon ()
+{
+for(int i=0;i<n-1;i++)
+{
+for(int k=1; k<n ;k++)
+{
+double m = a[i+k][i]/a[i][i];
+for(int j=0;j<n;j++)
+{
+a[i+k][j] -= a[i][j] * m ;
+}
+b[i+k] -= b[i] * m;
+}
+}
+}
+
+int main()
+{
+cout<<"请输入方程组的阶数\n"<<endl;
+cin>>n;
+cout<<"请输入方程组：\n"<<endl;
+get();
+reckon();
+for(int i=0;i<n;i++) x[i] = 0;
+
+for(int i=n-1;i>=0;i--)
+{
+double re = 0;
+for(int j=n-1;j>i;j--)
+{
+re += a[i][j] * x[j];
+}
+x[i] = (b[i] - re) / a[i][i];
+}
+cout<<"所得结果为："<<endl;
+for(int i=0;i<n;i++)
+cout<<x[i]<<" ";cout<<endl;
+return 0;
+}

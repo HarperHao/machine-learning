@@ -1,0 +1,96 @@
+//最短路径
+#include<iostream>
+#include<stdio.h>
+using namespace std;
+
+#define maxsize 10
+#define INF 100000
+int n;
+
+void Dijkstra(int n, int MGraph[][maxsize], int start, int dist[], int path[])
+{
+int set[maxsize];
+int min, v;
+int i, j;
+
+//初始化
+for (int i = 0; i < n; i++)
+{
+dist[i] = MGraph[start][i];
+set[i] = 0;
+if (MGraph[start][i] < INF)
+path[i] = start;
+else
+path[i] = -1;
+}
+set[start] = 1;
+path[start] = -1;
+
+//对剩余的每个顶点进行处理
+for (int i = 0; i < n - 1; i++)
+{
+min = INF;
+for (int j = 0; j < n; j++)
+{
+//选出与起点距离最近的点
+if (set[j] == 0 && dist[j] < min)
+{
+v = j;
+min = dist[j];
+}
+}
+set[v] = 1;
+
+
+//更新距离
+for (int j = 0; j < n; ++j)
+{
+if (set[j] == 0 && dist[v] + MGraph[j][v] < dist[j])
+{
+dist[j] = dist[v] + MGraph[j][v];
+path[j] = v;
+}
+}
+}
+}
+int MGraph[maxsize][maxsize];
+char vertex[maxsize];//123
+int main()
+{
+int  i, j;
+char tep[maxsize + 5];
+int start, end;
+int dist[maxsize], path[maxsize];
+cout << "功能：从一个城市到其它各城市之间的最短路径或运费最少的路径" << endl;
+cin >> n;
+cin >> tep;
+for (int i = 0; i < n; i++)
+{
+vertex[i] = tep[i];
+}
+
+for (int i = 0; i < n; i++)
+for (int j = 0; j < n; j++)
+{
+cin >> MGraph[i][j];
+}
+cout << "输入起点：";
+cin >> start;
+cout << "城市(下标)：";
+for (int i = 0; i < n; i++)
+cout << vertex[i] << "( " << i << ")  ";
+cout << endl;
+
+for (int end = 1; end < n; end++)
+{
+printf("%d到%d结点的最短路径：", start, end);
+for (i = end; path[i] != -1; i = path[i])
+{
+cout << vertex[i] << "<-";
+}
+cout << vertex[i] << " ";
+cout << "最短路径长度为：" << dist[end] << endl;
+}
+return 0;
+
+}

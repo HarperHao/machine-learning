@@ -1,0 +1,65 @@
+减治法实现STJ方法全排序：
+实验源代码
+n=int(input("输入待排序数的个数："))
+x=list(map(int,input("依次输入各个数：（用逗号分隔）").split(',')))
+flag=[]
+for i in range(n):
+   flag.append(1)
+for i in range(n):
+   x[i]=[x[i],flag[i]]
+x.sort()
+for i in range(n):
+   print(x[i][0],end='')
+print(end='  ')
+flag=1
+while(flag):
+   if(x.index(max(x))>0 and x[x.index(max(x))][1]==1):
+       a=x.index(max(x))
+       x[a],x[a-1]=x[a-1],x[a]
+   elif(x.index(max(x))<n-1 and x[x.index(max(x))][1]==-1):
+       a = x.index(max(x))
+       x[a], x[a+1] = x[a+1], x[a]
+   elif(x.index(max(x))==0 and x[x.index(max(x))][1]==1):
+       x[0][1]=-1
+       z=[]
+       for i in range(1,n):
+           h=0
+           a=x.index(sorted(x)[n-i-1])
+           b = a - x[a][1]
+           if(x[b][0]>x[a][0] and i!=n-1):
+               h=1
+           if(a==1 and x[a][1]==1 or a==n-1 and x[a][1]==-1 or h):
+               z.append(a)
+           else:
+               if(i==n-1):
+                   flag=0
+               else:
+                   b = a - x[a][1]
+                   x[a], x[b] = x[b], x[a]
+                   for j in z:
+                       x[j][1]=-x[j][1]
+                   break
+   elif(x.index(max(x))==n-1 and x[x.index(max(x))][1]==-1):
+       x[n-1][1] = 1
+       z = []
+       for i in range(1, n):
+           h=0
+           a = x.index(sorted(x)[n - i - 1])
+           b = a - x[a][1]
+           if(x[b][0]>x[a][0] and i!=n-1):
+               h=1
+           if (a == n-2 and x[a][1] == -1 or a ==0 and x[a][1] == 1 or h):
+               z.append(a)
+           else:
+               if (i == n - 1):
+                   flag = 0
+               else:
+                   b=a - x[a][1]
+                   x[a], x[b] = x[b],x[a]
+                   for j in z:
+                       x[j][1] = -x[j][1]
+                   break
+   for i in range(n):
+       if flag:
+           print(x[i][0],end='')
+   print(end='  ')

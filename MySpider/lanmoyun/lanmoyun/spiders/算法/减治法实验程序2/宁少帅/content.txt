@@ -1,0 +1,37 @@
+def dictionary(s):
+   index_i=-1
+   for i in range(len(s)-1,0,-1):
+       if s[i-1]<s[i]:
+           index_i=i-1
+           break
+   if index_i!=-1:
+       for i in range(len(s)-1,index_i,-1):
+           if s[i]>s[index_i]:
+               index_j=i
+               break
+   else:
+       return ''
+   s1=list(s)
+   s1[index_i],s1[index_j]=s1[index_j],s1[index_i]
+   s=''.join(s1)
+   houzhui=[]
+   #因为已经交换，所以要变换index_i后面的
+   for i in range(len(s)-1,index_i,-1):
+       houzhui.append(s[i])
+   #index_j+1因为切片不包括后端
+   qianzhui=s[:index_i+1]
+   houzhui=''.join(houzhui)
+   s=qianzhui+houzhui
+   return s
+
+
+if __name__=='__main__':
+   a='1234'
+   x=0
+   l=[]
+   while a!='':
+       l.append(a)
+       x=x+1
+       a=dictionary(a)
+   print("'1234'的{}种字典序全排列为:".format(x))
+   print(l)

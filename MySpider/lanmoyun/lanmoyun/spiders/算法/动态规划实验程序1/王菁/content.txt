@@ -1,0 +1,132 @@
+哈夫曼树代码如下：
+#include<stdio.h>
+#include<stdlib.h>
+#include<malloc.h>
+#include<string.h>
+#define MAX 1000
+typedef int datatype;
+typedef struct node{
+datatype data;
+struct node *lchild, *rchild;
+struct node *line;
+}hfnode;
+typedef hfnode* hftree;
+typedef struct link_node{
+datatype data;
+struct link_node *next;
+}linkdata;
+typedef linkdata* link;
+void sort(link* t){
+link head = NULL;
+head = (link)malloc(sizeof(link_node));
+head->data = -1;
+head->next = (*t);
+link s = head;
+while(s->next != NULL){
+link r = s;
+while(r->next->next != NULL){
+link q = r->next;
+link p = q->next;
+if(q->data > p->data){
+q->next = p->next;
+p->next = q;
+r->next = p;
+}
+r = r->next;
+}
+s = s->next;
+}
+*t = head->next;
+}
+void creatlink(hftree* t, hftree* x){
+if(*t == NULL)
+(*t) = (*x);
+else{
+if((*x)->data < (*t)->data){
+(*x)->line = (*t);
+(*t) = (*x);
+}
+else{
+hftree p = (*t);
+hftree q = p->line;
+while(q != NULL){
+if(p->data < (*x)->data&&q->data > (*x)->data){
+p->line = (*x);
+(*x)->line = q;
+break;
+}
+else{
+q = q->line;
+p = p->line;
+}
+}if(q == NULL&&p->data < (*x)->data){
+p->line = (*x);
+}
+}
+}
+}
+void change(link* t, hftree* root){
+if((*t) != NULL){
+link p = (*t);
+if((*root) == NULL){
+*root = (hftree)malloc(sizeof(hfnode));
+(*root)->data = p->data;
+(*root)->lchild = (*root)->line = (*root)->rchild = NULL;
+change(&((*t)->next), root);
+}
+else{
+hftree q  = NULL;
+q = (hftree)malloc(sizeof(hfnode));
+q->data = (*t)->data;
+q->lchild = q->line = q->rchild = 0;
+hftree s = *root;
+while(s->line != NULL)
+s = s->line;
+s->line = q;
+change(&((*t)->next), root);
+}
+}
+}
+hftree creathftree(hftree* t){
+hftree add;
+if((*t)->line != NULL){
+add = (hftree)malloc(sizeof(hfnode));
+add->data = (*t)->data + (*t)->line->data;
+add->lchild = (*t);
+add->rchild = (*t)->line;
+add->line = NULL;
+if((*t)->line->line != NULL){
+creatlink(&(*t)->line->line, &add);
+(*t) = creathftree(&(*t)->line->line);
+}
+else{
+(*t) = add;
+}
+}
+return (*t);
+}
+void inorder(hftree t){
+if(t){
+printf("%d ", t->data);
+inorder(t->lchild);
+inorder(t->rchild);
+}
+}
+int main(){
+hftree t = NULL;
+hftree x;
+x = (hftree)malloc(sizeof(hfnode));
+x->lchild = x->line = x->rchild = NULL;
+printf("请输入各节点值-1结束： ");
+scanf("%d", &x->data);
+while(x->data != -1){
+creatlink(&t, &x);
+x = (hftree)malloc(sizeof(hfnode));
+x->lchild = x->line = x->rchild = NULL;
+scanf("%d", &(x->data));
+}
+t = creathftree(&t);
+printf("哈弗曼树前序输出为： ");
+inorder(t);
+}
+运行结果见附件

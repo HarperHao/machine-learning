@@ -1,0 +1,28 @@
+倒序插入排序
+import java.util.Arrays;
+
+public class daoXuInsert {
+   public static void main(String[] args) {
+       int[] nums = { 5, 4, 3, 2, 1 };
+       for (int i = nums.length - 2; i >= 0; i--) {
+           if(nums[i] <= nums[i+1]);//正序无需排序
+
+           else {
+               int temp = nums[i];
+               int flag = i;//记录位置
+               for (int j = i + 1; j < nums.length; j++) {//从i + 1到length-1比较
+                   if (temp > nums[j]){//前移
+                       nums[j - 1] = nums[j];
+                       flag = j;
+                   }
+                   else break;
+               }
+
+               if (flag != i)//若前移则插入
+                   nums[flag] = temp;
+
+           }
+       }
+       System.out.println(Arrays.toString(nums));
+   }
+}

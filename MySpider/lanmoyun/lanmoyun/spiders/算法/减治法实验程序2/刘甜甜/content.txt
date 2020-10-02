@@ -1,0 +1,22 @@
+def josephus(m, n):
+   a = [1, ] * m
+   t = 0
+   while sum(a) > 1:
+       s = 0
+       while sum(a) > 1:
+           for i in range(t, m):
+               s += a[i]
+               if s == n:
+                   print('Kill', i+1)
+                   a[i] = 0
+                   s = 0
+                   t = i
+                   break
+           else:
+               t = 0
+       else:
+           print('Survival is ', a.index(1)+1)
+           return a.index(1)
+
+
+josephus(8, 3)

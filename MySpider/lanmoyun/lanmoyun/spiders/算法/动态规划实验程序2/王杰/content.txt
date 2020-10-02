@@ -1,0 +1,26 @@
+给你一个整数list L, 如 L=[2,-3,3,50], 求L的一个连续子序列，使其和最大，输出最大子序列的和。假设序列的起始位置为 m，终止位置为 n，其中 m<n。当 m=0，n=3 时，F(0,3) 表示L[0:3] 序列中最大子序列的和，需要根据之前的序列和进行比较，其中包括 L[0:1]，L[0:2]，L[1:2]，L[1:3]，L[2:3]。
+import timeit
+
+L = [4, -3, 3, 50]
+def split_list1():
+   global L
+   Max, temp = L[0], 0
+   for i in L:
+       temp = max(i, temp + i)
+       Max = max(Max, temp)
+   return Max
+
+def split_list3():
+   global L
+   Lx = [sum(L[i:j]) for i in range(len(L)) for j in range(i + 1, len(L) + 1)]
+   return max(Lx)
+
+if __name__ == '__main__':
+   print(split_list1())
+   print(split_list3())
+
+   tt1 = timeit.repeat("split_list1()", setup="from __main__ import split_list1", number=1000)
+   print(min(tt1))
+
+   tt3 = timeit.repeat("split_list3()", setup="from __main__ import split_list3", number=1000)
+   print(min(tt3))

@@ -1,0 +1,35 @@
+import numpy as np
+import sys
+
+def LU(a):
+   b=a.shape[0]    
+   E= np.mat(np.eye(b))  #创造对角矩阵
+   L= np.mat(np.eye(b))
+   U=a.copy()
+   for i in range(b):
+       if abs(a[i,i])< 1e-8:      #abs() 返回其绝对值   10^-8
+           sys.exit()      
+       L[i+1:,i]=U[i+1:,i]/U[i,i]
+       E[i+1:,:]=E[i+1:,:]-L[i+1:,i]*E[i,:]
+       U[i+1:,:]=U[i+1:,:]-L[i+1:,i]*U[i,:]
+   print("\n分解后的L,U矩阵：")
+   print("L=",L)
+   print("U=",U)
+   print("E矩阵为:")
+   print("E=",E)
+   E1=np.mat(np.eye(b))  
+   for i in range(b-1,-1,-1):
+       E[i,:]=E[i,:]/U[i,i]      
+       E[i,:]=E1[i,:]/U[i,i]
+       U[i,:]=U[i,:]/U[i,i]
+       E[:i,:]=E[:i,:]-U[:i,i]*E[i,:]
+       E1[:i,:]=E[:i,:]-U[:i,i]*E1[i,:]
+       U[:i,:]=U[:i,:]-U[:i,i]*U[i,:]
+       print("U=",U)
+       print("E=",E)
+       print("得到的逆为：")
+       print("m_miv=",a.I)
+if __name__=="__main__":
+   D=np.mat([[1.,1,1],[1,2,3],[1,5,1]])
+   D_b=D.shape[0]
+   LU(D)

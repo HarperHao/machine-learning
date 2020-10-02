@@ -1,0 +1,22 @@
+##最长子序列问题
+
+def sim_count(word_a, word_b):
+   cell = [[0 for x in range(len(word_b))] for y in range(len(word_a))]  # 初始化网格，全部赋值0
+   for i in range(len(word_a)):
+       for j in range(len(word_b)):
+           if word_a[i] == word_b[j] and (i < 1 or j < 1):
+               cell[i][j] = 1  # 判断第一格的值
+           elif word_a[i] == word_b[j]:
+               cell[i][j] = cell[i - 1][j - 1] + 1  # 根据第一格累加
+   sim_atline = max(cell)
+   sim_last_word = max(sim_atline)
+   sim_last_word_i = cell.index(sim_atline)
+   for i in range(sim_last_word_i - sim_last_word + 1, sim_last_word_i + 1):
+       print(word_a[i], end=",")
+   return (cell, sim_last_word)
+
+
+a, b = "vesista", "hsis"
+print("最长公共子序列和长度分别为：")
+mat, sim_len = sim_count(a, b)
+print(sim_len)

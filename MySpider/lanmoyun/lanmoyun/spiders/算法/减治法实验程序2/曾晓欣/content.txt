@@ -1,0 +1,39 @@
+def search(numbers):
+   number = numbers
+   for i in range(len(numbers)-1, -1, -1):
+       if number[i] > number[i-1]:
+           return i
+   return 0
+
+def swap(numbers, flag):
+   number = numbers
+   temp = number[flag-1]
+   for i in range(len(number)-1, -1, -1):
+       if temp < number[i]:
+           number[flag-1] = number[i]
+           number[i] = temp
+           break
+   return number
+
+
+def reverse(num, flag):
+   right = len(num)
+   for i in range(flag, right):
+       for j in range(i + 1, right):
+           if num[i] > num[j]:
+               num[i], num[j] = num[j], num[i]
+   return num
+
+def arrange():
+   for i in range(0, len(numbers)*6):
+       flag = search(numbers)
+       num = swap(numbers, flag)
+       right = reverse(num, flag)
+       print(right)
+
+if __name__ == '__main__':
+   numbers = [4, 7, 1, 5]
+   print("First number sequence:")
+   print(numbers)
+   print("Sorted numbers:")
+   arrange()

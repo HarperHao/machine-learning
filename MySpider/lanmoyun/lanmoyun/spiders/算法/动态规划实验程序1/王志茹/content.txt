@@ -1,0 +1,62 @@
+01背包：
+import numpy as np
+#定义重量
+weight={}
+weight["book1"]=5
+weight["book2"]=3
+weight["book3"]=2
+weight["book4"]=7
+weight["book5"]=1
+#定义价值
+worth={}
+worth["book1"]=10
+worth["book2"]=3
+worth["book3"]=9
+worth["book4"]=9
+worth["book5"]=1
+#存放行标对应的物品名:
+table_name={}
+table_name[0]="book1"
+table_name[1]="book2"
+table_name[2]="book3"
+table_name[3]="book4"
+table_name[4]="book5"
+#创建矩阵,用来保存价值表
+table=np.zeros((len(weight),6))
+# 创建矩阵，用来保存每个单元格中的价值是如何得到的（物品名）
+table_class=np.zeros((len(weight), 6), dtype=np.dtype((np.str_,500)))
+
+for i in range(0,len(weight)):
+   for j in range(0,6):
+       this_weight = weight[table_name[i]]
+       this_worth = worth[table_name[i]]
+       if(i>0):
+           before_worth=table[i-1,j]
+           temp=0
+           if(this_weight<=j):
+               temp=table[i-1,j-this_weight]
+           synthesize_worth=0
+           if(this_weight-1<=j):
+               synthesize_worth=this_worth+temp
+           if(synthesize_worth>before_worth):
+               table[i,j]=synthesize_worth
+               if(temp==0):
+                   table_class[i][j] = table_name[i]
+               else:
+                   table_class[i][j] = table_name[i] + "," + table_class[i - 1][j - this_weight]
+           else:
+               table[i,j]=before_worth
+               table_class[i][j]=table_class[i-1][j]
+       else:
+           if(this_weight-1<=j):
+               table[i,j]=this_worth
+               table_class[i][j]=table_name[i]
+
+
+print("价值矩阵")
+print(table)
+print("物品矩阵")
+print(table_class)
+设p(i)、w(i)分别为第i个物品的价值和重量，v(i)(j)表示在前i个物品中能够装入容量为j的背包中的最大价值。v(i)(0)=v(0)(j)=0
+当w(i) > j 时，v(i)(j) = v(i-1)(j)。当准备加入新增的商品的容量大于当前背包的容量时，就直接使用上一个单元格的装入策略
+当w(i) <= j 时，v(i)(j) = max{v(i-1)(j), p(i) + v(i-1)(j - w(i))}。当准备加入的新增的商品的容量小于等于当前背包的容量,装入的方式:v(i-1)(j)：上一个单元格的装入策略的价值，这里可以理解为不装入商品i时的最大价值；v(i-1)(j - w(i))：装入商品i之后剩下的容量可以装入的最大价值，所以p(i) + v(i-1)(j - w(i))就是装入商品i时的最大价值。

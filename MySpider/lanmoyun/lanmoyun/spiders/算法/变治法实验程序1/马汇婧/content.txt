@@ -1,0 +1,34 @@
+#LU分解求矩阵的逆
+import numpy as np
+import sys
+def inverse(m):
+dim = m.shape[0]
+E = np.mat(np.eye(dim))
+L = np.mat(np.eye(dim))
+U = m.copy()
+for i in range(dim):
+L[i+1:,i] = U[i+1:,i] / U[i,i]
+E[i+1:,:] = E[i+1:,:] - L[i+1:,i]*E[i,:]
+U[i+1:,:] = U[i+1:,:] - L[i+1:,i]*U[i,:]
+print("L=",L)
+print("U=",U)
+E1 = np.mat(np.eye(dim))
+for i in range(dim-1,-1,-1):
+E[i,:] = E[i,:]/U[i,i]
+E1[i,:] = E1[i,:]/U[i,i]
+U[i,:] = U[i,:]/U[i,i]
+E[:i,:] = E[:i,:] - U[:i,i]*E[i,:]
+E1[:i,:] = E1[:i,:] - U[:i,i]*E1[i,:]
+U[:i,:] = U[:i,:] - U[:i,i]*U[i,:]
+print("U的逆E1=",E1)
+E2 = np.mat(np.eye(dim))
+for i in range(dim):
+E2[i+1:,:] = E2[i+1:,:] - L[i+1:,i]*E2[i,:]
+L[i+1:,:] = L[i+1:,:] - L[i+1:,i]*U[i,:]
+print("L的逆E2=",E2)
+print("A的逆=",E1*E2)
+A = np.mat([[1, 1, -1],
+             [1, 2, -2.],
+             [-2, 1, 1]])
+A_dim = A.shape[0]
+inverse(A)

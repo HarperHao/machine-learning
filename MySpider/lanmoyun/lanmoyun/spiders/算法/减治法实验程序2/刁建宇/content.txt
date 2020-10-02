@@ -1,0 +1,52 @@
+#NÓ²±Ò£¬Èý¶ÑµÝ¹é·¨
+import random
+def Judge(a,n,p,q):
+   if n<3 :
+       print("ÎÞ·¨ÅÐ¶Ï")
+       return
+   if(p==q):#·¶Î§ËõÐ¡µ½Ò»Ã¶Ó²±Ò
+       if(p>0):
+           if(a[p]>a[0]) :
+               print("¼Ù±ÒÐòºÅÎª%d,¼Ù±ÒÖØÁ¿Îª%dÇÒ¼Ù±Ò½ÏÖØ!"%(p+1,a[p]))
+           else:
+              print("¼Ù±ÒÐòºÅÎª%d,¼Ù±ÒÖØÁ¿Îª%dÇÒ¼Ù±Ò½ÏÇá!"%(p+1,a[p]))
+       else:
+            if (a[p]>a[n-1]):
+                print("¼Ù±ÒÐòºÅÎª%d,¼Ù±ÒÖØÁ¿Îª%dÇÒ¼Ù±Ò½ÏÖØ!"%(p+1,a[p]))
+            else:
+              print("¼Ù±ÒÐòºÅÎª%d,¼Ù±ÒÖØÁ¿Îª%dÇÒ¼Ù±Ò½ÏÇá!"%(p+1,a[p]))
+   elif(q-p==1):#·¶Î§ËõÐ¡µ½Á½Ã¶Ó²±Ò
+       if(p>0):
+           if(a[p]==a[0]):
+               Judge(a,n,p+1,q)
+           else:
+               Judge(a,n,p,q-1)
+       elif(q<n-1):
+            if(a[p]==a[n-1]):
+                Judge(a,n,p+1,q)
+            else:
+               Judge(a,n,p,q-1)
+   elif(p<q):#·¶Î§ÔÚÈýÃ¶Ó²±ÒÒÔÉÏ
+       temp=(q-p+1)//3
+       sum1=0
+       sum2=0
+       for i in range(0,temp):
+           sum1+=a[p+i]
+           sum2+=a[q-i]
+       if(sum1==sum2):
+           Judge(a,n,p+temp,q-temp)
+       else:
+           if(sum1==a[p+temp]*temp):
+               Judge(a,n,q-temp+1,q)
+           else:
+               Judge(a,n,p,p+temp-1)
+
+n=20
+for _ in range (0,5):
+   a=[]
+   print("µÚ%d´ÎÊÔÑé£º"%(_+1))
+   for i in range(0,n):
+       a.append(2)
+   a[random.randint(0,n)]=random.choice([1,3])
+   print(a)
+   Judge(a,n,0,n-1)

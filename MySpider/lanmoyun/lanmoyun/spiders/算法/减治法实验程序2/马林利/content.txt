@@ -1,0 +1,89 @@
+1：二叉查找树：建立一个二叉查找树，使得树的左孩子比根小，树的右孩子比根大，遍历输出树，并查找你想要查找的值
+2：生成幂集：先生成n=0,再依次加入元素1,2，3.。。
+1：#include <iostream>
+#include<iomanip>
+using namespace std;
+struct BiNode {
+int data;
+BiNode* lchild, * rchild;
+};
+BiNode* SearchBST(BiNode* root, int k)
+{
+if (root == NULL)
+return NULL;
+else if (root->data == k)
+return root;
+else if (k < root->data)
+return SearchBST(root->lchild, k);
+else
+return SearchBST(root->rchild, k);
+}
+BiNode* InsertBST(BiNode* root, int data)   //插入二叉树
+{
+if (root == NULL)
+{
+root = new BiNode;
+root->data = data;
+root->lchild = root->rchild = NULL;
+return root;
+}
+if (data <= root->data)
+root->lchild = InsertBST(root->lchild, data);
+else
+root->rchild = InsertBST(root->rchild, data);
+return root;
+}
+BiNode* createBST(int a[], int n)   //新建二叉树
+{
+BiNode* T = NULL;
+for (int i = 0; i < n; i++) {
+T = InsertBST(T, a[i]);   //插入数据
+}
+return T;
+}
+void inorder(BiNode* tree)//中序（输出根节点次序）遍历（递归实现）
+{
+if (tree != NULL)
+{
+inorder(tree->lchild);
+cout << tree->data << " ";
+inorder(tree->rchild);
+}
+}
+void main() {
+int a[100];
+int n;
+cout << "请输入数字个数：";
+cin >> n;
+cout << "请输入各个数字：";
+for (int i = 0; i < n; i++)
+cin >> a[i];
+BiNode* D = NULL;
+D = createBST(a, n);
+cout << "中序遍历的结果：";
+inorder(D);
+cout << endl;
+int m;
+cout << "请输入你要查找的值：";
+cin >> m;
+if (SearchBST(D, m) != NULL)   //查找的数据在SearchBST（）方法的第二个参数  
+cout << "找到需要查找的数字" << endl;
+else
+cout << "找不到需要查找的数字" << m << endl;
+}
+2：def p(s):
+   n=len(s)
+   marks = [1 << i for i in range(0, n)]
+   for k in range(0,2**n):
+       l=[]
+       for idx,it in enumerate(marks):
+           if k&it:
+               l.append(s[idx])
+       yield set(l)
+s=[1,2,3,4]
+i=0
+for e in p(s):
+   print(e,end=" ")
+   if i%5==0:
+       print()
+   i+=1

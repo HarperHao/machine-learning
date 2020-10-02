@@ -1,0 +1,25 @@
+2. 减治法解决直接插入排序问题
+
+def rank(n_arr):
+   lst = [n_arr.pop(0)]
+   for data in n_arr:
+       for i in range(len(lst)):
+           if data >= lst[i] and len(lst)-1 == i :
+               lst.append(data)
+               break
+           elif data <= lst[i] and i == 0:
+               lst.insert(0, data)
+               break
+           elif lst[i+1] >= data > lst[i]:
+               lst.insert(i+1, data)
+               break
+   return lst
+
+
+n = int(input("请输入数据个数: "))
+n_lst = []
+for i in range(n):
+   n_lst.append(input())
+print(f"原数组为： {n_lst}")
+n_lst=rank(n_lst)
+print(f"排序后的数组为： {n_lst}")

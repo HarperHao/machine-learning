@@ -1,0 +1,40 @@
+实验名称：减治法的应用
+实验目的：熟悉减治法的原理，使用减治法完成两个算法问题
+实验题目：约瑟夫斯环问题
+约瑟夫斯环问题原理：输入总人数n和每次报数m的人退出，然后进行若干次循环，每次去掉报到m的人的编号，并将剩余的人重新排队。实现了减常因子规模的减治法。并使用matplotlib库中的animation模块绘制每次报数的过程，生成 gif 动图实现可视化
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
+def fun(n, m):
+   anslist = []
+   l = list(range(1, n + 1))
+   temp = []
+   cnt = 0
+   while len(l) > 1:
+       anslist.append(l)
+       for i in l:
+           cnt += 1
+           if cnt == m:
+               cnt = 0
+           else:
+               temp.append(i)
+               print(i, end=" ")
+       print("", end="\n")
+       l = temp
+       temp = []
+   del (anslist[len(anslist) - 1])
+   print("最后剩下的人是", l[0])
+   anslist.append(l)
+   return anslist
+def makeGifs(peopleLists):
+   fig, ax = plt.subplots()
+   def update(lists):
+       plt.scatter(lists, [0 for _ in range(len(lists))],  marker='^')
+       plt.title("还剩下{}个人".format(len(lists)))
+   ani = animation.FuncAnimation(fig, update, frames=peopleLists, interval=3000)
+   ani.save("Josephus.gif", writer='pillow')
+if __name__ == "__main__":
+   n, m = map(int, input("请输入总人数和每次报到几就退出：").split())
+   ansList = fun(n, m)
+   makeGifs(ansList)

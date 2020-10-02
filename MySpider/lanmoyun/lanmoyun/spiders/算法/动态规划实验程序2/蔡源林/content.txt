@@ -1,0 +1,22 @@
+数字三角形问题：给出了一个数字三角形，请编写一个程序，计算从顶至底的某处的一条路径，使该路径所经过的数字的总和最大。
+       输入与输出：第1行是输入整数（如果该整数是0,就表示结束，不需要再处理），表示三角形行数n，然后是n行数，输出最大和。
+
+row=int(input())
+if row==0:
+   print(0)
+else:
+   dp=[[0 for i in range(row+1)] for j in range(row+1)]
+   for i in range(row):
+       line=input().split()
+       for j in range(i+1):
+           dp[i+1][j+1]=int(line[j])
+   # print(dp)
+   for k in range(2,row+1):
+       for p in range(1,k+1):
+           dp[k][p]=max(dp[k-1][p-1],dp[k-1][p])+dp[k][p]
+   last=dp[-1]
+   max=-1
+   for elem in last:
+       if elem>max:
+           max=elem
+   print(max)

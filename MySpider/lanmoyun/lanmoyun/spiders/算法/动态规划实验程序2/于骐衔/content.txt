@@ -1,0 +1,48 @@
+#给定n个矩阵：A1,A2,...,An，其中Ai与Ai+1是可乘的，i=1，2...，n-1。确定计算矩阵连乘积的计算次序，使得依此次序计算矩阵连乘积需要的数乘次数最少。
+def matrixChain(jz,m,s):
+   n = len(jz)-1
+   print('各矩阵阶',end='')
+   for i in range(n):
+       print('(%d_%d)'%(jz[i],jz[i+1]),end='')
+   print()
+   for i in range(1,n+1):
+       m[i][i]=0
+   for i in range(2,n+1):
+       for j in range(1,n-i+2):
+           k = j + i - 1
+           m[j][k] = m[j+1][k] + jz[j-1]*jz[j]*jz[k]
+           s[j][k] = j
+           for h in range(j+1,k):
+               t = m[j][h] +m[h+1][k] +jz[j-1]*jz[h]*jz[k]
+               if t<m[j][k]:
+                   m[j][k] =t
+                   s[j][k] =h
+
+def trace(s,i,n):
+   if n==i:
+       return
+   trace(s,i,s[i][n])
+   trace(s,s[i][n] +1,n)
+   print(i,'_',s[i][n],'&',s[i][n]+1,'_',n)
+
+def main():
+   jz = [30,35,15,5,10,20,25]
+   m = [[-1]*7 for i in range(7)]
+   s = [[-1]*7 for i in range(7)]
+   matrixChain(jz,m,s)
+   print('数乘表')
+   for i in m[1::]:
+       for j in i[1::]:
+           print('%7d'%j,end='')
+       print()
+   print("合并表")
+   for i in s[1::]:
+       for j in i[1::]:
+           print('%3d'%j,end='')
+       print()
+   print('具体合并策略：')
+   trace(s,1,len(jz)-1)
+   print('最少数乘次数：',m[1][len(jz)-1])
+
+if __name__ == '__main__':
+   main()

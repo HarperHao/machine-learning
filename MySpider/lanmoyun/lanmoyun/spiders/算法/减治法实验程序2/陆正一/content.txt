@@ -1,0 +1,41 @@
+public class Main {
+   static int[] a = {2, 2, 2, 2, 2, 2, 1, 2};
+   public static void main(String[] args) {
+       int l = 0;
+       int r = a.length-1;
+       System.out.println(f3(l, r));
+
+   }
+   private static int f3(int l, int r) {
+       int n = r - l + 1;
+       int x;
+       if(n == 1) {
+           return l;
+       }
+       if (n % 3 == 0) {
+           x = n / 3;
+       } else {
+           x = n / 3 + 1;
+           return f3(l+1, r);
+       }
+       int mid1 = l + x - 1;
+       int mid2 = mid1 + x;
+       if (sum(l, mid1) == sum(mid1+1, mid2)) {
+           return f3(mid2+1, r);
+       } else if (sum(l, mid1) < sum(mid1+1, mid2)){
+           return f3(l, mid1);
+       } else {
+           return f3(mid1+1, mid2);
+       }
+   }
+   /**
+    * 获取指定区域内硬币的重量
+    * */
+   private static int sum(int l, int r) {
+       int sum = 0;
+       for (int i = l; i <= r; i++) {
+           sum += a[i];
+       }
+       return sum;
+   }
+}

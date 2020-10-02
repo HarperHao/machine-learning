@@ -1,0 +1,299 @@
+AVL树
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+#ifndef _MYHEAD_H
+#define _MYHEAD_H
+#include<vector>
+class Node
+{
+public:
+int key = 0;
+int height = 0;
+Node* left = nullptr;
+Node* right = nullptr;
+Node(int key_t = 0)
+{
+key = key_t;
+height = 1;
+left = right = nullptr;
+}
+};
+class AVL
+{
+private:
+Node* header;
+
+Node* ll_ratate(Node* y);
+
+Node* rr_ratate(Node* y);
+Node* lr_ratate(Node* y);
+Node* rl_ratate(Node* y);
+
+int get_height(Node* node);
+int get_balance(Node* node);
+
+Node* insert_real(int key, Node* node);
+Node*& find_real(int key, Node*& node);
+
+Node* erase_real(int key, Node* node);
+
+void in_order(Node* root);  
+void root_order(Node* root);
+void after_order(Node* root);
+
+int destory(Node* node);
+
+public:
+AVL();
+~AVL();
+void insert(int key);
+Node* find(int key);
+Node* loop_find(int key);
+
+void erase(int key);
+void print(int tag);
+};
+#endif
+
+AVL::AVL()
+{
+header = new Node(-100);
+}
+
+AVL::~AVL()
+{
+destory(header->left);
+}
+
+int AVL::destory(Node* p)
+{
+if (p == nullptr)
+return 0;
+destory(p->left);
+destory(p->right);
+delete p;
+p = nullptr;
+}
+
+void AVL::insert(int key)
+{
+header->left = insert_real(key, header->left);
+}
+int AVL::get_height(Node* node)
+{
+if (node == nullptr)
+return 0;
+return node->height;
+}
+int AVL::get_balance(Node* node)
+{
+if (node == nullptr)
+return 0;
+return get_height(node->left) - get_height(node->right);
+}
+Node* AVL::insert_real(int key, Node* node)
+{
+if (node == nullptr)
+return new Node(key);
+
+if (key < node->key)
+node->left = insert_real(key, node->left);
+else if (key > node->key)
+node->right = insert_real(key, node->right);
+else
+return node;
+
+node->height = max(get_height(node->left), get_height(node->right)) + 1;
+int balance = get_balance(node);
+if (balance > 1 && get_balance(node->left) > 0)
+return ll_ratate(node);
+if (balance < -1 && get_balance(node->right) < 0)
+return rr_ratate(node);
+if (balance > 1 && get_balance(node->left) < 0)
+return lr_ratate(node);
+if (balance < -1 && get_balance(node->right) > 0)
+return rl_ratate(node);
+
+return node;
+}
+void AVL::print(int tag)
+{
+if (tag == 1)
+{
+cout << " 先序遍历 : " << endl;
+root_order(header->left);
+cout << endl;
+}
+if (tag == 2)
+{
+cout << " 中序遍历 : " << endl;
+in_order(header->left);
+cout << endl;
+}
+if (tag == 3)
+{
+cout << " 后序遍历 : " << endl;
+after_order(header->left);
+cout << endl;
+}
+}
+void AVL::after_order(Node* root)
+{
+if (root != nullptr)
+{
+after_order(root->left);
+after_order(root->right);
+cout << "[ " << root->key << " ，" << root->height << " ]" << endl;
+}
+}
+
+void AVL::in_order(Node* root)
+{
+if (root != nullptr)
+{
+in_order(root->left);  
+cout << "[ " << root->key << " ，" << root->height << " ]" << endl;
+in_order(root->right);
+}
+}
+
+void AVL::root_order(Node* root)
+{
+if (root != nullptr)
+{
+cout << "[ " << root->key << " ，" << root->height << " ]" << endl;
+root_order(root->left);
+root_order(root->right);
+}
+}
+
+Node* AVL::ll_ratate(Node* y)
+{
+Node* x = y->left;
+y->left = x->right;
+x->right = y;
+y->height = max(get_height(y->left), get_height(y->right)) + 1;
+x->height = max(get_height(x->left), get_height(x->right)) + 1;
+return x;  
+}
+Node* AVL::rr_ratate(Node* y)
+{
+Node* x = y->right;
+y->right = x->left;
+x->left = y;
+y->height = max(get_height(y->left), get_height(y->right)) + 1;
+x->height = max(get_height(x->left), get_height(x->right)) + 1;
+return x;
+}
+Node* AVL::lr_ratate(Node* y)
+{
+Node* x = y->left;
+y->left = rr_ratate(x);
+return ll_ratate(y);
+}
+Node* AVL::rl_ratate(Node* y)
+{
+Node* x = y->right;
+y->right = ll_ratate(x);
+return rr_ratate(y);
+}
+Node* AVL::find(int key)
+{
+return find_real(key, header->left);
+}
+Node*& AVL::find_real(int key, Node*& node)
+{
+if (node == nullptr)
+return node;
+if (key < node->key)
+find_real(key, node->left);
+else if (key > node->key)
+find_real(key, node->right);
+else
+return node;
+}
+
+Node* AVL::loop_find(int key)
+{
+Node* p = header->left;  
+while (p && p->key != key)
+{
+if (key < p->key)
+p = p->left;
+else
+p = p->right;
+}
+return p;
+}
+Node* AVL::erase_real(int key, Node* node){
+if (node == nullptr){
+cout << key << "不在该 AVL 树中" << endl;
+return node;
+}
+
+if (key < node->key)
+node->left = erase_real(key, node->left);
+else if (key > node->key)
+node->right = erase_real(key, node->right);
+else{
+if (node->left && node->right{
+Node* x = node->right;
+while (x->left)
+x = x->left;
+node->key = x->key;
+node->right = erase_real(x->key, node->right);
+}
+else{
+Node* t = node;
+node = node->left ? node->left : node->right;
+delete t;
+if (node == nullptr)
+return nullptr;
+}
+}
+
+node->height = max(get_height(node->left), get_height(node->right)) + 1;
+
+int balance = get_balance(node);
+if (balance > 1 && get_balance(node->left) >= 0)  
+return ll_ratate(node);
+if (balance < -1 && get_balance(node->right) <= 0)
+return rr_ratate(node);
+if (balance > 1 && get_balance(node->left) < 0)
+return lr_ratate(node);
+if (balance < -1 && get_balance(node->right) > 0)
+return rl_ratate(node);
+return node;
+}
+
+void AVL::erase(int key)
+{
+header->left = erase_real(key, header->left);
+}
+
+int main(void){
+AVL avl;
+vector<int> intVec{ 3, 2, 1, 4, 4, 5, 6, 7, 10, 9, 7, 8 };
+for (auto i : intVec)
+avl.insert(i);
+avl.print(1);
+Node* p = nullptr;
+cout << ((p = avl.find(2)) ? p->key : -1) << endl;
+cout << ((p = avl.find(100)) ? p->key : -1) << endl;
+cout << ((p = avl.loop_find(14)) ? p->key : -1) << endl; 1
+cout << ((p = avl.loop_find(5)) ? p->key : -1) << endl;
+avl.erase(100);
+avl.print(2);
+
+avl.erase(9);
+avl.print(3);
+
+avl.erase(8);
+avl.print(3);
+
+return 0;
+}

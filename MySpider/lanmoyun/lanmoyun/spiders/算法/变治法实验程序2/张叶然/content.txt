@@ -1,0 +1,318 @@
+2. 平衡查找树问题
+//树的创建：若为空树，则插入一个数据元素作为树的根节点，树长高，树的深度增加1。若待插入的数据元素与树的根节点的关键字相同，则不进行插入。若待插入的数据元素小于(大于)根节点的关键字，且在左(右)子树上不存在与之相等的数据元素,那么将其插入到左(右)子树上。若根节点的平衡因子为-1(1)，将根节点的平衡因子变为0，深度不变;若根节点的平衡因子为0，就将根节点的平衡因子变为1, 深度增加。若根节点的平衡因子为1(-1),那么当其左(右)子树的根节点的平衡因子为1(-1)的时候，需要进行单向右(左)旋处理，并且在右(左)旋处理之后，将根节点和其右(左)子树根节点的平衡因子改为0，树的深度不变;当其左(右)子树的根节点的平衡因子为-1(1)的时候，要进行先左后右(先右后左)的双向旋转平衡，并在旋转之后，修改根节点和其左右子树的根节点的平衡因子,树的深度不变。
+元素的删除：被删除的节点是叶子,直接删除;被删除的节点只有左子树或者只有右子树，父节点绕过该节点使其指向删除节点的左子树(右子树为空）、右子树(左子树为空时);被删除的节点既有左子树，也有右子树，用该节点的左子树最大数据或右子树最小数据（假设A节点）代替，并递归地删除A节点。
+import java.util.ArrayList;
+import java.util.Scanner;
+class TreeNode {
+int data;
+TreeNode leftChild;
+TreeNode rightChild;
+int height;
+public int getData() {
+return data;
+}
+public void setData(int data) {
+this.data = data;
+}
+public TreeNode getLeftChild() {
+return leftChild;
+}
+public void setLeftChild(TreeNode leftChild) {
+this.leftChild = leftChild;
+}
+public TreeNode getRightChild() {
+return rightChild;
+}
+public void setRightChild(TreeNode rightChild) {
+this.rightChild = rightChild;
+}
+public TreeNode(int data) {
+this.data = data;
+//初始化高度为1
+height = 1;
+}
+}
+public class AVLTree {
+static TreeNode root;
+static boolean flag=true;
+// 获得高度
+private int getHeight(TreeNode node) {
+if (node == null) {
+return 0;
+}
+else {
+return node.height;
+}
+}
+// 获得节点的平衡因子
+private int getBalanceFactor(TreeNode node) {
+if (node == null) {
+return 0;
+}
+else {
+return getHeight(node.leftChild) - getHeight(node.rightChild);
+}
+}
+// 判断该二叉树是否是一颗二叉搜索树
+public boolean isBST() {
+ArrayList<Integer> datas = new ArrayList<>();
+inOrder(root, datas);
+for (int i = 1; i < datas.size(); i++)
+if (datas.get(i - 1) > datas.get(i))
+return false;
+return true;
+}
+// 中序遍历添加进集合
+public void inOrder(TreeNode node, ArrayList<Integer> datas) {
+if (node != null) {
+inOrder(node.getLeftChild(), datas);
+datas.add(node.data);
+inOrder(node.getRightChild(), datas);
+}
+else {
+return;
+}
+}
+public void inOrder(TreeNode node) {
+if (node != null) {
+inOrder(node.getLeftChild());
+System.out.print(node.data + " ");
+inOrder(node.getRightChild());
+}
+}
+// 判断该二叉树是否是一颗平衡二叉树
+public boolean isBalanced() {
+return isBalanced(root);
+}
+private boolean isBalanced(TreeNode node) {
+if (node == null) {
+return true;
+}
+else {
+int balanceFactor = getBalanceFactor(node);
+if (Math.abs(balanceFactor) > 1) {
+return false;
+}
+return isBalanced(node.leftChild) && isBalanced(node.rightChild);
+}
+}
+private TreeNode rightRotate(TreeNode y) {
+TreeNode x = y.leftChild;
+TreeNode T3 = x.rightChild;
+// 向右旋转过程
+x.rightChild = y;
+y.leftChild = T3;
+// 更新height
+y.height = Math.max(getHeight(y.leftChild),getHeight(y.rightChild)) + 1;
+x.height = Math.max(getHeight(x.leftChild), getHeight(x.rightChild)) + 1;
+if (y == root) {
+root = x;
+}
+return x;
+}
+private TreeNode leftRotate(TreeNode y) {
+TreeNode x = y.rightChild;
+TreeNode T2 = x.leftChild;
+// 向左旋转过程
+x.leftChild = y;
+y.rightChild = T2;
+// 更新height
+y.height = Math.max(getHeight(y.leftChild), getHeight(y.rightChild)) + 1;
+x.height = Math.max(getHeight(x.leftChild), getHeight(x.rightChild)) + 1;
+if (y== root) {
+root = x;
+}
+return x;
+}
+// 添加节点
+public TreeNode addNode(TreeNode node, int data) {
+if (root == null) {
+TreeNode treeNode = new TreeNode(data);
+root = treeNode;
+return root;
+}
+if (node == null) {
+TreeNode treeNode = new TreeNode(data);
+return treeNode;
+}
+else {
+if (data < node.data) {
+node.leftChild = addNode(node.leftChild, data);
+}
+else if (data > node.data) {
+node.rightChild = addNode(node.rightChild, data);
+}
+else {
+node.data = data;
+}
+// 更新height
+node.height = 1 + Math.max(getHeight(node.leftChild), getHeight(node.rightChild));
+// 计算平衡因子
+int balanceFactor = getBalanceFactor(node);
+// LL
+if (balanceFactor > 1 && getBalanceFactor(node.leftChild) >= 0) {
+return rightRotate(node);
+}
+// RR
+if (balanceFactor < -1 && getBalanceFactor(node.rightChild) <= 0) {
+return leftRotate(node);
+}
+// LR
+if (balanceFactor > 1 && getBalanceFactor(node.leftChild) < 0) {
+node.leftChild = leftRotate(node.leftChild);
+return rightRotate(node);
+}
+// RL
+if (balanceFactor < -1 && getBalanceFactor(node.rightChild) > 0) {
+node.rightChild = rightRotate(node.rightChild);
+return leftRotate(node);
+}
+return node;
+}
+}
+// 删除节点
+public TreeNode deleteNode(TreeNode node, int data) {
+if (node == null) {
+System.out.println("find not");
+flag=false;
+return null;
+}
+TreeNode retNode;
+if (data < node.data) {
+node.leftChild = deleteNode(node.leftChild, data);
+retNode = node;
+}
+else if (data > node.data) {
+node.rightChild = deleteNode(node.rightChild, data);
+retNode = node;
+}
+else {
+// 左子树为空的时候
+if (node.leftChild == null) {
+TreeNode rightNode = node.rightChild;
+node.rightChild = null;
+retNode = rightNode;
+}
+// 右子树为空的时候
+else if (node.rightChild == null) {
+TreeNode leftNode = node.leftChild;
+node.leftChild = null;
+retNode = leftNode;
+}
+else {
+// 左右子树都不为空的时候
+// 找到待删除节点的后继节点
+TreeNode successor = processer(node.rightChild);
+//如果删除的恰好是根节点
+if (node == root) {
+root = successor;
+}
+successor.rightChild = deleteNode(node.rightChild, successor.data);
+successor.leftChild = node.leftChild;
+node.leftChild = node.rightChild = null;
+retNode = successor;
+}
+}
+if (retNode == null) {
+return null;
+}
+else {
+// 更新height
+retNode.height = 1 + Math.max(getHeight(retNode.leftChild), getHeight(retNode.rightChild));
+// 计算平衡因子
+int balanceFactor = getBalanceFactor(retNode);
+// LL
+if (balanceFactor > 1 && getBalanceFactor(retNode.leftChild) >= 0) {
+return rightRotate(retNode);
+}
+// RR
+if (balanceFactor < -1 && getBalanceFactor(retNode.rightChild) <= 0) {
+return leftRotate(retNode);
+}
+// LR
+if (balanceFactor > 1 && getBalanceFactor(retNode.leftChild) < 0) {
+retNode.leftChild = leftRotate(retNode.leftChild);
+return rightRotate(retNode);
+}
+// RL
+if (balanceFactor < -1 && getBalanceFactor(retNode.rightChild) > 0) {
+retNode.rightChild = rightRotate(retNode.rightChild);
+return leftRotate(retNode);
+}
+return retNode;
+}
+}
+// 寻找后继节点
+private TreeNode processer(TreeNode node) {
+if (node.leftChild == null) {
+return node;
+}
+else {
+return processer(node.leftChild);
+}
+}
+// 修改节点
+public boolean updateNode(int oldData, int newData) {
+TreeNode del = deleteNode(root, oldData);
+if(flag==false) {
+return false;
+}else {
+addNode(root, newData);
+return true;
+}
+}
+// 查找节点
+public TreeNode findNode(int data) {
+TreeNode current = root;
+while (current.data != data) {
+if (data < current.data) {
+current = current.leftChild;
+}
+else {
+current = current.rightChild;
+}
+if (current == null) {
+return null;
+}
+}
+return current;
+}
+public static void main(String[] args) {
+AVLTree tree = new AVLTree();
+int[] arr = new int[] { 60, 50, 80, 30, 90, 10 };
+//依次添加进avl树
+for (int i : arr) {
+tree.addNode(root, i);
+}
+//中序遍历
+System.out.println("中序遍历创建的树：");
+tree.inOrder(root);
+System.out.println();
+System.out.println("插入节点：");
+Scanner input=new Scanner(System.in);
+int n=input.nextInt();
+System.out.println("中序遍历：");
+tree.addNode(root, n);
+tree.inOrder(root);
+System.out.println();
+System.out.println("删除节点：");
+int n1=input.nextInt();
+System.out.println("中序遍历：");
+tree.deleteNode(root, n1);  
+tree.inOrder(root);
+}
+}
+
+
+
+实验结果：
+中序遍历创建的树：
+10 30 50 60 80 90
+插入节点：
+20
+中序遍历：
+10 20 30 50 60 80 90
+删除节点：
+50
+中序遍历：
+10 20 30 60 80 90

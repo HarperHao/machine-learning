@@ -1,0 +1,40 @@
+实验名称：
+变治法的应用
+实验目的：
+了解变治法，实现LU分解矩阵求逆。
+实验题目：
+实现LU分解方法进行矩阵的求逆运算。
+实验源代码：
+import numpy as np
+import sys
+def LU(m):
+   dim = m.shape[0]
+   E = np.mat(np.eye(dim))
+   L = np.mat(np.eye(dim))
+   U = m.copy()
+   for i in range(dim):
+       if abs(m[i, i]) < 1e-8:
+           sys.exit()
+       L[i + 1:, i] = U[i + 1:, i] / U[i, i]
+       E[i + 1:, :] = E[i + 1:, :] - L[i + 1:, i] * E[i, :]
+       U[i + 1:, :] = U[i + 1:, :] - L[i + 1:, i] * U[i, :]
+   E1 = np.mat(np.eye(dim))
+   for i in range(dim - 1, -1, -1):
+       E[i, :] = E[i, :] / U[i, i]
+       E1[i, :] = E1[i, :] / U[i, i]
+       U[i, :] = U[i, :] / U[i, i]
+       E[:i, :] = E[:i, :] - U[:i, i] * E[i, :]
+       E1[:i, :] = E1[:i, :] - U[:i, i] * E1[i, :]
+       U[:i, :] = U[:i, :] - U[:i, i] * U[i, :]
+   E2 = np.mat(np.eye(dim))
+   for i in range(dim):
+       E2[i + 1:, :] = E2[i + 1:, :] - L[i + 1:, i] * E2[i, :]
+       L[i + 1:, :] = L[i + 1:, :] - L[i + 1:, i] * U[i, :]
+   print("原矩阵的逆为：")
+   print(E1 * E2)
+if __name__ == "__main__":
+   A = np.mat([[1,0,0],[0,2,0],[0,0,4]])
+   print(" 原矩阵为：")
+   print(A)
+   A_dim = A.shape[0]
+   LU(A)

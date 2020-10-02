@@ -1,0 +1,43 @@
+求两个序列中位数：
+#include"stdafx.h"
+#include<iostream>
+using namespace std;
+int x[5] = { 11,13,15,17,19 };
+int y[5] = { 2,4,10,15,20 };
+int me(int a, int b)
+{
+int m, n;
+if ((b-a) % 2 == 0)
+{
+m = (b - a) / 2;
+return m+a;
+}
+else
+{
+m = (b - a) / 2 + 1;
+return m+a;
+}
+}
+int median(int a, int b,int c,int d)
+{
+int m, n;
+m = me(a, b);
+n = me(c, d);
+if (x[m] == y[n])
+return x[m];
+else if (x[m] < y[n])
+{
+return median(m, b, c, n);
+}
+else
+{
+return median(a, m, n, d);
+}
+}
+int main()
+{
+int x = median(0, 4, 0, 4);
+cout << "两个序列的中位数为：" << x << endl;
+system("pause");
+return 0;
+}

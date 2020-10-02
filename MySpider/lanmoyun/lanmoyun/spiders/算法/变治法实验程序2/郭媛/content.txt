@@ -1,0 +1,103 @@
+变治法实现2-3树
+class Node:
+   def __init__(self, leftValue, rightValue=None):
+       self.leftValue = leftValue
+       self.rightValue = rightValue
+       self.leftChild = None
+       self.centerChild = None
+       self.rightChild = None
+       self.parent = None
+   def isLeaf(self):
+       return self.leftChild == None
+   def childList(self):
+       result = [self.leftChild, self.centerChild, self.rightChild]
+       return [i for i in result if i != None]
+   def valueList(self):
+       result = [self.leftValue, self.rightValue]
+       return [i for i in result if i != None]
+   def isEmpty(self):
+       return len(self.valueList())==0
+def setParent(parent,child,position='l'):
+   if position == 'l':
+       parent.leftChild = child
+       if child!=None:
+           child.parent = parent
+   elif position == 'c':
+       parent.centerChild = child
+       if child!= None:
+           child.parent = parent
+   else:
+       parent.rightChild = child
+       if child!=None:
+           child.parent = parent
+def find(list, filter_):
+   for x in list:
+       if filter_(x):
+           return x
+   return None
+def add(N, n):
+   if N.rightValue == None:
+       [Nx, Ny] = sorted([N,n],key=lambda i:i.leftValue)
+       x, y = Nx.leftValue, Ny.leftValue
+       Nxy = Node(x, y)
+       setParent(Nxy,Nx.leftChild,'l')
+       setParent(Nxy,Ny.centerChild,position='r')
+       childrenList = [i for i in N.childList() if n.leftValue not in i.valueList()]+n.childList()
+       setParent(child=find(childrenList, lambda i: x < i.leftValue < y),
+                 parent=Nxy,position='c')
+       return Nxy
+   else:
+       [x, y, z] = sorted(N.valueList()+n.valueList())
+       l_link = [i for i in N.childList() if n.leftValue not in i.valueList()]+n.childList()
+       Nx,Ny,Nz=Node(x),Node(y),Node(z)
+       setParent(Nx,find(l_link, lambda i: i.leftValue < x),'l')
+       setParent(Nx,find(l_link, lambda i: x < i.leftValue < y),'c')
+       setParent(Nz,find(l_link, lambda i: y < i.leftValue < z),'l')
+       setParent(Nz,find(l_link, lambda i: z < i.leftValue),position='c')
+       setParent(Ny,Nx,'l')
+       setParent(Ny,Nz,'c')
+       return Ny
+def insert(root, item):
+   if root == None:
+       return Node(item)
+   if root.isLeaf():
+       return add(root, Node(item))
+   else:
+       if item < root.leftValue:
+           retval = insert(root.leftChild, item)
+           if set(root.leftChild.valueList()) <= set(retval.valueList()):
+               setParent(root,retval,'l')
+               return root
+           else:
+               return add(root, retval)
+       elif root.rightValue == None or item < root.rightValue:
+           retval = insert(root.centerChild, item)
+           if set(root.centerChild.valueList()) <= set(retval.valueList()):
+               setParent(parent=root,child=retval,position='c')
+               return root
+           else:
+               return add(root, retval)
+       else:
+           retval = insert(root.rightChild, item)
+           if set(root.rightChild.valueList()) <= set(retval.valueList()):
+               setParent(parent=root,child=retval,position='r')
+               return root
+           else:
+               return add(root, retval)
+def bfs(N):
+   print("所创建的2-3树为：")
+   q = []
+   q.append(N)
+   while q:
+       p = q.pop(0)
+       for v in p.valueList():
+           print(v)
+       for n in p.childList():
+           q.append(n)
+root_ = Node('C')
+root_ = insert(root_,'H')
+root_ = insert(root_,'I')
+root_ = insert(root_,'N')
+root_ = insert(root_,'S')
+root_ = insert(root_,'E')
+bfs(root_)

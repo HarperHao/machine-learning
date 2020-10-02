@@ -1,0 +1,80 @@
+import numpy
+
+
+def Reverse(array):
+   array.reverse()
+   return array
+
+
+def l_u(array):  # 构造array的lu矩阵
+   def u(u_x, u_y, u_array):
+       add = (u_array[u_x][0] * u_array[0][u_y])
+       for k in range(u_x - 1, 0, -1):
+           add += (u_array[u_x][k] * u_array[k][u_y])
+       return u_array[u_x][u_y] - add
+
+   def l(l_x, l_y, l_array):  # 下三角矩阵
+       if l_y > 0:
+           add = (l_array[l_x][0] * l_array[0][l_y])
+       else:
+           add = 0
+       for k in range(1, l_y - 1):
+           add += (l_array[l_x][k] * l_array[k][l_y])
+       return (l_array[l_x][l_y] - add) / l_array[l_y][l_y]
+
+   for x in range(1, len(array)):  # 上三角矩阵
+       for y in range(len(array)):
+           if x > y:
+               array[x][y] = l(x, y, array)
+           else:
+               array[x][y] = u(x, y, array)
+   return array
+
+
+def x_y(array, lst_2):  # 求x的解
+   x, y = [], []
+   new_array = array
+
+   def y_array(y_list):  # 先求y的解
+       y_list.append(lst_2[0][0])
+       for index in range(1, len(new_array)):
+           add = 0
+           for index_1 in range(index):
+               add += new_array[index][index_1] * y_list[index_1]
+           y_list.append(lst_2[0][index] - add)
+       return y_list
+
+   def x_array(x_list, y_list):  # x的解
+       for index in range(len(y_list) - 1, -1, -1):
+           add = 0.0
+           for index_1 in range(len(y_list) - 1, index, -1):
+               add += new_array[index][index_1] * x_list[len(y_list) - 1 - index_1]
+           x_list.append((y_list[index] - add) / new_array[index][index])
+       return x_list
+
+   return x_array(x, y_array(y))
+
+
+def creat_array(array, number):  # 把array与单位矩阵分解成线性方程组
+   nuit = numpy.zeros([1, len(array)], dtype='float')
+   nuit[0][number] = 1
+   new_array = array
+   return x_y(new_array, nuit)  # 依次计算逆矩阵每一列
+
+
+dimension = int(input("please input dimension of your array(请输入矩阵维度)： "))
+# lst = [[2, -1, 1], [4, 1, -1], [1, 1, 1]]
+lst = []
+for index in range(dimension):  # for循环输入矩阵
+   x = input(f"please input data of array{index + 1}(请输入数组第{index + 1}行的数据)： ")
+   lst_2 = x.split(" ")
+   lst_3 = []
+   for elem in lst_2:
+       lst_3.append(int(elem))
+   lst.append(lst_3)
+goal_lst = []
+l_u_lst = l_u(lst)  # 输出lst的lu矩阵
+for index in range(dimension):
+   goal_lst.append(Reverse(creat_array(l_u_lst, index)))  # 组成逆矩阵的的横向输出
+print("inverse matrix is(逆矩阵为)： ")
+print(numpy.transpose(goal_lst))  # 通过transpose函数纵向输出

@@ -1,0 +1,78 @@
+字典生成全排列
+import java.util.Scanner;
+
+public class pai {
+
+public static void main(String[] args) {
+Scanner in = new Scanner(System.in);
+int num;
+System.out.println("全排列的数字个数:");
+num = in.nextInt();
+int[] arr=new int[num];
+System.out.println("全排列的数字为:");
+       for(int i=0;i<num;i++) {
+        arr[i] = in.nextInt();
+       }
+       System.out.println("排列数为:");
+       sort(arr,num);
+       System.out.print(" ");
+       while(true) {
+       int index=0;
+       for(int j=num-2;j>=0;j--) {
+        if(arr[j]<arr[j+1]) {
+        index=j;
+        break;
+        }
+        else if(j==0) {
+        return;
+        }
+       }
+       int f,j;
+       for(j=num-1;j>=0;j--) {
+        if(arr[j]>arr[index]) {
+       
+           break;
+        }
+       }
+       f=j;
+       swap(arr,index,f);
+       reverse(arr,index+1,num);
+       for(int i=0;i<num;i++)
+        System.out.print(arr[i]);
+       System.out.print(" ");
+       }
+}
+   public static void sort(int[] a,int n)
+  {
+int temp;
+int j;
+for(int i=n-2;i>=0;i--) {
+temp = a[i];
+j = i+1;
+while(j<n&&a[j]<temp) {
+a[j-1] = a[j];
+j = j+1;
+}
+a[j-1] = temp;
+}
+for(int i=0;i<n;i++) {
+System.out.print(a[i]);
+}
+}
+   public static void reverse(int[] a,int i,int num)
+   {
+    int k=i,j=num-1;
+    while(k<j) {
+    swap(a,k,j);
+    k++;
+    j--;
+    }
+   }
+  public static void swap(int[] a,int x,int y)
+  {
+  int temp;
+  temp=a[x];
+  a[x]=a[y];
+  a[y]=temp;  
+  }
+}

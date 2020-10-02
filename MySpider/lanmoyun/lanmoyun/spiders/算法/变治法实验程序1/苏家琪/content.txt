@@ -1,0 +1,62 @@
+矩阵LU分解求逆:
+n=int(input("输入矩阵的行数"))
+l=[]
+l.append(list(map(float,input("按从左到右，从上到下输入矩阵，每个字符用空格分开").split())))
+for i in range(n-1):
+   l.append(list(map(float,input("                                               ").split())))
+def qj(z,v):
+   l=z
+   for i in range(n-1):
+       for j in range(i+1,n):
+           for k in range(i+1,n):
+               if(l[i][i]==0):
+                   print("该矩阵值为0，无法求逆")
+                   exit(0)
+               else:
+                   l[j][k]-=l[i][k]*l[j][i]/l[i][i]
+               l[j][i]=l[j][i]/l[i][i]
+   m=[]
+   g=[]
+   for i in range(n):
+       m.append([])
+       g.append([])
+   for i in range(n):
+       for j in range(n):
+           m[i].append(l[i][j])
+           g[i].append(l[i][j])
+   for i in range(n):
+       m[i][i]=1
+       for j in range(i+1,n):
+           m[i][j]=0
+   for i in range(n):
+       for j in range(0,i):
+          g[i][j]=0
+   s=[]
+   d=[]
+   for i in range(n):
+       for j in range(i):
+           v[i]-=s[j]*m[i][j]
+       s.append(v[i]/m[i][i])
+   for i in range(0,n):
+       for j in range(n-i,n):
+           s[n-1-i]-=d[n-1-j]*g[n-1-i][j]
+       d.append(s[n-1-i]/g[n-1-i][n-1-i])
+   d.reverse()
+   q.append(d)
+q=[]
+for i in range(n):
+   f=[]
+   for j in range(i):
+       f.append(0)
+   f.append(1)
+   for j in range(i+1,n):
+       f.append(0)
+   qj(l,f)
+h=[]
+for i in range(n):
+   h.append([])
+for i in range(n):
+   for j in range(n):
+       h[i].append(q[j][i])
+for i in h:
+   print(i)

@@ -1,0 +1,99 @@
+//矩阵LU分解
+public class LU {
+
+   public static void main(String[] args) {
+       int size = 3;
+       double[][] A = { { 2,-1,1 }, { 4,1,-1 }, { 1,1,1} };
+       double[][] U = new double[size][size];
+       double[][] L = new double[size][size];
+       double[][] Uinv = new double[size][size];
+       double[][] Linv = new double[size][size];
+       System.out.println("A = ");
+       print(A);
+
+       //填主对角线为1
+       for (int i = 0; i < size; i++) {
+           L[i][i] = 1.0;
+       }
+       // 计算U的第一行
+       for (int j = 0; j < size; j++) {
+           U[0][j] = A[0][j];
+       }
+       // 计算L的第一列
+       for (int i = 1; i < size; i++) {
+           L[i][0] = A[i][0] / U[0][0];
+       }
+       // 迭代剩余
+       for (int k = 1; k < size; k++) {
+           //U的第k行
+           for (int j = k; j < size; j++) {
+               double s = 0.0;
+               for (int t = 0; t < k; t++)
+                   s += L[k][t] * U[t][j];
+               U[k][j] = A[k][j] - s;
+           }
+           // L的第k列
+           for (int i = k; i < size; i++) {
+               double s = 0.0;
+               for (int t = 0; t < k; t++)
+                   s += L[i][t] * U[t][k];
+               L[i][k] = (A[i][k] - s) / U[k][k];
+           }
+       }
+       // L求逆
+       for (int j = 0; j < size; j++) {
+           for (int i = j; i < size; i++) {
+               if (i == j)
+                   Linv[i][j] = 1 / L[i][j];
+               else if (i < j)
+                   Linv[i][j] = 0;
+               else {
+                   double s = 0.0;
+                   for (int k = j; k < i; k++)
+                       s += L[i][k] * Linv[k][j];
+                   Linv[i][j] = -Linv[j][j] * s;
+               }
+           }
+       }
+       // U求逆
+       for (int j = 0; j < size; j++) {
+           for (int i = j; i >= 0; i--) {
+               if (i == j)
+                   Uinv[i][j] = 1 / U[i][j];
+               else if (i > j)
+                   Uinv[i][j] = 0;
+               else {
+                   double s = 0.0;
+                   for (int k = i + 1; k <= j; k++)
+                       s += U[i][k] * Uinv[k][j];
+                   Uinv[i][j] = -1 / U[i][i] * s;
+               }
+           }
+       }
+       //A的逆矩阵
+       double[][] inv = new double[size][size];
+       for (int i = 0; i < size; i++)
+           for (int j = 0; j < size; j++)
+               for (int k = 0; k < size; k++)
+                   inv[i][j] += Uinv[i][k] * Linv[k][j];
+
+       System.out.println("L = ");
+       print(L);
+       System.out.println("U = ");
+       print(U);
+       System.out.println("Linv = ");
+       print(Linv);
+       System.out.println("Uinv = ");
+       print(Uinv);
+       System.out.println("inv = ");
+       print(inv);
+   }
+   public static void print(double[][] M) {
+       for (int i = 0; i < M.length; i++) {
+           for (int j = 0; j < M[0].length; j++)
+               System.out.printf("%8.2f ", M[i][j]);
+           System.out.println();
+       }
+       System.out.println();
+   }
+}

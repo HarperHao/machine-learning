@@ -1,0 +1,40 @@
+利用减治法解决约瑟夫问题
+package lesson2;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+   public static void main(String[] args) {
+       Scanner scanner = new Scanner(System.in);
+       System.out.print("请输入总人数：");
+       int n = scanner.nextInt();
+       System.out.print("第几个将被杀死：");
+       int m = scanner.nextInt();
+       yuesefu(n, m);
+   }
+
+   public static void yuesefu(int n, int m) {
+       // 初始化人数
+       List<Integer> list = new ArrayList<>();
+       for (int i = 1; i <= n; i++) {
+           list.add(i);
+       }
+       //从第K个开始计数
+       int k = 0;
+       while (list.size() >0) {
+           k = k + m;
+           //第m人的索引位置
+           k = k % (list.size()) - 1;
+           // 判断是否到队尾
+           if (k < 0) {
+               System.out.println(list.get(list.size()-1));
+               list.remove(list.size() - 1);
+               k = 0;
+           } else {
+               System.out.println(list.get(k));
+               list.remove(k);
+           }
+       }
+   }
+}

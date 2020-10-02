@@ -1,0 +1,44 @@
+//动态规划法解决01背包问题
+package lesson;
+public class Package {
+public int countValues(int m,int w[],int v[]){
+int[][] c=new int[w.length][m+1];
+//初始化数组c前一排
+for(int k=0;k<=m;k++){
+if(k>=w[0]){
+c[0][k]=v[0];
+}else{
+c[0][k]=0;
+
+}
+}
+//计算总价值
+for(int i=1;i<w.length;i++){
+for(int j=0;j<=m;j++){
+if(j<w[i]){
+c[i][j]=c[i-1][j];
+
+}else if(c[i-1][j]>=c[i-1][j-w[i]]+v[i]){
+c[i][j]=c[i-1][j];
+}else{
+c[i][j]=c[i-1][j-w[i]]+v[i];
+}
+}
+}
+//打印数组c，即动态规划表
+for(int i=0;i<w.length;i++ ){
+for(int j=0;j<=m;j++){
+System.out.print(c[i][j]+"  ");
+}
+System.out.println();
+}
+return c[w.length-1][m];
+}
+public static void main(String[] args) {
+int w[] = {2,2,6,5,4};  //物体重量  
+       int v[] = {6,3,5,4,6};  //物体价值  
+       int m=10;  //背包最大载重
+       Package p=new Package();
+       System.out.println("最大价值为:"+p.countValues(m, w, v));
+}
+}

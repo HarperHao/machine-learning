@@ -1,0 +1,66 @@
+JST
+#include<stdio.h>
+#define M 1000
+int a[M],b[M],c[M];
+int main()
+{
+int n,i;
+printf("一共有几个数要排列：");
+scanf("%d",&n);
+   for(i=0;i<n;i++)
+{
+  a[i]=i+1;
+}
+Johnson_Trotter(a,n);
+for(i=0;i<n;i++)
+{
+ printf("%d",a[i]);
+ if((i+1)%n==0)
+printf("\n");
+}
+return 0;
+}
+void Johnson_Trotter(int a[],int n)
+{
+for(int i=0;i<n;i++)
+{
+  b[i]=1;
+  c[i]=0;
+}
+int j=n-1;
+int s=0;
+while(true)
+{
+ int q=b[j]+c[j];
+ if(q>=0&&q!=j+1)
+ {
+    change(a,j-c[j]+s,j-q+s);
+for(int i=0;i<n;i++)
+     {
+      printf("%d",a[i]);
+  if((i+1)%n==0)
+printf("\n");
+      }
+c[j]=q;
+j=n-1;
+s=0;
+continue;
+ }
+ if (q == j + 1)
+{
+if (j == 0)
+break;
+else
+s++;
+}
+b[j] = -b[j];
+j--;
+}
+}
+void change(int a[],int i,int j)
+{
+int temp=a[i];
+a[i]=a[j];
+a[j]=temp;
+return ;
+}

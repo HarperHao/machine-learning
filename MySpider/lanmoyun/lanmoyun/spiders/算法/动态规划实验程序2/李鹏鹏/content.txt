@@ -1,0 +1,182 @@
+哈夫曼树实现及其dot语言可视化
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<malloc.h>
+#include<string.h>
+#define MAX 1000
+typedef int datatype;
+typedef struct node{
+datatype data;
+struct node *lchild, *rchild;
+struct node *line;
+}hfnode;
+typedef hfnode* hftree;
+typedef struct link_node{
+datatype data;
+struct link_node *next;
+}linkdata;
+typedef linkdata* link;
+void sort(link* t){
+link head = NULL;
+head = (link)malloc(sizeof(link_node));
+head->data = -1;
+head->next = (*t);
+link s = head;
+while(s->next != NULL){
+link r = s;
+while(r->next->next != NULL){
+link q = r->next;
+link p = q->next;
+if(q->data > p->data){
+q->next = p->next;
+p->next = q;
+r->next = p;
+}
+r = r->next;
+}
+s = s->next;
+}
+*t = head->next;
+}
+void creatlink(hftree* t, datatype x){
+if(*t == NULL){
+(*t) = (hftree)malloc(sizeof(hfnode));
+(*t)->data = x;
+(*t)->lchild = (*t)->line = (*t)->rchild = NULL;
+}
+else{
+hftree r = NULL;
+r = (hftree)malloc(sizeof(hfnode));
+r->data = x;
+r->lchild = r->line = r->rchild = NULL;
+if(x < (*t)->data){
+r->line = (*t);
+(*t) = r;
+}
+else{
+hftree p = (*t);
+hftree q = p->line;
+while(q != NULL){
+if(p->data < x&&q->data > x){
+p->line = r;
+r->line = q;
+break;
+}
+else{
+q = q->line;
+p = p->line;
+}
+}if(q == NULL&&p->data < x){
+p->line = r;
+}
+}
+}
+}
+
+void creatlink(hftree* t, hftree* x){//创建and插入
+if(*t == NULL)
+(*t) = (*x);
+else{
+if((*x)->data < (*t)->data){
+(*x)->line = (*t);
+(*t) = (*x);
+}
+else{
+hftree p = (*t);
+hftree q = p->line;
+while(q != NULL){
+if(p->data < (*x)->data&&q->data > (*x)->data){
+p->line = (*x);
+(*x)->line = q;
+break;
+}
+else{
+q = q->line;
+p = p->line;
+}
+}if(q == NULL&&p->data < (*x)->data){
+p->line = (*x);
+}
+}
+}
+}
+void change(link* t, hftree* root){
+if((*t) != NULL){
+link p = (*t);
+if((*root) == NULL){
+*root = (hftree)malloc(sizeof(hfnode));
+(*root)->data = p->data;
+(*root)->lchild = (*root)->line = (*root)->rchild = NULL;
+change(&((*t)->next), root);
+}
+else{
+hftree q  = NULL;
+q = (hftree)malloc(sizeof(hfnode));
+q->data = (*t)->data;
+q->lchild = q->line = q->rchild = 0;
+hftree s = *root;
+while(s->line != NULL)
+s = s->line;
+s->line = q;
+change(&((*t)->next), root);
+}
+}
+}
+hftree creathftree(hftree* t){
+hftree add;
+if((*t)->line != NULL){
+add = (hftree)malloc(sizeof(hfnode));
+add->data = (*t)->data + (*t)->line->data;
+add->lchild = (*t);
+add->rchild = (*t)->line;
+add->line = NULL;
+if((*t)->line->line != NULL){
+creatlink(&(*t)->line->line, &add);
+(*t) = creathftree(&(*t)->line->line);
+}
+else{
+(*t) = add;
+}
+}
+return (*t);
+}
+void preorder(hftree t, char *s){
+if(t){
+       FILE *pf;
+       pf = fopen(s, "a");
+if(t->lchild != NULL)
+fprintf(pf, "%d%s%d%s", t->data, "->", t->lchild->data, "\n\t");
+if(t->rchild != NULL)
+fprintf(pf, "%d%s%d%s", t->data, "->", t->rchild->data, "\n\t");
+if(t->lchild != NULL&&t->rchild != NULL)
+fprintf(pf, "%d%s%d%s", t->data, "[shape = box, label = ", t->data, "]\n\t");
+printf("%d ", t->data);
+preorder(t->lchild, s);
+preorder(t->rchild, s);
+}
+}
+int main(){
+hftree t = NULL;
+hftree x;
+x = (hftree)malloc(sizeof(hfnode));
+x->lchild = x->line = x->rchild = NULL;
+printf("请输入值-1结束(。-ω-)zzz！：\n");
+scanf("%d", &x->data);
+while(x->data != -1){
+creatlink(&t, &x);
+x = (hftree)malloc(sizeof(hfnode));
+x->lchild = x->line = x->rchild = NULL;
+scanf("%d", &(x->data));
+}
+t = creathftree(&t);
+   FILE *pf;
+char name[] = "hftree.dot";
+   pf = fopen(name, "w");
+fprintf(pf, "%s", "digraph graphname{\n\t");
+preorder(t, name);
+pf = fopen(name, "a");
+fprintf(pf, "%s", "}");
+printf("\n哈弗曼树构造完成打开dot文件可见(￣▽￣)~*");
+system("pause");
+}

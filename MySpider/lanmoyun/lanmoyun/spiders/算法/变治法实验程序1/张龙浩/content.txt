@@ -1,0 +1,64 @@
+import numpy as np
+import copy
+#LU·Ö½âÇóÄæ
+def LU_default(A):
+   length = len(A)
+   U = copy.deepcopy(A)
+   L = copy.deepcopy(A)
+   for i in range(0,length-1):
+       for j in range(i+1,length):
+           Ut = U[j][i]/U[i][i]
+           Lt = L[length-1-j][length-i-1]/L[length-i-1][length-i-1]
+           for k in range(0,length):
+               U[j][k] -= U[i][k]*Ut
+               L[length-1-j][k] -= L[length-1-i][k]*Lt
+   return L,U
+
+def Inverse_matrix(A):
+   L,U = LU_default(A)
+
+   length = len(A)
+   B = np.zeros(shape=(length,length))
+   for i in range(0,length):
+       B[i][i]=1
+   inverse=[]
+   for i in range(0,length):
+       y=[]
+       for j in range(0,length):
+           k=0
+           temp = B[i][j]
+           while(k<j):
+               temp-=L[j][k]*y[k]
+               k+=1
+           temp/=L[j][j]
+           y.append(temp)
+
+       x=[]
+       j=length-1
+       while(j>=0):
+           k=length-1
+           temp = y[j]
+           while(k>j):
+               temp -=U[j][k]*x[length-1-k]
+               k-=1
+           temp/=U[j][j]
+           x.append(temp)
+           j-=1
+       inverse.append(x)
+
+   matrix=[]
+   i=length-1
+   while i>=0:
+       temp=[]
+       for j in range(0,length):
+           temp.append(inverse[j][i])
+       matrix.append(temp)
+       i-=1
+
+   for x in matrix:
+       for y in x:
+           print("%10.3f"%y,end="")
+       print()
+
+
+Inverse_matrix([[1,2,1],[1,1,2],[2,2,1]])

@@ -1,0 +1,69 @@
+字典序生成全排列（可视化）、约瑟夫斯问题
+
+#字典序生成全排列（可视化）
+import matplotlib.pyplot as plt
+def show(data,num,result):
+   plt.clf()
+   plt.bar(range(len(data)),data,color='g')
+   plt.pause(1)
+   for item in data:
+       print(str(item)+" ",end='')
+   print("  ",end='')
+   if num%5==0:
+       print("")
+   result.append(data)
+   return num+1
+def find(data):
+   i=len(data)-1
+   while i>0:
+       if data[i-1]<data[i]:
+           break
+       i-=1
+   return i
+def order():
+   n=int(input("请输入正整数n："))
+   result=[]
+   data=[]
+   for i in range(n):
+       data.append(i+1)
+   num=show(data,1,result)
+   while True:
+       i=find(data)
+       if i==0:
+           break
+       else:
+           i-=1
+           j=len(data)-1
+           while data[j]<data[i]:
+               j-=1
+           temp=data[i]
+           data[i]=data[j]
+           data[j]=temp
+           data[i+1:]=sorted(data[i+1:])
+           num=show(data,num,result)
+   return result
+order()
+
+#约瑟夫斯问题
+def solve(m,n):
+   f=0
+   for i in range(n-1):
+       f=(f+m)%(i+2)
+   return f+1
+def solve2(m,n):
+   people=[]
+   for i in range(n):
+       people.append(i+1)
+   i=0
+   while len(people)>1:
+       i=(i+m-1)%len(people)
+       del people[i]
+       if i+m-1>=len(people):
+           print(people)
+       i=i%len(people)
+   return people[0]
+data=input("请输入m,n: ").split(",")
+m=int(data[0])
+n=int(data[1])
+print(solve(m,n))
+print(solve2(m,n))

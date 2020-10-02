@@ -1,0 +1,15 @@
+生成子集：
+def power(lists):
+   n= len(lists)
+   s=[]
+   for i in range(2**n):
+       x= []
+       for j in range(n):
+           if(i >> j ) % 2 == 1:
+               x.append(lists[j])
+       s.append(x)
+   return s
+
+lists=list(map(int,input("输入要生成的幂集：").split(',')))
+x= power(lists)
+print(x)

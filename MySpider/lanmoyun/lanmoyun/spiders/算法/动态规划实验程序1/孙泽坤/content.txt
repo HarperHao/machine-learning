@@ -1,0 +1,28 @@
+实验题目：01背包
+实验原理：注意到01背包问题具有最优子结构的性质，故可采用动态规划法解决，递归关系式如下：
+import numpy as np
+
+def Knapsack(V, N, values, weight, knapsack):
+   for i in range(1, N+1):
+       for j in range(0, V + 1):
+           if weight[i-1] > j:
+               knapsack[i][j] = knapsack[i - 1][j]
+           else:
+               knapsack[i][j] = max(knapsack[i - 1][j], knapsack[i - 1][j - weight[i]] + weight[i])
+   print("填表完成")
+   print(knapsack)
+   print("最多能装下的价值为：", knapsack[N ][V ])
+if __name__ == "__main__":
+   values = [0,1,2,3,4,5]
+   weight = [0,5,4,3,2,1]
+   V = int(input("请输入背包容量："))
+   N = int(input("请输入物品数量："))
+   knapsack = np.zeros((N + 1, V + 1))
+   for i in range(0, N):
+       print('请输入物品{}的重量：'.format(i + 1))
+       v = int(input())
+       values.append(v)
+       print("请输入物品{}的价值：".format(i + 1))
+       w = int(input())
+       weight.append(w)
+Knapsack(V, N, values, weight, knapsack)

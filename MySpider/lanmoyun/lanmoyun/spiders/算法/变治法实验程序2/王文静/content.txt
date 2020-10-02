@@ -1,0 +1,71 @@
+二进制幂
+
+#include <stdio.h>
+#include <stdlib.h>
+int array(int number, int arr[], int size)
+{
+int i = 0;
+while (number > 0)
+{
+if (number & 1)
+arr[i++] = 1;
+else
+arr[i++] = 0;
+if (i == size)
+break;
+number = number >> 1;
+}
+ return i;
+}
+
+int right_to_left(int number, int p)
+{
+ if (p == 0)
+   return 1;
+ int size = sizeof(int)*8;
+ int *pint = (int *)malloc(size);
+ int length = array(p, pint, size);
+ int i;
+ int item = number;
+ int ret = 1;
+ for (i = 0; i < length; i++)
+ {
+   if (pint[i] == 1)
+     ret = ret * item;
+   item *= item;
+ }
+ free(pint);
+ return ret;
+}
+
+int left_to_right(int number, int p)
+{
+ if (p == 0)
+   return 1;
+ int size = sizeof(int)*8;
+ int *pint = (int *)malloc(size);
+ int length = array(p, pint, size);
+ int ret = number;
+ int i;
+ for (i = length-1-1; i >= 0; --i)
+ {
+   ret *= ret;
+   if(pint[i] == 1)
+     ret *= number;
+ }
+ free(pint);
+ return ret;
+}
+
+int main(int argc, char *argv[])
+{
+printf("请输入数字x和次幂n:\n");
+ int number,p;
+ scanf("%d%d", &number, &p);
+ int ret = right_to_left(number, p);
+ int ret1 = left_to_right(number, p);
+ printf("从右向左二进制幂: %d^%d = %d\n", number, p, ret);
+ printf("从左向右二进制幂: %d^%d = %d\n", number, p, ret1);
+ main(0, NULL);
+return 0;
+}

@@ -1,0 +1,90 @@
+package lesson5;
+public class Dome {
+ 
+   public static void build(int[][] a,int[][] path){
+       int len = a.length;
+       for(int k = 0;k < len;k++){  
+         for(int i = 0;i < len;i++){        
+           for(int j = 0;j < len;j++){
+
+               int temp = 0;  
+               if(a[i][k] != 100 && a[k][j] != 100)  
+                   temp = a[i][k] + a[k][j];
+
+               if(a[i][j] > temp  && temp != 0) {    
+                   a[i][j] = temp;
+                   path[i][j] = k+1;  
+               }
+           }  
+         }
+       }
+   }
+     
+   public static String shortestPath2(int[][] path,int start,int end){
+       char startNode = (char) ('a' + start);
+       char endNode = (char) ('a' + end);
+       String nodePath = "";
+       if(path[start][end] == 0){
+           nodePath += startNode+"->"+endNode;
+           return nodePath;
+       }
+       int middle = path[start][end]-1;
+
+       nodePath += shortestPath2(path,start,middle)+" , "+shortestPath2(path,middle,end);
+       return nodePath;
+   }
+   
+   public static void print(int[][] path,int[][] result){
+       int len = path.length;
+       for(int i = 0;i < len;i++){    
+           char startNode = (char) ('a' + i);
+           for(int j = 0;j < len;j++){
+               char endNode = (char) ('a' + j);
+               String ijPath = startNode+"——>"+endNode+"最短路径为：";
+               String nodePath = shortestPath2(path,i,j);    
+               System.out.println(ijPath+nodePath+" ... 路径长度为..."+result[i][j]);
+               }        
+       }
+   }
+   
+   public static void main(String args[]){
+       int[][] chart = {{0,100,3,100},{2,0,100,100},{100,7,0,1},{6,100,100,0}};
+
+       System.out.println("有向图a的权重矩阵为(其中值为100距离太远无法通过)：");
+       System.out.println("\t"+"a"+"\t"+"b"+"\t"+"c"+"\t"+"d");
+       for(int i = 0;i < 4;i++){
+           char startNode = (char) ('a' + i);
+           System.out.print(startNode+"\t");
+           for(int j = 0;j < 4;j++)
+               System.out.print(chart[i][j]+"\t");
+           System.out.println();    
+       }
+       int[][] path = {{0,100,0,100},{0,0,100,100},{100,0,0,0},{0,100,100,0}};
+       build(chart,path);    
+
+       System.out.println("有向图a的距离矩阵为：");
+       System.out.println("\t"+"a"+"\t"+"b"+"\t"+"c"+"\t"+"d");
+       for(int i = 0;i < 4;i++){
+           char startNode = (char) ('a' + i);
+           System.out.print(startNode+"\t");
+           for(int j = 0;j < 4;j++)
+               System.out.print(chart[i][j]+"\t");
+           System.out.println();    
+       }
+
+       System.out.println("有向图chart的中间节点路径矩阵为(值为0表示两节点直接相通,值为1表示两节点有一个中间节点a,值为2表示中间节点为b,依次类推)：");
+       System.out.println("\t"+"a"+"\t"+"b"+"\t"+"c"+"\t"+"d");
+       for(int i = 0;i < 4;i++){
+           char startNode = (char) ('a' + i);
+           System.out.print(startNode+"\t");
+           for(int j = 0;j < 4;j++)
+               System.out.print(path[i][j]+"\t");
+           System.out.println();    
+       }
+
+       System.out.println("结果：");
+       print(path,chart);
+       
+       
+   }
+}

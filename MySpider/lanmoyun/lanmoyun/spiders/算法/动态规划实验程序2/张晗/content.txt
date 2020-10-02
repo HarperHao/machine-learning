@@ -1,0 +1,105 @@
+题目：多阶段最短路径问题
+代码：
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <iostream>
+using namespace std;
+#define MAX 100
+#define n 12
+#define k 5
+int c[n][n];
+void init(int cost[]){
+int i,j;
+for(i=0;i<13;i++){
+for(j=0;j<13;j++){
+c[i][j] = MAX;
+}
+}
+c[1][2] = 9; c[1][3] = 7; c[1][4] = 3; c[1][5] = 2;
+c[2][6] = 4; c[2][7] = 2; c[2][8] = 1;
+c[3][6] = 2; c[3][7] = 7; c[4][8] = 11;
+c[5][7] = 11; c[5][8] = 8;
+c[6][9] = 6; c[6][10] = 5;
+c[7][9] = 4; c[7][10] = 3;
+c[8][10] = 5; c[8][11] = 6;
+c[9][12] = 4;
+c[10][12] = 4;
+c[11][12] = 5;
+}
+void fgraph(int cost[],int path[],int d[]){
+int r,j,temp,min;
+for(j=0;j<=n;j++){
+cost[j]=0;
+}
+for(j=n-1;j>=1;j--){
+temp = 0;
+min = c[j][temp] + cost[temp];
+for(r=0;r<=n;r++){
+if(c[j][r]!=MAX){
+if((c[j][r]+cost[r])<min){
+min=c[j][r]+cost[r];
+temp = r;
+}
+}
+}
+cost[j] = c[j][temp] + cost[temp];
+d[j] = temp;
+}
+path[1] = 1;
+path[k] = n;
+for(j=2;j<k;j++){
+path[j] = d[path[j-1]];
+}
+}
+void bgraph(int bcost[],int path1[],int d[]){
+int r,j,temp,min;
+for(j=0;j<=n;j++){
+bcost[j] = 0;
+}
+for(j=2;j<=n;j++){
+temp=12;
+min=c[temp][j]+bcost[temp];
+for(r=0;r<=n;r++){
+if(c[r][j]!=MAX){
+if((c[r][j]+bcost[r])<min){
+min = c[r][j]+bcost[r];
+temp = r;
+}
+}
+}
+bcost[j] = c[temp][j]+bcost[temp];
+d[j] = temp;
+}
+path1[1] = 1;
+path1[k] = n;
+for(int i=4;i>=2;i--){
+path1[i] = d[path1[i+1]];
+}
+}
+int main(){
+int cur = -1;
+int cost[13],d[12],bcost[13];
+int path[k];
+int path1[k];
+cout<<"\t\t\t动态规划解多段图问题"<<endl;
+cout<<"\n\n";
+init(cost);
+fgraph(cost,path,d);
+cout<<"输出使用向前递推算法后的最短路径：\n\n";
+for(int i=1;i<=5;i++){
+cout<<path[i]<<"   ";
+}
+cout<<"\n";
+cout<<endl<<"最短路径为长度："<<cost[1]<<endl;
+cout<<"\n";
+cout<<"\n输出使用向后递推算法后的最短路径\n\n";
+bgraph(bcost,path1,d);
+for(int i=1;i<=5;i++){
+cout<<path1[i]<<"   ";
+}
+cout<<"\n";
+cout<<endl<<"最短路径为长度："<<bcost[12]<<endl;
+cout<<"\n";
+return 0;
+}

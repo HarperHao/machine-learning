@@ -1,0 +1,265 @@
+AVL树：
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+#include<string.h>
+using namespace std;
+int a[1000];
+typedef struct TreeNode{
+int data;
+struct TreeNode * lchild;
+struct TreeNode * rchild;
+}TreeNode,*Tree;
+
+void init(int key,Tree& bt)
+{
+bt->data=key;
+bt->lchild=NULL;
+bt->rchild=NULL;
+}
+
+void insert(int x,Tree& T)
+{
+if(T==NULL)
+{
+T=(Tree)malloc(sizeof(TreeNode));
+T->data=x;
+T->lchild=NULL;
+T->rchild=NULL;
+}
+else
+{
+if(x>T->data)
+insert(x,T->lchild);
+else
+insert(x,T->rchild);
+}
+}
+
+int height(Tree T)
+{
+int left,right;
+if(T==NULL)
+return 0;
+else
+{
+left=1+height(T->lchild);
+right=1+height(T->rchild);
+if(left>right)
+return left;
+else
+return right;
+}
+}
+
+void display(Tree T)
+{
+if(T!=NULL)
+{
+printf("%d ",T->data);
+display(T->lchild);
+display(T->rchild);
+}
+else return;
+}
+
+void LL(Tree& T)
+{
+Tree L=(Tree)malloc(sizeof(TreeNode));
+L=T->lchild;                      
+T->lchild=L->rchild;        
+L->rchild=T;                
+T=L;                          
+}
+
+void RR(Tree& T)
+{
+Tree L=(Tree)malloc(sizeof(TreeNode));
+L=T->rchild;                  
+T->rchild=L->lchild;        
+L->lchild=T;                  
+T=L;                            
+}
+
+void LR(Tree& T)
+{
+Tree L=(Tree)malloc(sizeof(TreeNode));
+Tree R=(Tree)malloc(sizeof(TreeNode));
+L=T->lchild;
+R=T->lchild->rchild;
+T->lchild=R->rchild;    
+L->rchild=R->lchild;  
+R->lchild=L;            
+R->rchild=T;          
+T=R;
+}
+
+void RL(Tree& T)
+{
+Tree L=(Tree)malloc(sizeof(TreeNode));
+Tree R=(Tree)malloc(sizeof(TreeNode));
+L=T->rchild;
+R=T->rchild->lchild;
+T->rchild=R->lchild;    
+L->lchild=R->rchild;  
+R->rchild=L;            
+R->lchild=T;          
+T=R;
+}
+
+
+void adjust(Tree& bt)
+{
+int p,l,r;
+p=height(bt->lchild)-height(bt->rchild);
+if(p==NULL)
+return;
+if(p>=2)
+{
+l= height(bt->lchild->lchild)-height(bt->lchild->rchild);
+if(l>=1)
+{
+LL(bt);
+display(bt);
+}
+else if(l<=-1)
+{
+LR(bt);
+display(bt);
+}
+}
+else if(p<=-2)
+{
+r=height(bt->rchild->lchild)-height(bt->rchild->rchild);
+if(r>=1)
+{
+RL(bt);
+display(bt);
+}
+else if(r<=-1)
+{
+RR(bt);
+display(bt);
+}
+}
+else
+{
+if((bt->lchild==NULL)&&(bt->rchild==NULL))
+return;
+else
+{
+if(bt->lchild !=NULL)
+adjust(bt->lchild);
+if(bt->rchild !=NULL)
+adjust(bt->rchild);
+}
+}
+}
+
+bool delet(int x,Tree& T)
+{
+bool flag,flagl,flagr;
+Tree temp=(Tree)malloc(sizeof(TreeNode));
+Tree p=(Tree)malloc(sizeof(TreeNode));
+if(T== NULL)
+return false;
+else
+{
+if(T->data==x)
+{
+if(T->lchild!=NULL)
+{
+temp=T->lchild;
+while(temp->rchild!=NULL)
+temp=temp->rchild;
+if(temp->lchild==NULL)
+{
+T->data=temp->data;
+temp=NULL;
+}
+else
+{
+T->data=temp->data;
+p=temp->lchild;
+temp->data = p->data;
+temp->lchild = p->lchild;
+temp->rchild = p->rchild;
+}
+}
+else
+{
+if(T->rchild==NULL)
+T= NULL;
+else
+{
+temp = T->rchild;
+while(temp->lchild!=NULL)
+temp = temp->lchild;
+if(temp->rchild == NULL)
+{
+T->data = temp->data;
+temp = NULL;
+}
+else
+{
+T->data = temp ->data;
+p = temp->rchild;
+temp->data = p->data;
+temp->lchild = p->lchild;
+temp->rchild = p->rchild;
+}
+}
+}
+return true;
+}
+else
+{
+flagl=delet(x,T->lchild);
+flagr=delet(x,T->rchild);
+flag=flagl|flagr;
+}
+}
+return flag;
+}
+
+void Deletavl(int x,Tree& bt)
+{
+if(delet(x,bt))
+printf("\n删除%d成功!\n",x);
+else
+printf("\n删除%d失败!\n",x);
+adjust(bt);
+}
+
+void creat(int a[],Tree& bt,int n)
+{
+int i;
+printf("\n插入元素%d:",a[0]);
+init(a[0],bt);
+for(i=1;i<n;i++){
+printf("\n插入元素%d:",a[i]);
+insert(a[i],bt);
+adjust(bt);
+}
+}
+
+int main()
+{
+Tree T=(Tree)malloc(sizeof(TreeNode));
+int n;
+printf("请输入节点个数:");
+scanf("%d",&n);
+printf("请输入各个节点的值:");
+for(int i=0;i<n;i++)
+scanf("%d",&a[i]);
+creat(a,T,n);
+printf("\n该平衡二叉树为:\n");
+display(T);
+int x;
+printf("\n请输入要删除节点的值:");
+scanf("%d",&x);
+Deletavl(x,T);
+printf("\n删除该节点后的平衡二叉树为:\n");
+display(T);
+return 0;
+}

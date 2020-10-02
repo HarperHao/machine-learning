@@ -1,0 +1,42 @@
+#01背包
+def main():
+   maxw = 15
+   n = 5
+   print('背包限制最大承重15，可选物品：')
+   value= [0,12,3,10,3,6]
+   weight= [0,5,4,7,2,6]
+   for i in range(1,6):
+       print('物品%d:重量 %d--价值%d'%(i,weight[i],value[i]))
+   bb = []
+   for i in range(n+1):
+       ls = []
+       for j in range(maxw+1):
+           ls.append(0)
+       bb.append(ls)
+   for i in range(1,n+1):
+       for j in range(1,maxw+1):
+           if (j >= weight[i]):
+               bb[i][j] = max(bb[i-1][j], bb[i-1][j-weight[i]] + value[i])
+           else:
+               bb[i][j] = bb[i-1][j]
+   print('填表：')
+   for i in bb:
+       for j in i:
+           print('%3.0f'%j,end='')
+       print()
+   print('选出的物品为：')
+   i,j,sum,w = n,maxw,0,0
+   while True:
+       if i == 0:
+           break
+       elif bb[i][j] > bb[i - 1][j]:
+           print('物品%d 重量%d -->价值%d' % (i,weight[i], value[i]))
+           sum = sum+value[i]
+           w =  w+weight[i]
+           j = j-weight[i]
+           i = i - 1
+       else:
+           i,j = i-1,j
+   print('实际重量%d --> 最优价值量%d'%(w,sum))
+if __name__ == '__main__':
+   main()

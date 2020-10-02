@@ -1,0 +1,48 @@
+#huffman tree
+
+import sys
+sys.setrecursionlimit(100000)
+
+class Btree:
+   def __init__(self, data, weight):
+       self.data = data
+       self.weight = weight
+       self.right = None
+       self.left = None
+
+
+def min2(list):
+   candidate = [Btree(None,float('inf')),Btree(None,float('inf'))]
+   list2 = []
+   for i in range(len(list)):
+       if list[i].weight < candidate[0].weight:
+           if candidate[1].weight != float('inf'):
+               list2.append(candidate[1])
+           candidate[0], candidate[1] = list[i], candidate[0]
+       elif list[i].weight < candidate[1].weight:
+           if candidate[1].weight != float('inf'):
+               list2.append(candidate[1])
+           candidate[1] = list[i]
+       else:
+           list2.append(list[i])
+   return candidate, list2
+
+
+def createHuffman(source):
+   candidate, newSource = min2(source)
+   left = candidate[0]
+   right = candidate[1]
+   sum = left.weight + right.weight
+   father = Btree(None, sum)
+   father.left = left
+   father.right = right
+   if newSource == []:
+       return father
+   newSource.append(father)
+   return createHuffman(newSource)
+
+
+sourcedata = [('a', 8), ('b', 5), ('c', 3), ('d', 3), ('e', 8), ('f', 6), ('g', 2), ('h', 5), ('i', 9), ('j', 5), ('k', 7), ('l', 5), ('m', 10), ('n', 9)]
+
+sourcedata = [Btree(x[0], x[1]) for x in sourcedata]
+huffman = createHuffman(sourcedata)

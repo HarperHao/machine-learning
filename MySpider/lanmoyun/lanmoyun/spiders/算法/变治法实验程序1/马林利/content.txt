@@ -1,0 +1,29 @@
+矩阵求逆：
+import numpy as np
+import sys
+def LU_deco_inverse(m):
+   n = m.shape[0]
+   L = np.mat(np.eye(n))
+   U = m.copy()
+   for i in range(n):
+       L[i + 1:, i] = U[i + 1:, i] / U[i, i]
+       U[i + 1:, :] = U[i + 1:, :] - L[i + 1:, i] * U[i, :]
+   print("L=", L)
+   print("U=", U)
+   E1 = np.mat(np.eye(n))  # 这个E1用来求U的逆
+   for i in range(n- 1, -1, -1):
+       E1[i, :] = E1[i, :] / U[i, i]
+       U[i, :] = U[i, :] / U[i, i]
+       E1[:i, :] = E1[:i, :] - U[:i, i] * E1[i, :]
+       U[:i, :] = U[:i, :] - U[:i, i] * U[i, :]
+
+   E2 = np.mat(np.eye(n))
+   for i in range(n):
+       E2[i + 1:, :] = E2[i + 1:, :] - L[i + 1:, i] * E2[i, :]
+       L[i + 1:, :] = L[i + 1:, :] - L[i + 1:, i] * U[i, :]
+   print("使用系统自带的求inverse方法得到的逆为:")
+   print("m_inv=", m.I)
+   print("\n由A=LU,得A逆=U的逆*L的逆")
+   print("U的逆E1*L的逆E2=", E1 * E2)
+A = np.mat([[1., 1, 1], [1, 2, 3], [1, 5, 1]])
+LU_deco_inverse(A)

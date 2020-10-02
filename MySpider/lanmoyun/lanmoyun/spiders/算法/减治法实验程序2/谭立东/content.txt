@@ -1,0 +1,58 @@
+import tkinter
+from tkinter.scrolledtext import *
+from tkinter import *
+
+
+def main():
+   def powerSets(items):
+       N = len(items)
+       powerSet = []
+       for i in range(2 ** N):  # 子集个数，每循环一次一个子集
+           combo = []
+           for j in range(N):  # 用来判断二进制下标为j的位置数是否为1
+               if (i >> j) % 2:
+                   combo.append(items[j])
+           powerSet.append(combo)
+       print(powerSet)
+       print("***********************************************************")
+       return powerSet
+
+   root = tkinter.Tk(className='位运算求幂集')  # 弹出框名
+   root.geometry('600x500')  # 设置弹出框的大小 w x h
+   var = tkinter.StringVar()  # 这即是输入框中的内容为int型
+   var.set("1 2 3")  # 通过var.get()/var.set()来获取/设置var的值
+   entry1 = tkinter.Entry(root, textvariable=var)  # 设置"文本变量"为var
+
+   def getValue():
+       x = var.get()  # 获取文本框内容
+       num = [int(i) for i in x[::2]]
+       print(num)
+       return num
+
+   def printText():
+       num = getValue()
+       textPad.insert(END, "结果如下\n")
+       textPad.insert(END, powerSets(num))
+       # textPad.insert('1.0', full(x))
+   entry1.pack()  # 将entry"打上去"
+
+   def clear():
+       textPad.delete('1.0', 'end')
+
+   btn1 = tkinter.Button(root, text='执行', command=printText, width=10)
+   btn2 = tkinter.Button(root, text='获取值', command=getValue, width=10)
+   btn3 = tkinter.Button(root, text='清空文本', command=clear, width=10)
+
+   # 按钮定位
+   btn3.pack(side='right')
+   btn1.pack(side='right')
+   btn2.pack(side='right')
+   textPad = ScrolledText(root, width=50, height=40)
+   # textPad.insert(tkinter.constants.END, chars=str(s))
+   textPad.pack()
+   # 弹出弹出框
+   root.mainloop()
+
+
+if __name__ == '__main__':
+   main()

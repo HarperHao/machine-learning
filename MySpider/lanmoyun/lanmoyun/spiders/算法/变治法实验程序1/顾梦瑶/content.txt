@@ -1,0 +1,258 @@
+AVL树问题
+#include<stdio.h>
+#include<malloc.h>
+#include<math.h>
+
+typedef struct AVLTREE {
+int data;
+int height;
+struct AVLTREE* leftChlid;
+struct AVLTREE* rightChild;
+}AVLTREE;
+
+typedef unsigned char boolean;  
+#define TRUE            1  
+#define FALSE           0  
+
+static int i = 1;
+void showBtreeByLeft(AVLTREE* head);  
+void showBtreeByMid(AVLTREE* head);
+AVLTREE* left_Left_Rotation(AVLTREE* root);
+AVLTREE* right_Right_Rotation(AVLTREE* root);
+AVLTREE* left_Right_Rotation(AVLTREE* root);
+AVLTREE* right_Left_Rotation(AVLTREE* root);
+AVLTREE* insertPoint(int data, AVLTREE* root);
+AVLTREE* deletePoint(int data, AVLTREE* root);
+int getHeight(AVLTREE* root);
+int max(int data1, int data2);
+AVLTREE* getMaxNum(AVLTREE* root);
+AVLTREE* getMinNum(AVLTREE* root);
+void destroy(AVLTREE* root);
+void destroy(AVLTREE* root)
+{
+if(root == NULL)
+{
+return;
+}
+root->leftChlid = NULL;
+root->rightChild = NULL;
+root = NULL;
+}
+AVLTREE* getMinNum(AVLTREE* root)
+{
+if(root == NULL)
+{
+return NULL;
+}
+while(root->leftChlid != NULL)
+{
+root = root->leftChlid;
+}
+return root;
+}
+AVLTREE* getMaxNum(AVLTREE* root)
+{
+if(root == NULL)
+{
+return NULL;
+}
+while(root->rightChild != NULL)
+{
+root = root->rightChild;
+}
+return root;
+}
+int max(int data1, int data2)
+{
+return ((data1 > data2) ? data1 : data2);
+}
+int getHeight(AVLTREE* root)
+{
+if(root == NULL)
+return -1;
+else
+return root->height;
+}
+AVLTREE* deletePoint(int data, AVLTREE* root)
+{
+if(root == NULL || data == NULL)
+{
+return NULL;
+}
+if(data < root->data)
+{
+root->leftChlid = deletePoint(data, root->leftChlid);
+if(abs(getHeight(root->rightChild) - getHeight(root->leftChlid)) == 2)
+{
+AVLTREE* p = root->rightChild;
+if(getHeight(p->leftChlid) > getHeight(p->rightChild))
+{
+root = right_Left_Rotation(root);
+}
+else
+{
+root = right_Right_Rotation(root);
+}
+}
+}
+else if(data > root->data)
+{
+root->rightChild = deletePoint(data, root->rightChild);
+if(abs(getHeight(root->leftChlid) - getHeight(root->rightChild)) == 2)
+{
+AVLTREE* p = root->leftChlid;
+if(getHeight(p->rightChild) > getHeight(p->leftChlid))
+{
+root = left_Right_Rotation(root);
+}
+else
+{
+root = left_Left_Rotation(root);
+}
+}
+}
+else if(data == root->data)
+{
+if(root->leftChlid && root->rightChild)
+{
+if(getHeight(root->leftChlid) > getHeight(root->rightChild))
+{
+AVLTREE* max = getMaxNum(root->leftChlid);
+root->data = max->data;
+root->leftChlid = deletePoint(max->data, root->leftChlid);
+}
+else {
+AVLTREE* min = getMinNum(root->rightChild);
+root->data = min->data;
+root->rightChild = deletePoint(min->data, root->rightChild);
+}
+}
+else
+{
+AVLTREE* temp = root;
+root = root->leftChlid ? root->leftChlid : root->rightChild;
+destroy(temp);
+}
+}
+return root;}
+
+AVLTREE* insertPoint(int data, AVLTREE* root)
+{
+if(root == NULL)
+{
+root = (AVLTREE *)malloc(sizeof(AVLTREE));
+root->data = data;
+root->height = 0;
+root->leftChlid = root->rightChild = NULL;
+}
+else if(data < root->data)
+{
+root->leftChlid = insertPoint(data, root->leftChlid);
+if(getHeight(root->leftChlid) - getHeight(root->rightChild) == 2)
+{
+if(data < root->leftChlid->data)
+root = left_Left_Rotation(root);
+else
+root = left_Right_Rotation(root);
+}
+}
+else if(data > root->data)
+{
+root->rightChild = insertPoint(data, root->rightChild);
+if(getHeight(root->rightChild) - getHeight(root->leftChlid) == 2)
+{
+if(data > root->rightChild->data)
+root = right_Right_Rotation(root);
+else
+root = right_Left_Rotation(root);
+}
+}
+else if(data == root->data)
+{
+return NULL;
+}
+root->height = max(getHeight(root->leftChlid), getHeight(root->rightChild)) + 1;
+return root;
+}
+AVLTREE* right_Left_Rotation(AVLTREE* root)
+{
+root->rightChild = left_Left_Rotation(root->rightChild);
+return right_Right_Rotation(root);
+}
+AVLTREE* left_Right_Rotation(AVLTREE* root)
+{
+root->leftChlid = right_Right_Rotation(root->leftChlid);
+return left_Left_Rotation(root);
+}
+AVLTREE* right_Right_Rotation(AVLTREE* root)
+{ AVLTREE* newRoot = NULL;
+newRoot = root->rightChild;
+root->rightChild = newRoot->leftChlid;
+newRoot->leftChlid = root;
+root->height = max(getHeight(root->leftChlid),getHeight(root->rightChild)) + 1;
+newRoot->height = max(getHeight(newRoot->rightChild), root->height) + 1;
+return newRoot;
+}
+AVLTREE* left_Left_Rotation(AVLTREE* root)
+{
+AVLTREE* newRoot = NULL;
+newRoot = root->leftChlid;
+root->leftChlid = newRoot->rightChild;
+newRoot->rightChild = root;
+root->height = max(getHeight(root->leftChlid),getHeight(root->rightChild)) + 1;
+newRoot->height = max(getHeight(newRoot->leftChlid), root->height) + 1;
+return newRoot;
+}
+void showBtreeByMid(AVLTREE* head)
+{      
+if(head == NULL)
+{          
+return;      
+}      
+showBtreeByMid(head->leftChlid);      
+printf("%d ", head->data);      
+showBtreeByMid(head->rightChild);  
+}    
+void showBtreeByLeft(AVLTREE* head)
+{      
+if(head == NULL)
+{          
+return;      
+}      
+printf("%d ", head->data);      
+showBtreeByLeft(head->leftChlid);      
+showBtreeByLeft(head->rightChild);  
+}
+int main() {
+AVLTREE* root = NULL;
+root = insertPoint(20,root);
+root = insertPoint(10,root);
+root = insertPoint(25,root);
+root = insertPoint(8,root);    
+root = insertPoint(24,root);
+root = insertPoint(30,root);
+root = insertPoint(29,root);
+printf("AVL:\n");
+printf("按先序输出可得：\n");
+showBtreeByLeft(root);
+printf("\n");
+printf("按中序输出可得：\n");
+showBtreeByMid(root);
+printf("\n");
+root = deletePoint(24,root);
+printf("删除：\n");
+printf("按先序输出可得：\n");
+showBtreeByLeft(root);
+printf("\n");
+printf("按中序输出可得：\n");
+showBtreeByMid(root);
+printf("\n");
+root = insertPoint(24,root);
+printf("插入：\n");
+printf("按先序输出可得：\n");
+showBtreeByLeft(root);
+printf("\n");
+printf("按中序输出可得：\n");
+showBtreeByMid(root);
+printf("\n");
+}

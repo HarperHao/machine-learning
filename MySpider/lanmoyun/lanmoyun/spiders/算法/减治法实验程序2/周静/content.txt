@@ -1,0 +1,117 @@
+二叉查找树
+
+#include<iostream>
+
+using namespace std;
+
+struct BiNode
+
+{
+
+   int data;
+
+   BiNode *lchild;
+
+   BiNode *rchild;
+
+};
+
+
+
+BiNode * SearachBST(BiNode *root,int k)
+
+{
+
+   if(root==NULL)
+
+       return NULL;
+
+   else if(root->data ==k )
+
+   {
+
+       cout<<"找到了 "<<root->data<<endl;
+
+       return root;
+
+   }
+
+       else if(k<root->data)
+
+           return SearachBST(root->lchild,k);
+
+       else
+
+           return SearachBST(root->rchild,k);
+
+}
+
+
+
+BiNode * InsertBST(BiNode * root,int data)
+
+{
+
+   if(root==NULL)
+
+   {
+
+       root=new BiNode;
+
+       root->data=data;
+
+       root->lchild=root->rchild=NULL;
+
+       return root;
+
+   }
+
+   if(data<=root->data)
+
+       root->lchild=InsertBST(root->lchild,data);
+
+   else
+
+       root->rchild=InsertBST(root->rchild,data);
+
+   return root;
+
+}
+
+
+
+BiNode * createBST(int a[],int n)
+
+
+   BiNode *T=new BiNode;
+
+   T->data=a[0];T->lchild=T->rchild=NULL;
+
+   for(int i=0;i<n;i++)
+
+   {
+       InsertBST(T,a[i]);
+
+   }
+
+   return T;
+
+
+
+}
+
+
+
+
+
+int main()
+
+{
+   BiNode * TR=new BiNode;
+   int r[100]={10,45,67,83,42,58,55,90,70,63};
+   TR=createBST(r,10);
+   for(int i=0;i<10;i++)
+       cout<<SearachBST(TR,r[i])<<" ";
+   return 0;
+
+}

@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <stdlib.h>
+struct AVLNode
+{
+   int val;
+   struct AVLNode *left,*right;
+   int height;
+};
+typedef struct AVLNode AVLNode;
+int Max(int a,int b){
+   return a>b?a:b;
+}
+int cptHeight(AVLNode *r){
+   return r>0?r->height:-1;
+}
+AVLNode *lRotation(AVLNode *r)
+{
+   AVLNode *p=r->right;
+   r->right=p->left;
+   p->left=r;
+   r->height=Max(cptHeight(r->left),cptHeight(r->right))+1;
+   p->height=Max(cptHeight(p->left),cptHeight(p->right))+1;
+   return p;
+}
+AVLNode *rRotation(AVLNode *r)
+{
+   AVLNode *p=r->left;
+   r->left=p->right;
+   p->right=r;
+   r->height=Max(cptHeight(r->left),cptHeight(r->right))+1;
+   p->height=Max(cptHeight(p->left),cptHeight(p->right))+1;
+   return p;
+}
+AVLNode *lrRotation(AVLNode *r)
+{
+   r->left=lRotation(r->left);
+   return rRotation(r);
+}
+AVLNode *rlRotation(AVLNode *r)
+{
+   r->right=rRotation(r->right);
+   return lRotation(r);
+}
+AVLNode *AVLinsert(AVLNode *r,int e)
+{
+   if(r==NULL){
+       r=(AVLNode*)malloc(sizeof(AVLNode));
+       r->val=e;
+       r->left=r->right=NULL;
+       r->height=0;
+       return r;
+   }
+   if(r->val<e){
+       r->right=AVLinsert(r->right,e);
+       if(cptHeight(r->right)-cptHeight(r->left)>=2){
+       r=(cptHeight(r->right->left)>cptHeight(r->right->right))?rlRotation(r):lRotation(r);
+       }
+   }
+   else if(r->val>e){
+       r->left=AVLinsert(r->left,e);
+       if(cptHeight(r->left)-cptHeight(r->right)>=2){
+          r=(cptHeight(r->left->left)>cptHeight(r->left->right))?rRotation(r):lrRotation(r);
+       }
+   }
+   r->height=Max(cptHeight(r->left),cptHeight(r->right))+1;
+   return r;
+}
+AVLNode *AVLremove(AVLNode *r,int e)
+{
+   if(r==NULL) return r;
+   if(r->val<e){
+       r->right=AVLremove(r->right,e);
+   }
+   else if(r->val>e){
+       r->left=AVLremove(r->left,e);
+   }
+   else{
+       if(r->left&&r->right){
+           AVLNode *p=r->right;
+           while(p->left) p=p->left;
+           r->val=p->val;
+           r->right=AVLremove(r->right,p->val);
+       }
+       else{
+           AVLNode *p=(r->left)?r->left:r->right;
+           free(r);
+           return p;
+       }
+   }
+   if(cptHeight(r->left)-cptHeight(r->right)>=2){
+       r=(cptHeight(r->left->left)>cptHeight(r->left->right))?rRotation(r):lrRotation(r);
+   }else if(cptHeight(r->right)-cptHeight(r->left)>=2){
+       r=(cptHeight(r->right->left)>cptHeight(r->right->right))?rlRotation(r):lRotation(r);
+   }
+   r->height=Max(cptHeight(r->left),cptHeight(r->right))+1;
+   return r;
+}
+void first(AVLNode *r)
+{
+   if(r){
+       printf("<%d, %d> ",r->val,r->height);
+       first(r->left);
+       first(r->right);
+   }
+}
+void middle(AVLNode *r)
+{
+   if(r){
+       middle(r->left);
+       printf("<%d, %d> ",r->val,r->height);
+       middle(r->right);
+   }
+}
+void behind(AVLNode *r){
+if(r){
+behind(r->left);
+behind(r->right);
+printf("<%d, %d> ",r->val,r->height);
+}
+}
+void show(AVLNode *r){
+   printf("先序遍历结果: ");
+   first(r);
+   printf("\n");
+   printf("中序遍历结果: ");
+   middle(r);
+   printf("\n");
+printf("后序遍历结果: ");
+behind(r);
+printf("\n");
+}
+int main()
+{
+   char op;
+   int e;
+   AVLNode *r=NULL;
+printf("请输入'i'进行插入结点, 'r'进行删除结点, 接着输入待插入的数字:\n");
+   while(scanf("%c %d",&op,&e))
+   {
+       switch(op){
+           case 'i':r=AVLinsert(r,e),show(r);break;
+           case 'r':r=AVLremove(r,e),show(r);break;
+default :printf("输入错误！");break;
+       }
+getchar();
+   }
+   return 0;
+}

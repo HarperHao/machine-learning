@@ -1,0 +1,22 @@
+减治法-直接插入排序
+import random
+def sort(number_arr):
+   lst = [number_arr.pop(0)]
+   for elem in number_arr:
+       for i in range(len(lst)):
+           if elem >= lst[i] and len(lst) == i + 1:
+               lst.append(elem)
+               break
+           elif elem <= lst[i] and i == 0:
+               lst.insert(0, elem)
+               break
+           elif lst[i+1] >= elem > lst[i]:
+               lst.insert(i+1, elem)
+               break
+   return lst
+number = int(input("请输入数据个数："))
+number_lst = []
+for i in range(number):
+   number_lst.append(random.randint(1, 100))
+print(f"原数据为： {number_lst}")
+print(f"排序后为： {sort(number_lst)}")

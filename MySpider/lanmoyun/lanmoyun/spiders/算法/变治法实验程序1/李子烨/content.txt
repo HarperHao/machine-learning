@@ -1,0 +1,21 @@
+#include <stdio.h>
+int horner(int a[], int i, int n, int x)
+{
+   if(i == (n - 1)) {
+       return a[i]*x + a[i - 1];
+   }
+   else {
+    i += 1;
+       return horner(a, i, n, x ) * x + a[i - 1];
+   }
+}
+
+int main(int argc, char *argv[])
+{
+ 
+ int a[] = {1, 1, 1, 1};
+ 
+ int sum = horner(a, 0, 4, 2);
+ printf("sum = %d\n",sum);
+ return 0;
+}

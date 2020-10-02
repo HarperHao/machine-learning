@@ -1,0 +1,44 @@
+堆排序
+def heapify(arr):
+   n = len(arr)
+   for i in reversed(range(n // 2)):
+       shiftDown(arr,n,i)
+
+def shiftDown(arr, n, k):
+   while 2 * k + 1 < n:
+       j = 2 * k + 1
+       if j + 1 < n and arr[j + 1] < arr[j]:
+           j += 1
+       if arr[k] <= arr[j]:
+           break
+       arr[k], arr[j] = arr[j], arr[k]
+       k = j
+
+def shiftDown2(arr, n, k):
+   smallest, l, r = k, 2 * k + 1, 2 * k + 2
+   while l < n:
+       if arr[l] < arr[smallest]:
+           smallest = l
+       if r < n and arr[r] < arr[smallest]:
+           smallest = r
+       if smallest == k:
+           break
+       else:
+           arr[k], arr[smallest] = arr[smallest], arr[k]
+           k = smallest
+           l, r = 2 * k + 1, 2 * k + 2
+
+def heapSort(arr):
+   n=len(arr)
+   heapify(arr)
+   print("堆化：",arr)
+   for i in range(n-1):
+       arr[n-i-1],arr[0] = arr[0],arr[n-i-1]
+       print("交换最小值后：",arr)
+       shiftDown(arr,n-i-1,0)
+       print("调整后：",arr)
+
+
+arr = [3,2,1,9,7,8]
+heapSort(arr)
+print("排序后：",arr)

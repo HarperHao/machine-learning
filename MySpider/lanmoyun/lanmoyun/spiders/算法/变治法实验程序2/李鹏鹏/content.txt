@@ -1,0 +1,255 @@
+AVL树及其dot语言可视化
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<malloc.h>
+#define MAX 1000
+typedef int datatype;
+typedef struct node{
+datatype data;
+struct node *lchild, *rchild;
+int bal;
+}bsnode;
+typedef bsnode *bstree;
+void lchange(bstree* t){
+bstree p, q;
+if((*t)->lchild->bal == 1){
+p = (*t)->lchild;
+(*t)->lchild = p->rchild;
+p->rchild = (*t);
+(*t)->bal = 0;
+(*t) = p;
+}
+else{
+p = (*t)->lchild;
+q = p->rchild;
+p->rchild = q->lchild;
+q->lchild = p;
+(*t)->lchild = q->rchild;
+q->rchild = (*t);
+if(q->bal == 1){
+(*t)->bal = -1;
+p->bal = 0;
+}
+else{
+(*t)->bal = 0;
+if(q->lchild == NULL||q->rchild == NULL||p->lchild == NULL)
+p->bal = 0;
+else
+p->bal = 1;
+}
+(*t) = q;
+}
+(*t)->bal = 0;
+}
+void rchange(bstree* t){
+bstree q, p;
+if((*t)->rchild->bal == -1){
+p = (*t)->rchild;
+(*t)->rchild = p->lchild;
+p->lchild = (*t);
+(*t)->bal = 0;
+(*t) = p;
+}
+else{
+p = (*t)->rchild;
+q = p->lchild;
+(*t)->rchild = q->lchild;
+p->lchild = q->rchild;
+q->lchild = (*t);
+q->rchild = p;
+if(q->bal == 1){
+(*t)->bal = -1;
+p->bal = 0;
+}
+else{
+(*t)->bal = 0;
+if(p->rchild == NULL|| q->lchild == NULL|| q->rchild ==NULL)
+p->bal = 0;
+else
+p->bal = 1;
+}
+(*t) = q;
+}
+(*t)->bal = 0;
+}
+bstree* find_pre(bstree* t, bstree* p){//寻找p的双亲节点
+bstree* q = NULL;
+if((*t)->lchild == (*p) || (*t)->rchild == (*p))
+q = t;
+else{
+if((*p)->data < (*t)->data)
+q = find_pre(&(*t)->lchild, p);
+else
+q = find_pre(&(*t)->rchild, p);
+}
+return q;
+}
+bstree find(bstree* t, datatype x){//寻找x的节点
+bstree p;
+if((*t) != NULL){
+if((*t)->data == x)
+p = *t;
+else{
+if(x < (*t)->data)
+p = find(&(*t)->lchild, x);
+else
+p = find(&(*t)->rchild, x);
+}
+}
+else{
+p = NULL;
+}
+return p;
+}
+bstree* find_after(bstree* p){//寻找x后继节点
+if((*p)->rchild != NULL){
+bstree* q = &(*p)->rchild;
+while((*q)->lchild != NULL)
+q = &(*q)->lchild;
+return q;
+}
+}
+void removetree(bstree* t, datatype x){//p是x节点
+bstree e = find(t, x);
+bstree* p = &e;
+if((*p)->lchild == NULL && (*p)->rchild == NULL)//p是叶子节点
+(*p)->data = -1;
+else{//非叶子节点
+if((*p)->lchild == NULL || (*p)->rchild == NULL){//p只有一边有孩子
+if((*p)->lchild == NULL){//p仅有右孩子
+(*p)->data = (*p)->rchild->data;
+(*p)->rchild->data = -1;
+}
+else{//p仅有左孩子
+(*p)->data = (*p)->lchild->data;
+(*p)->lchild->data = -1;
+}
+}
+else{//p两边都有孩子
+bstree* r = find_after(p);//r是p的后继节点
+(*p)->data = (*r)->data;
+(*r)->data = -1;
+removetree(r, (*r)->data);
+}
+}
+}
+void avlcreattree(bstree* t, datatype x, int* h){
+if((*t) == NULL){
+*t = (bstree)malloc(sizeof(bsnode));
+(*t)->data = x;
+(*t)->bal = 0;
+(*h) = 1;
+(*t)->lchild = (*t)->rchild = NULL;
+}
+else{
+if((*t)->data == -1)
+(*t)->data = x;
+else{
+if(x < (*t)->data){
+avlcreattree(&(*t)->lchild, x, h);
+if(*h){
+switch((*t)->bal){
+case 0:{(*t)->bal = 1;break;}
+case 1:{lchange(t);(*h) = 0;break;}
+case -1:{(*t)->bal = 0;(*h) = 0;break;}
+}
+}
+}
+else if(x > (*t)->data){
+avlcreattree(&(*t)->rchild, x, h);
+if(*h){
+switch((*t)->bal){
+case 0:{(*t)->bal = -1;break;}
+case -1:{rchange(t);(*h) = 0;break;}
+case 1:{(*t)->bal = 0;(*h) = 0;break;}
+}
+}
+}
+else
+(*h) = 0;
+}
+}
+}
+void inorder(bstree* t){
+if((*t)){
+inorder(&(*t)->lchild);
+if((*t)->data != -1){
+printf("%d ", (*t)->data);
+}
+inorder(&(*t)->rchild);
+}
+}
+void preorder( FILE *pf, bstree* t){
+if((*t)){
+// FILE *pf = fopen(p, "a");
+if((*t)->data != -1){
+// printf("%d ", (*t)->data);
+if((*t)->lchild != NULL && (*t)->lchild->data != -1)
+fprintf(pf, "%d%s%d%s", (*t)->data, "->", (*t)->lchild->data, "\n\t");
+if((*t)->rchild != NULL && (*t)->rchild->data != -1)
+fprintf(pf, "%d%s%d%s", (*t)->data, "->", (*t)->rchild->data, "\n\t");
+}
+preorder(pf, &(*t)->lchild);
+preorder(pf, &(*t)->rchild);
+}
+}
+void postorder(bstree* t){
+if((*t)){
+postorder(&(*t)->lchild);
+postorder(&(*t)->rchild);
+if((*t)->data != -1)
+printf("%d ", (*t)->data);
+}
+}
+void println(){
+printf("1、添加元素：\n");
+printf("2、删除元素：\n");
+printf("3、查找元素平衡度：\n");
+printf("4、可视化图\n");
+printf("5、退出\n");
+}
+void picture(bstree* t){
+   FILE *pf;
+   pf = fopen("AVLtreepicture.dot", "w");
+   fprintf(pf, "%s", "digraph graphname{\n\t");
+preorder(pf, t);
+fprintf(pf, "%s", "}");
+fclose(pf);
+}
+void input(int n, bstree* t){
+switch(n){
+case 1:{printf("请输入待添加的元素： ");int x, h = 0;scanf("%d", &x);
+avlcreattree(t, x, &h);printf("添加成功！\n");break;}
+case 2:{printf("请输入待删除的元素： ");int x;scanf("%d", &x);
+if(find(t, x) == NULL) printf("无此元素\n");else printf("删除成功!\n");removetree(t,x);break;}
+case 3:{printf("请输入待查找的元素： ");int x;scanf("%d", &x);bstree p = find(t,x);if(p != NULL){
+printf("该元素平衡度:   ");printf("%d\n", p->bal);}else printf("无此元素！\n");break;}
+case 4:{picture(t);printf("AVLtreepicture.dot文件构造完毕请打开文件预览树\n");break;}
+default:{break;}
+}
+}
+int main(){
+int add = 0;
+bstree t = NULL;
+datatype data;
+int h = 0;
+printf("请输入元素初始化AVL树(-1代表结束)：\n");
+scanf("%d", &data);
+while(data != -1){
+avlcreattree(&t, data, &h);
+add++;
+scanf("%d", &data);
+}
+printf("初始化AVL数成功！\n");
+println();
+int n;
+scanf("%d", &n);
+while(n == 1 || n == 2 || n == 3 || n == 4){
+input(n, &t);
+println();
+scanf("%d", &n);
+}
+return 0;
+}

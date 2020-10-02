@@ -1,0 +1,23 @@
+#最大子段和
+def SetSubSum(array, index):
+   # 获取每个子段和
+   global sums
+   if sums[index - 1] >= 0:
+       sums[index] = sums[index - 1] + array[i]
+   else:
+       sums[i] = array[i]
+def GetMaxSum(array):
+   # 获取最大子段和
+   _max = array[0]
+   for i in range(1, len(array)):
+       if _max <= array[i]:
+           _max = array[i]
+   return _max
+if __name__ == '__main__':
+   array = [1, -2, -2, 3, 4]
+   global sums
+   sums = [0] * len(array)
+   for i in range(0, len(array)):
+       SetSubSum(array, i)
+   _max = GetMaxSum(sums)
+   print("Max Sub Sum is:", _max)

@@ -1,0 +1,74 @@
+#堆排序（可视化表现了数组存储的堆的信息的变化）
+
+import matplotlib.pyplot as plt
+def show(data,a,b,data_x):
+       x=data_x[:]
+       x.remove(a)
+       x.remove(b)
+       y=[]
+       for i in x:
+           if i<len(data):
+               y.append(data[i])
+           else:
+               y.append(0)
+       plt.clf()
+       plt.bar(x,y,color='g')
+       plt.bar([a,b],[data[a],data[b]],color='y')
+       plt.title("data in heap")
+       plt.grid()
+       plt.pause(1)
+def exchange(data,index,data_x):
+   if 2*index<=len(data)-1 and data[2*index]<data[index]:
+       show(data,index,2*index,data_x)
+       data[index],data[2*index]=data[2*index],data[index]
+       exchange(data,2*index,data_x)
+   if 2*index+1<=len(data)-1 and data[2*index+1]<data[index]:
+       show(data,index,2*index+1,data_x)
+       data[index],data[2*index+1]=data[2*index+1],data[index]
+       exchange(data,2*index+1,data_x)
+def creat():
+   try:
+       data=[None]
+       for num in input("请输入待排序数据：").split():
+           data.append(float(num))
+   except:
+       return "error"
+   data_x=list(range(1,len(data)))
+   for index in list(range(1,(len(data)-1)//2+1))[::-1]:
+       exchange(data,index,data_x)
+   plt.clf()
+   plt.bar(data_x,[data[i] for i in data_x],color='g')
+   plt.title("data in heap")
+   plt.grid()
+   plt.pause(1)
+   return data
+def delete(data):
+   result=[]
+   data_x=list(range(1,len(data)))
+   while len(data)>2:      
+       data[1],data[-1]=data[-1],data[1]
+       result.append(data.pop())
+       exchange(data,1,data_x)
+   if len(data)==2:
+       plt.clf()
+       y=[]
+       for i in data_x:
+           if i==1:
+               y.append(data[i])
+           else:
+               y.append(0)
+       plt.bar(data_x,y,color='g')
+       plt.title("data in heap")
+       plt.grid()
+       plt.pause(1)
+       result.append(data.pop())
+       plt.clf()
+       plt.bar(data_x,[0 for _ in range(len(data_x))])
+       plt.title("data in heap")
+       plt.grid()
+   return result
+data=creat()
+if data!="error":
+   result=delete(data)
+   for num in result:
+       print("%f "%num,end='')

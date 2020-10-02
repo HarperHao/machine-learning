@@ -1,0 +1,32 @@
+◊÷µ‰À≥–Ú…˙≥…≈≈¡–£∫
+import time
+def SWAP(i, j):
+   t= strAP[i]
+   strAP[i] = strAP[j]
+   strAP[j] = t
+strAP = [1, 2, 3, 4]
+def Reverse(i, j):
+   while i <= j:
+       t = strAP[i]
+       strAP[i] = strAP[j]
+       strAP[j] = t
+       i=i+1
+       j=j-1
+def CallAllPByDictionary(num):
+   if num < 1:
+       return
+   while True:
+       j = num - 2
+       for i in range(num - 2, -1, -1):
+           if strAP[i] < strAP[i + 1]:
+               break
+           j =j-1
+       if j < 0:
+           break
+       for k in range(num - 1, i, -1):
+           if strAP[k] > strAP[i]:
+               break
+       SWAP(i, k)
+       Reverse(k, num - 1)
+       print(strAP)
+CallAllPByDictionary(len(strAP))

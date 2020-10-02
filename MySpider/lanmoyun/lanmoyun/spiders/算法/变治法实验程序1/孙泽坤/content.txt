@@ -1,0 +1,231 @@
+实验题目：AVL树的插入删除
+实验原理：考虑一种既能够保留经典二叉查找树的好特性又能够避免它退化到最差情况的数据结构——AVL树。根据不同的插入情况，对AVL树进行左右旋转，引入平衡因子来监测树的平衡状态。增加和删除可能需要通过多次树旋转来重新平衡这棵树。
+#include<iostream>
+#include<algorithm>
+using namespace std;
+struct node {
+int val;
+int height;
+struct node* l;
+struct node* r;
+};
+
+void free(node* root) {
+if (root == NULL) {
+return;
+}
+root->l = NULL;
+root->r = NULL;
+root = NULL;
+}
+node* getMinNum(node* root) {
+if (root == NULL) {
+return NULL;
+}
+while (root->l != NULL) {
+root = root->l;
+}
+return root;
+}
+node* getMaxNum(node* root) {
+if (root == NULL) {
+return NULL;
+}
+while (root->r != NULL) {
+root = root->r;
+}
+return root;
+}
+int getHeight(node* root) {
+if (root == NULL)
+return -1;
+else
+return root->height;
+}
+node* rotateRight(node* root) {
+node* t = NULL;
+t = root->r;
+root->r = t->l;
+t->l = root;
+root->height = max(getHeight(root->l), getHeight(root->r)) + 1;
+t->height = max(getHeight(t->r), root->height) + 1;
+return t;
+}
+node* rotateLeft(node* root) {
+node* t = NULL;
+t = root->l;
+root->l = t->r;
+t->r = root;
+root->height = max(getHeight(root->l), getHeight(root->r)) + 1;
+t->height = max(getHeight(t->l), root->height) + 1;
+return t;
+}
+node* rotateRightLeft(node* root) {
+root->r = rotateLeft(root->r);
+return rotateRight(root);
+}
+node* rotateLeftRight(node* root) {
+root->l = rotateRight(root->l);
+return rotateLeft(root);
+}
+node* del(int data, node* root) {
+if (root == NULL || data == NULL) {
+return NULL;
+}
+if (data < root->val) {
+root->l = del(data, root->l);
+if (abs(getHeight(root->r) - getHeight(root->l)) == 2) {
+node* p = root->r;
+if (getHeight(p->l) > getHeight(p->r)) {
+root = rotateRightLeft(root);
+}
+else {
+root = rotateRight(root);
+}
+}
+}
+else if (data > root->val) {
+root->r = del(data, root->r);
+if (abs(getHeight(root->l) - getHeight(root->r)) == 2) {
+node* p = root->l;
+if (getHeight(p->r) > getHeight(p->l)) {
+root = rotateLeftRight(root);
+}
+else {
+root = rotateLeft(root);
+}
+}
+}
+else if (data == root->val) {
+if (root->l && root->r) {
+if (getHeight(root->l) > getHeight(root->r)) {
+node* max = getMaxNum(root->l);
+root->val = max->val;
+root->l = del(max->val, root->l);
+}
+else {
+node* minn = getMinNum(root->r);
+root->val = minn->val;
+root->r = del(minn->val, root->r);
+}
+}
+else {
+node* temp = root;
+root = root->l ? root->l : root->r;
+free(temp);
+}
+}
+return root;
+}
+node* insert(int data, node* root) {
+
+if (root == NULL) {
+root = new node();
+root->val = data;
+root->height = 0;
+root->l = root->r = NULL;
+}
+else if (data < root->val) {
+root->l = insert(data, root->l);
+
+if (getHeight(root->l) - getHeight(root->r) == 2) {
+if (data < root->l->val)
+root = rotateLeft(root);
+else
+root = rotateLeftRight(root);
+}
+}
+else if (data > root->val) {
+root->r = insert(data, root->r);
+if (getHeight(root->r) - getHeight(root->l) == 2) {
+if (data > root->r->val)
+root = rotateRight(root);
+else
+root = rotateRightLeft(root);
+}
+}
+else if (data == root->val) {
+return NULL;
+}
+
+root->height = max(getHeight(root->l), getHeight(root->r)) + 1;
+return root;
+}
+void in_order(node* root) {
+if (root) {
+in_order(root->l);
+printf("%d ",root->val);
+in_order(root->r);
+}
+}
+void pre_order(node* root) {
+if (root) {
+printf("%d ", root->val);
+pre_order(root->l);
+pre_order(root->r);
+}
+
+}
+void post_order(node *root) {
+if (root) {
+post_order(root->l);
+post_order(root->r);
+printf("%d ", root->val);
+}
+}
+node *build(node *root, int n) {
+int num;
+for (int i = 0; i < n; i++) {
+scanf("%d", &num);
+root = insert(num, root);
+}
+return root;
+}
+node *dele(node *root) {
+int num;
+printf("请输入要删除的值：");
+scanf("%d", &num);
+root = del(num, root);
+return root;
+}
+node *insertion(node *root) {
+int num;
+printf("请输入插入的值：");
+scanf("%d", &num);
+root = insert(num, root);
+return root;
+}
+int main() {
+int n, op;
+bool flag = true;
+printf("请输入节点个数：");
+scanf("%d", &n);
+node* root = NULL;
+root = build(root, n);
+while (flag) {
+printf("输入：1插入节点，2删除节点，3输出三种遍历，4退出程序：\n");
+scanf("%d", &op);
+switch (op) {
+case 1:
+root = insertion(root);
+break;
+case 2:
+root = dele(root);
+break;
+case 3:
+printf("前序遍历：\n");
+pre_order(root);
+printf("\n");
+printf("中序遍历：\n");
+in_order(root);
+printf("\n");
+printf("后序遍历：\n");
+post_order(root);
+printf("\n");
+break;
+case 4:
+flag = false;
+break;
+}
+}
+}

@@ -1,0 +1,108 @@
+#插入排序
+import random
+def create():
+   n =(int)(input('生成序列元素个数：'))
+   list0 = []
+   while len(list0)!=n:
+       x = random.randrange(100)
+       if x not in list0:
+           list0.append(x)
+   print('乱序：'+(str)(list0))
+   return list0
+
+def erfen(list2):
+   list3 =[]
+   list3.append(list2[0])
+   i =1
+   while len(list3)!=len(list2):
+       left, right = 0, len(list3) - 1
+       while True:
+           mid = (left+right)//2
+           if right==-1:
+               if list2[i]<list3[0]:
+                   list3.insert(0,list2[i])
+               else:
+                   list3.insert(1,list2[i])
+               i+=1
+               break
+           elif (left>=right)&(list2[i]>list3[mid]):
+               list3.insert(mid+1,list2[i])
+               i+=1
+               break
+           elif (left>=right)&(list2[i]<list3[mid]):
+               list3.insert(mid,list2[i])
+               i+=1
+               break
+           else:
+               if list2[i]>list3[mid]:
+                   left = mid+1
+               else:
+                   right = mid-1
+   return list3
+
+def pre(list4):
+   i=1
+   while i!=len(list4):
+       t = list4[i]
+       for j in range(i):
+           if list4[j]>list4[i]:
+               list4.remove(list4[i])
+               list4.insert(j,t)
+               break
+       i+=1
+   return list4
+
+list1 = create()
+list1 = pre(list1)
+print('前插排序(递增)：'+(str)(list1))
+print('*****************************')
+list1 = create()
+list1 = erfen(list1)
+print('二分插入排序(递增)：'+(str)(list1))
+#减可变规模--计算中值
+def fmid(list1):
+   b = list1[0]
+   right = len(list1)
+   i,j = 0,right-1
+   while True:
+       if i ==j:
+           break
+       while True:
+           if i == j:
+               break
+           if list1[j]<b:
+               list1[i],list1[j] = list1[j],list1[i]
+               i +=1
+               break
+           j -=1
+       while True:
+           if i == j:
+               break
+           if list1[i]>b:
+               list1[i],list1[j] = list1[j],list1[i]
+               j -=1
+               break
+           i +=1
+   return list1[0:i+1:],list1[i+1:right:]
+if __name__ == '__main__':
+   n = int(input('输入元素个数，系统将自动生成'))
+   list = [random.randint(1,50) for i in range(n)]
+   print(list)
+   q,h = [],[]
+   mid = (n//2)+1
+   i = 0
+   j = n
+   print('记录每次的分区选择：')
+   while True:
+       q,h = fmid(list[i:j:])
+       print('前',q,'后',h)
+       list = q+h
+       if len(q)<mid:
+           mid = mid - len(q)
+           i = len(q)
+       elif len(q)>mid:
+           i = 0
+           j = len(q)-1
+       else:
+           print('中值为%d' % q.pop())
+           break

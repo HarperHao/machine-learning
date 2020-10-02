@@ -1,0 +1,38 @@
+实验题目：最长公共子序列
+实验原理：由最长公共子序列问题的最优子结构性质建立子问题最优值的递归关系。用lcs[i][j]记录序列str1和str2的最长公共子序列的长度,递归关系式如下：
+import numpy as np
+def LCS(str1,str2):
+   str1 = " "+str1
+   str2 = " "+str2
+   lcs = np.zeros((len(str1),len(str2)))
+   for i in range(1,len(str1)):
+       for j in range(1,len(str2)):
+           if str1[i] ==str2[j]:
+               lcs[i][j] = lcs[i-1][j-1]+1
+           else:
+               lcs[i][j] = max(lcs[i-1][j],lcs[i][j-1])
+   print('填表完毕')
+   print(lcs)
+   r=len(str1)-1
+   c=len(str2)-1
+   cnt=0
+   ans=""
+   while r>0 and c>0:
+       if str1[r]!=str2[c]:
+           if lcs[r-1][c]>=lcs[r][c-1]:
+               r-=1
+           else:
+               c-=1
+       else:
+           ans+=str1[r]
+           cnt+=1
+           r-=1
+           c-=1
+   print("{} 和{} 的LCS：".format(str1,str2),ans[::-1])
+
+if __name__ =="__main__":
+   # str1=input("请输入字符串1：")
+   # str2=input("请输入字符串2：")
+   str1='13456778'
+   str2="357486782"
+   LCS(str1,str2)

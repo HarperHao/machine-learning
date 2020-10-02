@@ -1,0 +1,25 @@
+package homework;
+
+public class Find   {
+   static int k =42;
+   static int[] a = {4, 16, 35, 42, 45, 80, 190};
+   public static void main(String[] args) {
+       int l = 0;
+       int r = a.length-1;
+       System.out.println(f(l, r));
+   }
+
+   private static int f(int l, int r) {
+       while (l <= r) {
+           int m = (l+r)/2;
+           if (k == a[m]) {
+               return m;
+           } else if (k < a[m]) {
+               return f(l, m-1);
+           } else {
+               return f(m+1, r);
+          }
+       }
+       return -1;
+   }
+}

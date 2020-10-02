@@ -1,0 +1,129 @@
+#23树
+class Node(object):
+   def __init__(self, key):
+       self.key1 = key
+       self.key2 = None
+       self.left = None
+       self.middle = None
+       self.right = None
+
+   def isLeaf(self):
+       return self.left is None and self.middle is None and self.right is None
+
+   def isFull(self):
+       return self.key2 is not None
+
+   def hasKey(self, key):
+       if (self.key1 == key) or (self.key2 is not None and self.key2 == key):
+           return True
+       else:
+           return False
+
+   def getChild(self, key):
+       if key < self.key1:
+           return self.left
+       elif self.key2 is None:
+           return self.middle
+       elif key < self.key2:
+           return self.middle
+       else:
+           return self.right
+
+
+class Tree(object):
+   def __init__(self):
+       self.root = None
+
+   def get(self, key):
+       if self.root is None:
+           return None
+       else:
+           return self._get(self.root, key)
+
+   def _get(self, node, key):
+       if node is None:
+           return None
+       elif node.hasKey(key):
+           return node
+       else:
+           child = node.getChild(key)
+           return self._get(child, key)
+
+   def put(self, key):
+       if self.root is None:
+           self.root = Node(key)
+       else:
+           K, R = self._put(self.root, key)
+           if R is not None:
+               newnode = Node(R)
+               newnode.left = self.root
+               newnode.middle = R
+               self.root = newnode
+
+   def _put(self, node, key):
+       if node.hasKey(key):
+           return None, None
+       elif node.isLeaf():
+           return self._addtoNode(node, key, None)
+       else:
+           child = node.getChild(key)
+           K, R = self._put(child, key)
+           if K is None:
+               return None, None
+           else:
+               return self._addtoNode(node, K, R)
+
+   def _addtoNode(self, node, key, R):
+       if node.isFull():
+           return self._splitNode(node, key, R)
+       else:
+           if key < node.key1:
+               node.key2 = node.key1
+               node.key1 = key
+               if R is not None:
+                   node.right = node.middle
+                   node.middle = R
+           else:
+               node.key2 = key
+               if R is not None:
+                   node.right = R
+           return None, None
+
+   def _splitNode(self, node, key, R):
+       newnode = Node(None)
+       if key < node.key1:
+           K = node.key1
+           node.key1 = key
+           newnode.key1 = node.key2
+           if R is not None:
+               newnode.left = node.middle
+               newnode.middle = node.right
+               node.middle = R
+       elif key < node.key2:
+           K = key
+           newnode.key1 = node.key2
+           if R is not None:
+               newnode.left = R
+               newnode.middle = node.right
+       else:
+           K = node.key2
+           newnode.key1 = key
+           if R is not None:
+               newnode.left = node.right
+               newnode.middle = R
+       node.key2 = None
+       return K, newnode
+
+
+tree = Tree()
+a = [1, 34, -3, -12, 23, 19, 56, -47]
+for i in a:
+   tree.put(i)
+temp = tree.get(34)
+if temp.getchild() == None:
+   print("34没有儿子")
+else:
+   if temp.left:
+       print("左儿子:" + str(temp.left.key1))
+   if temp.right:
+       print("右儿子:" + str(temp.right.key1))

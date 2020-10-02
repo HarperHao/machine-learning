@@ -1,0 +1,59 @@
+//0-1背包问题
+#include <iostream>
+using namespace std;
+int KnapSack(int W, int n, int* w, int* v, int** c) {
+int i, j, x[100];
+for (i = 0; i <= n; i++) c[i][0] = 0;
+for (i = 0; i <= W; i++) c[0][i] = 0;
+for (i = 1; i <= n; i++) {
+for (j = 1; j <= W; j++) {
+if (j < w[i]) {
+c[i][j] = c[i - 1][j];
+}
+else if (c[i - 1][j] > c[i - 1][j - w[i]] + v[i]) {
+c[i][j] = c[i - 1][j];
+}
+else {
+c[i][j] = c[i - 1][j - w[i]] + v[i];
+}
+}
+}
+
+j = W;
+for (i = n; i > 0; i--) {
+if (c[i][j] > c[i - 1][j]) {
+x[i] = 1;
+j -= w[i];
+}
+else {
+x[i] = 0;
+}
+}
+cout << "最优解为第";
+for (i = 1; i <= n; i++) {
+if (x[i] != 0)
+cout << i << " ";
+}
+cout << "件物品放入背包" << endl;
+return c[n][W];
+}
+int main() {
+int W, n, * w, * v, ** c;
+cout << "请输入背包最大重量和物品个数: ";
+cin >> W >> n;
+w = new int[n + 1];
+v = new int[n + 1];
+cout << "请输入各个物品重量和价值" << endl;
+for (int i = 1; i <= n; i++) {
+cin >> w[i];
+}
+for (int i = 1; i <= n; i++) {
+cin >> v[i];
+}
+c = new int* [n + 1];
+for (int i = 0; i <= n; i++) {
+c[i] = new int[W + 1];
+}
+KnapSack(W, n, w, v, c);
+return 0;
+}

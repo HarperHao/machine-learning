@@ -1,0 +1,151 @@
+AVL平衡树插入与删除
+package lesson1;
+
+public class PackageDemo {
+
+public static void main(String[] args) {
+AVLNode root = null;
+        for(int i=2;i<=8;i++) {
+        root = insert(root, i);
+        }
+        System.out.println("中序遍历AVL树：");
+       inOrder(root);
+       System.out.println();
+       System.out.println("插入结点得中序遍历AVL树：");
+       insert(root,11);
+       inOrder(root);
+       System.out.println();
+       System.out.println("删除结点中序遍历得AVL树：");
+       remove(root,5);
+       inOrder(root);
+}
+public static AVLNode insert(AVLNode root, int data) {
+       if (root == null) {
+           root = new AVLNode(data);
+           return root;
+       }
+       if (data <= root.data) {
+           root.lchild = insert(root.lchild, data);
+           if (getHeight(root.lchild) - getHeight(root.rchild) > 1) {
+               if (data <= root.lchild.data) {
+                   root = LLRotate(root);
+               }else{
+                   root = LRRotate(root);
+               }
+           }
+       }else{
+           root.rchild = insert(root.rchild, data);
+           if(getHeight(root.rchild) - getHeight(root.lchild) > 1){
+               if(data <= root.rchild.data){
+                   root = RLRotate(root);
+               }else{
+                   root = RRRotate(root);
+               }
+           }
+       }
+     
+       root.height = Math.max(getHeight(root.lchild), getHeight(root.rchild)) + 1;
+       return root;
+   }
+public static AVLNode remove(AVLNode root, int data){
+       if(root == null){
+           return null;
+       }
+       if(data < root.data){
+           root.lchild = remove(root.lchild, data);
+           if(getHeight(root.rchild) - getHeight(root.lchild) > 1){
+               if(getHeight(root.rchild.lchild) > getHeight(root.rchild.rchild)){
+                   root = RLRotate(root);
+               }else{
+                   root = RRRotate(root);
+               }
+           }
+       }else if(data == root.data){
+           if(root.lchild != null && root.rchild != null){
+               root.data = findNextNode(root).data;
+               root.rchild = remove(root.rchild, root.data);
+           }else{
+               root = (root.lchild == null) ? root.rchild : root.lchild;
+           }
+       }else{
+           root.rchild = remove(root.rchild, data);
+           if(getHeight(root.lchild) - getHeight(root.rchild) > 1){
+               if(getHeight(root.lchild.lchild) > getHeight(root.lchild.rchild)){
+                   root = LLRotate(root);
+               }else{
+                   root = LRRotate(root);
+               }
+           }
+       }
+       if(root != null){
+           root.height = Math.max(getHeight(root.lchild), getHeight(root.rchild)) + 1;
+       }
+       return root;
+   }
+public static AVLNode LLRotate(AVLNode p){
+       AVLNode lsubtree = p.lchild;
+       p.lchild = lsubtree.rchild;
+       lsubtree.rchild = p;
+       p.height = Math.max(getHeight(p.lchild), getHeight(p.rchild)) + 1;
+       lsubtree.height = Math.max(getHeight(lsubtree.lchild), p.height) + 1;
+       return lsubtree;
+   }
+public static AVLNode RRRotate(AVLNode p){
+       AVLNode rsubtree = p.rchild;
+       p.rchild = rsubtree.lchild;
+       rsubtree.lchild = p;
+       p.height = Math.max(getHeight(p.lchild), getHeight(p.rchild)) + 1;
+       rsubtree.height = Math.max(getHeight(rsubtree.lchild), getHeight(rsubtree.rchild)) + 1;
+       return rsubtree;
+   }
+public static AVLNode LRRotate(AVLNode p){
+       p.lchild = RRRotate(p.lchild);
+       return LLRotate(p);
+   }
+public static AVLNode RLRotate(AVLNode p){
+       p.rchild = LLRotate(p.rchild);
+       return RRRotate(p);
+   }
+private static class AVLNode{
+       private AVLNode lchild = null;
+       private AVLNode rchild = null;
+       private int data;
+       private int height;
+
+       public AVLNode(int data){
+           this.data = data;
+       }
+   }
+public static int getHeight(AVLNode p){
+       return p == null ? -1 : p.height;
+   }
+
+   public static void inOrder(AVLNode root){
+       if(root != null){
+    inOrder(root.lchild);
+           System.out.print(root.data + " ");
+           inOrder(root.rchild);
+       }
+   }
+   public static AVLNode findNextNode(AVLNode p){
+       if(p == null){
+           return null;
+       }
+       AVLNode r = p.rchild;
+       while(r != null && r.lchild != null){
+           r = r.lchild;
+       }
+       return r;
+   }
+   public static AVLNode findPreviousNode(AVLNode p){
+       if(p == null){
+           return null;
+       }
+       AVLNode l = p.lchild;
+       while(l != null && l.rchild != null){
+           l = l.rchild;
+       }
+       return l;
+   }
+}
+如果在AVL树中插入或删除节点后，使得高度之差大于1。此时，AVL树的平衡状态就被破坏，它就不再是一棵平衡二叉树；为了让它重新维持在一个平衡状态，就需要对其进行旋转处理。根据LL旋转，RR旋转，LR旋转，RL旋转恢复平衡

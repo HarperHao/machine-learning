@@ -1,0 +1,56 @@
+# LU矩阵分解求逆矩阵
+import numpy as np
+import sys
+
+def LU_deco_inverse(m):
+       dim = m.shape[0]
+       E = np.mat(np.eye(dim))
+       L = np.mat(np.eye(dim))
+       U = m.copy()
+       for i in range(dim):
+               if abs(m[i,i]) < 1e-8:
+                   print("zero pivot encoUnted")
+                   sys.exit()
+               L[i+1:,i] = U[i+1:,i] / U[i,i]
+
+               E[i+1:,:] = E[i+1:,:] - L[i+1:,i]*E[i,:]
+               U[i+1:,:] = U[i+1:,:] - L[i+1:,i]*U[i,:]
+       print("\nLU分解后的L,U矩阵:")
+       print("L=",L)
+       print("U=",U)
+       print("将A化为上三角阵U后随之变换的E矩阵:")
+       print("E=",E)
+
+       E1 = np.mat(np.eye(dim)) # 这个E1用来求U的逆
+       for i in range(dim-1,-1,-1):
+               # 对角元单位化
+               E[i,:] = E[i,:]/U[i,i]
+               E1[i,:] = E1[i,:]/U[i,i]
+               U[i,:] = U[i,:]/U[i,i]
+
+               E[:i,:] = E[:i,:] - U[:i,i]*E[i,:]
+               E1[:i,:] = E1[:i,:] - U[:i,i]*E1[i,:]
+               U[:i,:] = U[:i,:] - U[:i,i]*U[i,:]
+
+
+       print("\nU的逆E1为:")
+       print("E1=",E1)
+
+       E2 = np.mat(np.eye(dim))
+       for i in range(dim):
+               E2[i+1:,:] = E2[i+1:,:] - L[i+1:,i]*E2[i,:]
+               L[i+1:,:] = L[i+1:,:] - L[i+1:,i]*U[i,:]
+
+       print("\n将下三角阵L逆矩阵E2分别为:")
+       print("E2=",E2)
+
+       print("\n由A=LU,得A逆=U的逆*L的逆")
+       print("U的逆E1*L的逆E2=",E1*E2)
+
+
+if __name__ == "__main__":
+       A = np.mat([[2., 2., 3.],
+                   [4., 7., 7.],
+                   [-2., 4., 5.]])
+       A_dim = A.shape[0]
+       LU_deco_inverse(A)

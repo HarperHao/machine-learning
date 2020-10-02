@@ -1,0 +1,54 @@
+import numpy as np
+def Bag():
+   matrix_value = np.zeros((num, bag))
+   matrix_items = np.zeros((num, bag), dtype=np.dtype((np.str_, 100)))
+   for i in range(0, num):
+       for j in range(0, bag):
+           this_weight = weights[i]
+           this_value = values[i]
+           if i > 0:
+               before_value = matrix_value[i-1, j]
+               temp = 0
+               if this_weight <= j:
+                   temp = matrix_value[i-1, j-this_weight]
+               total_value = 0
+               if this_weight - 1 <= j:
+                   total_value = this_value + temp
+               if total_value > before_value:
+                   matrix_value[i, j] = total_value
+                   if temp == 0:
+                       matrix_items[i][j] = items[i]
+                   else:
+                       matrix_items[i][j] = items[i] + "+" + matrix_items[i-1][j-this_weight]
+               else:
+                   matrix_value[i, j] = before_value
+                   matrix_items[i][j] = matrix_items[i-1][j]
+           else:
+               if this_weight-1 <= j:
+                   matrix_value[i, j] = this_value
+                   matrix_items[i][j] = items[i]
+   print(matrix_value)
+   print(matrix_items)
+   print("The max value is", matrix_value[num-1][bag-1])
+   print("The max value of every items are:", matrix_items[num-1][bag-1])
+
+
+if __name__ == '__main__':
+   num = int(input("Please input the number of your items in your bag:"))
+   bag = int(input("Please input the maximum containable weight of the bag\n"
+                   "(maximum containable weight should not lower than any single weight of items):"))
+   items = []
+   values = []
+   weights = []
+   for i in range(0, num):
+       print("The", i+1, "th item")
+       item = input("Please input the name of the item:")
+       items.append(item)
+       value = int(input('Please input the value of the item:'))
+       values.append(value)
+       weight = int(input('Please input the weight of the item:'))
+       weights.append(weight)
+   print("items list:", items)
+   print("values list:", values)
+   print("weights list:", weights)
+   Bag()

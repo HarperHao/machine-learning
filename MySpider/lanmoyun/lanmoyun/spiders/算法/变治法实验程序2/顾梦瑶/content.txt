@@ -1,0 +1,489 @@
+2-3树问题
+#include <stdio.h>  
+#include <malloc.h>  
+#define NUM 10  
+#define INTERIOR 0  
+#define LEAF 1  
+#define FALSE 0  
+#define TRUE 1  
+typedef struct Node
+{  
+   int type;  
+   int key;  
+   int low2;  
+   int low3;  
+   struct Node * son1;  
+   struct Node * son2;  
+   struct Node * son3;  
+}TreeNode,*BiTree;  
+typedef struct sNode  
+{  
+   struct sNode *preNode;  
+   BiTree pTree;  
+}StackNode, *BiStack;  
+typedef struct stackn  
+{  
+   BiStack head;  
+   BiStack tail;  
+}Stacks,*Stack;  
+Stack stack;  
+void push(BiTree bt){  
+   BiStack bs=(BiStack)malloc(sizeof(StackNode));  
+   bs->preNode=stack->head;  
+   bs->pTree=bt;  
+   stack->head=bs;  
+}  
+BiTree pop(){  
+   if (stack->head == stack->tail)  
+   {  
+       return NULL;  
+   }  
+   BiTree bt=stack->head->pTree;  
+   BiStack bs=stack->head;  
+   if (bs!=stack->tail)  
+   {  
+       stack->head=bs->preNode;  
+   }  
+   free(bs);  
+   return bt;  
+}  
+void clean(){  
+   while(stack->head!=stack->tail){  
+       BiStack tmp=stack->head;  
+       stack->head=stack->head->preNode;  
+       free(tmp);  
+   }  
+}  
+ 
+BiTree createNode(int type,int key){  
+   BiTree t=(BiTree)malloc(sizeof(TreeNode));  
+   t->type=type;  
+   t->low2=t->low3=0;  
+   t->son1=t->son2=t->son3=NULL;  
+   t->key=key;  
+   return t;  
+}  
+
+int addson(BiTree x,BiTree* tp_point,BiTree *pBack){  
+   BiTree tp=*tp_point;  
+   int low_back=0;  
+   if (tp->type == LEAF)  
+   {  
+       if (tp->key > x->key)  
+       {  
+           BiTree tmp=x;  
+           x=tp;  
+           (*tp_point)=tmp;  
+       }  
+       *pBack=x;  
+       return (*pBack)->key;  
+   }
+   int child;  
+   BiTree tp_next;  
+   if (x->key < tp->low2)  
+   {  
+       child =1;  
+       tp_next=tp->son1;  
+   }  
+   else if (x->key <tp->low3 || (tp->low3 ==0&&tp->son3 == NULL))  
+   {  
+       child =2;  
+       tp_next=tp->son2;  
+   }  
+   else  
+   {  
+       child =3;  
+       tp_next=tp->son3;  
+   }  
+   BiTree pNewBack=NULL;
+   int low_number=addson(x,&tp_next,&pNewBack);  
+   if (pNewBack != NULL)  
+   {  
+       if (tp->son3 == NULL)
+       {  
+           if (child ==1)  
+           {  
+               tp->son3=tp->son2;  
+               tp->son2=pNewBack;  
+               tp->son1=tp_next;
+               tp->low3=tp->low2;  
+               tp->low2=low_number;  
+           }  
+           else  
+           {  
+               tp->son3=pNewBack;  
+               tp->son2=tp_next;  
+               tp->low3=low_number;  
+           }  
+ 
+       }  
+       else{  
+           *pBack=createNode(INTERIOR,0);  
+           if (child ==1)  
+           {  
+               (*pBack)->son1=tp->son2;  
+               (*pBack)->son2=tp->son3;  
+               tp->son2=pNewBack;  
+               tp->son1=tp_next;  
+ 
+               tp->son3=NULL;  
+ 
+               (*pBack)->low2=tp->low3;  
+               low_back=tp->low2;  
+ 
+               tp->low2=low_number;  
+               tp->low3=0;  
+           }  
+           else if (child == 2)  
+           {  
+               (*pBack)->son1=pNewBack;  
+               (*pBack)->son2=tp->son3;  
+               tp->son2=tp_next;  
+               tp->son3=NULL;  
+ 
+               (*pBack)->low2=tp->low3;  
+               tp->low3=0;  
+               low_back=low_number;  
+           }  
+           else  
+           {  
+               //child ==3  
+               (*pBack)->son1=tp_next;  
+               (*pBack)->son2=pNewBack;  
+               tp->son3=NULL;  
+               (*pBack)->low2=low_number;  
+               low_back=tp->low3;  
+               tp->low3=0;  
+           }  
+ 
+       }  
+   }  
+   return low_back;  
+}  
+void insert(int key,BiTree *ts){  
+   BiTree tree=*ts;  
+   BiTree x=createNode(LEAF,key);  
+   if (tree == NULL)  
+   {  
+       *ts=x;  
+       return;  
+   }  
+   BiTree tp=tree;  
+   BiTree pBack=NULL;  
+   int low_number=addson(x,&tp,&pBack);  
+   if (pBack!=NULL)  
+   {    
+       BiTree newHead=createNode(INTERIOR,0);  
+       newHead->low2=low_number;  
+       newHead->son1=tp;  
+       newHead->son2=pBack;  
+       *ts=newHead;  
+   }  
+   return;  
+}
+bool find_node(int key,BiTree tree,BiTree *p){  
+   if (tree==NULL)  
+   {  
+       return false;  
+   }  
+   push(tree);  
+   if (tree->type == LEAF)  
+   {  
+       if (tree->key == key)  
+       {  
+           return true;  
+       }  
+       else  
+       {  
+           return false;  
+       }  
+   }  
+   if (key==tree->low2 || key ==tree->low3)  
+   {  
+       *p=tree;  
+   }  
+   if (key<tree->low2)  
+   {  
+       find_node(key,tree->son1,p);  
+   }  
+   else if (key == tree->low2 || key<tree->low3||tree->low3==0)  
+   {  
+       find_node(key,tree->son2,p);  
+   }  
+   else{  
+       find_node(key,tree->son3,p);  
+   }  
+}  
+void changePpoint(BiTree a,BiTree p,int key){  
+   if (p->low2==a->key)  
+   {  
+       p->low2=key;  
+   }else{  
+       p->low3=key;  
+   }  
+}  
+int getLeastKey(BiTree t){  
+   if (t->type==INTERIOR)  
+   {  
+       return getLeastKey(t->son1);  
+   }else{  
+       return t->key;  
+   }  
+}  
+void deleteNode(BiTree *a_pointer,BiTree *f_pointer,BiTree *ff_pointer,BiTree p,BiTree *t_pointer){  
+     
+   BiTree a=*a_pointer;  
+   printf("delete node begin! ");  
+   printf("node:%d %d %d %d\n",a->key,a->low2,a->low3,a->type);  
+   BiTree f=*f_pointer;  
+   BiTree ff=*ff_pointer;  
+   BiTree tLeft=NULL;  
+   BiTree tRight=NULL;  
+   int fchild=0;  
+   int achild=0;  
+   if (a==f->son1)  
+   {  
+       achild=1;  
+   }  
+   else if (a==f->son2)  
+   {  
+       achild=2;  
+   }  
+   else{  
+       achild=3;  
+   }  
+   if (f->low3!=0)  
+   {  
+       if (a==f->son3)  
+       {  
+           f->son3=NULL;  
+           f->low3=0;  
+           free(a);  
+       }  
+       else if (a==f->son2)  
+       {  
+           f->low2=f->low3;  
+           f->low3=0;  
+           f->son2=f->son3;  
+           f->son3=NULL;  
+           free(a);  
+       }  
+       else if (a==f->son1)  
+       {  
+           if (a->type==LEAF&&p!=NULL)  
+           {  
+               changePpoint(a,p,f->low2);  
+           }  
+           f->low2=f->low3;  
+           f->low3=0;  
+           f->son1=f->son2;  
+           f->son2=f->son3;  
+           f->son3=NULL;  
+           free(a);  
+       }  
+       else  
+       {  
+           printf("err:a不是f的子节点。\n");  
+       }  
+   }  
+   else{
+       BiTree b=NULL;  
+       if (achild ==1)  
+       {  
+           b=f->son2;  
+       }  
+       else{  
+           b=f->son1;  
+       }  
+       if (ff==NULL)
+       {  
+           *t_pointer=b;  
+           free(a);  
+           free(f);  
+           return;  
+       }  
+ 
+       if (f==ff->son1)  
+       {  
+           tRight=ff->son2;  
+           fchild=1;  
+       }  
+       else if (f==ff->son2)  
+       {  
+           tLeft=ff->son1;  
+           tRight=ff->son3;  
+           fchild=2;  
+           ff->low2=getLeastKey(f);  
+       }  
+       else if (f == ff->son3)  
+       {  
+           tLeft=ff->son2;  
+           fchild=3;  
+           ff->low3=getLeastKey(f);  
+       }  
+       else{  
+           printf("err1:f not a child node of ff!\n");  
+       }  
+ 
+       if (tLeft!=NULL&&tLeft->low3!=0)  
+       {
+           f->son2=b;  
+           f->son1=tLeft->son3;  
+           tLeft->son3=NULL;  
+           if (a->type=LEAF&&a->key<b->key&&p!=NULL)  
+           {  
+               changePpoint(a,p,tLeft->low3);  
+           }  
+           int tmp=0;  
+           if (fchild==2)  
+           {  
+               tmp=ff->low2;  
+               ff->low2=tLeft->low3;  
+           }  
+           else{  
+               tmp=ff->low3;  
+               ff->low3=tLeft->low3;  
+           }  
+           if (achild=2)  
+           {  
+               f->low2=tmp;  
+           }  
+           tLeft->low3=0;  
+           free(a);  
+       }  
+       else if (tRight!=NULL&&tRight->low3!=0)  
+       {  
+           f->son1=b;  
+           f->son2=tRight->son1;  
+           tRight->son1=tRight->son2;  
+           tRight->son2=tRight->son3;  
+           tRight->son3=NULL;  
+           if (a->type=LEAF&&a->key<b->key&&p!=NULL)  
+           {  
+               changePpoint(a,p,b->key);  
+           }  
+           int tmp=0;  
+           if (fchild==1)  
+           {  
+               tmp=ff->low2;  
+               ff->low2=tRight->low2;  
+           }else{  
+               tmp=ff->low3;  
+               ff->low3=tRight->low2;  
+           }  
+           f->low2=tmp;  
+           if (tmp!=getLeastKey(f->son2))  
+           {  
+               printf("err:not equal to getLeastKey:2~");  
+           }    
+           tRight->low2=tRight->low3;  
+           tRight->low3=0;  
+           free(a);  
+       }  
+       else if (tLeft!=NULL)
+       {  
+           tLeft->son3=b;  
+           if (achild==2)//修改tleft->low3  
+           {  
+               int tmp=0;  
+               if (fchild==2)  
+               {  
+                   tmp=ff->low2;  
+               }  
+               else{  
+                   tmp=ff->low3;  
+               }  
+               tLeft->low3=tmp;  
+           }  
+           else{  
+               tLeft->low3=f->low2;  
+           }  
+           *a_pointer=*f_pointer;  
+           *f_pointer=*ff_pointer;  
+           BiTree bitmp=pop();  
+           *ff_pointer=bitmp;  
+           free(a);  
+           deleteNode(a_pointer,f_pointer,ff_pointer,p,t_pointer);  
+       }  
+       else{
+           tRight->son3=tRight->son2;  
+           tRight->son2=tRight->son1;  
+           tRight->son1=b;  
+           if (a->type=LEAF&&a->key<b->key&&p!=NULL)  
+           {  
+               changePpoint(a,p,b->key);  
+           }  
+           tRight->low3=tRight->low2;  
+           if (fchild==1)  
+           {  
+               tRight->low2=ff->low2;  
+           }else{  
+               tRight->low2=ff->low3;  
+           }  
+           *a_pointer=*f_pointer;  
+           *f_pointer=*ff_pointer;  
+           BiTree bitmp=pop();  
+           *ff_pointer=bitmp;  
+           free(a);  
+           deleteNode(a_pointer,f_pointer,ff_pointer,p,t_pointer);  
+       }  
+         
+ 
+   }  
+}  
+ 
+int deletes(int key,BiTree *t){  
+   BiTree tree=*t;  
+   BiTree p=NULL;
+   clean();  
+   if (tree==NULL||!find_node(key,tree,&p))  
+   {  
+       return FALSE;  
+   }  
+   if (tree->type=LEAF&&tree->key == key)  
+   {  
+       free(tree);  
+       *t=NULL;  
+   }  
+   BiTree a=pop();  
+   BiTree f=pop();  
+   BiTree ff=pop();
+   deleteNode(&a,&f,&ff,p,t);  
+   return TRUE;  
+}  
+
+int main(){  
+   stack=(Stack)malloc(sizeof(Stacks));  
+   stack->tail=(BiStack)malloc(sizeof(StackNode));  
+   stack->tail->preNode=NULL;  
+   stack->tail->pTree=NULL;  
+   stack->head=stack->tail;  
+   BiTree t=NULL;
+   int inputs=1;  
+   int input_set[10]={11,22,34,42,6,3,28,24,36,9};  
+   for (int i=0;i<10;i++)  
+   {  
+       insert(input_set[i],&t);  
+   }  
+   while (inputs!=0)  
+   {  
+       printf("\n请输入一个正整数插入到2-3树中：");  
+       scanf("%d",&inputs);  
+       if (inputs!=0)  
+       {  
+           insert(inputs,&t);  
+       }  
+   }
+   int key=-1;  
+   int key_set[9]={28,36,24,34,6,3,22,42,11};    
+   while(key!=0){  
+       printf("\n请输入要删除节点的key值：");  
+       scanf("%d",&key);  
+         
+       if (!deletes(key,&t))  
+       {  
+           printf("there is no node in the tree you want to delete");  
+       }          
+   }  
+   int s;  
+}

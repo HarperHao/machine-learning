@@ -1,0 +1,36 @@
+public class lesson {
+
+   public static void print(int graph[][]) {
+       for(int i=0,len_side = graph.length;i<len_side;i++) {
+           for(int j=0;j<len_side;j++) {
+               System.out.printf("%d ", graph[i][j]);
+           }
+           System.out.println();
+       }
+   }
+
+   public static int[][] warshall (int graph[][]) {
+       for(int i=0,len_side = graph.length;i<len_side;i++) {
+           for(int j=0;j<len_side;j++) {
+               if(graph[i][j]!=0) {
+                   for(int k=0;k<len_side;k++) {
+                       if(graph[k][i]!=0)
+                           graph[k][j] = 1;
+                   }
+               }
+           }
+       }
+       return graph;
+   }
+
+   public static void main(String args[]) {
+       int [][] graph = new int[][] {
+               {0,1,1,0},
+               {0,0,0,1},
+               {0,0,0,0},
+               {1,0,1,0}
+       };
+       print(warshall(graph));
+   }
+
+}

@@ -1,0 +1,280 @@
+AVL树应用
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct AvlNode *Position;
+typedef struct AvlNode *AvlTree;
+typedef int ElementType;
+
+struct AvlNode{
+ElementType Element;
+AvlTree Left;
+AvlTree Right;
+int Height;
+}AvlNode;
+
+AvlTree CreateTree();                                //创建Avl树
+Position Find(ElementType Element, AvlTree T);       //查找
+Position FindMax(AvlTree T);
+Position FindMin(AvlTree T);
+AvlTree Insert(ElementType Element, AvlTree T);      //插入
+AvlTree Delete(ElementType Element, AvlTree T);      //删除
+
+int Height(AvlTree T);                                //返回树的高
+int Max(ElementType A, ElementType B);                //比较树高
+Position SingleRotateWithLeft(Position K2);           //左单旋
+Position SingleRotateWithRight(Position K2);          //右单旋
+Position DoubleRotateWithLeft(Position K3);           //左右双旋
+Position DoubleRotateWithRight(Position K3);          //右左双旋
+
+void PreOrder_1(AvlTree T);                           //先序遍历（递归）
+
+int main()
+{
+AvlTree T;
+ElementType Element;
+int flag = 1, i;
+
+   printf("                   本程序实现Avl树的基本操作。                     \n");
+   printf("|                                                                      |\n");
+printf("|**********************************************************************|\n");
+printf("|                        Avl树的基本操作如下：                         |\n");
+printf("|                           1.创建Avl树                                |\n");
+printf("|                           2.查找                                     |\n");
+printf("|                           3.插入                                     |\n");
+printf("|                           4.删除                                     |\n");
+printf("|                           5.将Avl树遍历                              |\n");
+printf("|**********************************************************************|\n");
+
+while(flag)
+{
+printf("|                           请选择功能：                               |\n");
+scanf("%d", &i);  
+//输入需要选择的功能
+switch(i)
+{
+case 1:
+printf("请输入Avl树的根结点（0代表NULL）:");
+T = CreateTree();
+break;
+case 2:
+if(T)
+{
+printf("请输入要查找的元素：");
+scanf("%d", &Element);
+   if( Find(Element, T))
+       printf("该元素存在！\n");
+else
+printf("该元素不存在！\n");
+}
+else
+   printf("       Avl树为空！\n");
+break;
+
+case 3:
+if(T)
+{
+printf("请输入要插入的元素：");
+scanf("%d", &Element);
+T = Insert(Element, T);
+}else
+   printf("       Avl树为空！\n");
+break;
+ 
+case 4:
+if(T)
+{
+printf("请输入要删除的元素：");
+   scanf("%d", &Element);
+T = Delete(Element, T);
+}
+else
+   printf("       Avl树为空！\n");
+break;
+case 5:
+if(T)
+{
+printf("(先序)遍历的结果为：");
+PreOrder_1(T);
+printf("\n");
+}
+else
+   printf("       Avl树为空！\n");
+break;
+
+default:
+   flag = 0;
+printf("程序运行结束，按任意键退出！\n");
+}  
+
+}
+return 0;
+}
+
+AvlTree CreateTree()                            
+{
+ElementType ch;
+AvlTree T;
+scanf("\n%d", &ch);
+if(ch == 0)
+  T = NULL;
+else
+{
+if(!(T = (AvlTree)malloc(sizeof(AvlNode))))
+  exit(-1);
+T->Element  = ch;
+printf("%d的左儿子为：", T->Element );
+T->Left = CreateTree();
+printf("%d的右儿子为：", T->Element );
+T->Right = CreateTree();
+}  
+return T;
+}
+
+Position Find(ElementType Element, AvlTree T)
+{
+if(T == NULL)
+   return NULL;
+if(Element < T->Element)
+   return Find(Element, T->Left);
+else if(Element > T->Element)
+   return Find(Element, T->Right);
+else
+   return T;    
+}
+
+Position FindMax(AvlTree T)        
+{
+if(T != NULL)
+{
+while(T->Right != NULL )
+   T = T->Right;    
+}
+
+return T;    
+}
+
+Position FindMin(AvlTree T)          
+{
+if(T != NULL
+{
+while(T->Left != NULL )
+   T = T->Left;    
+}
+
+return T;    
+}
+AvlTree Insert(ElementType Element, AvlTree T)
+{
+if(T == NULL)
+{              
+   if(!(T = (AvlTree)malloc(sizeof(AvlNode))))
+  exit(-1);
+else
+{
+T->Element = Element;
+T->Height = 0;
+T->Left = T->Right = NULL;
+}
+   }
+else if(Element < T->Element )
+{
+    T->Left = Insert(Element, T->Left);
+    if(Height(T->Left ) - Height(T->Right ) == 2)  //破坏了Avl树的平衡
+       if(Element < T->Left->Element )
+           T = SingleRotateWithLeft(T); //左 单旋
+else
+   T = DoubleRotateWithLeft(T); //左右双旋
+}
+else if(Element > T->Element )
+{
+T->Right = Insert(Element, T->Right);
+    if(Height(T->Right ) - Height(T->Left ) == 2)
+       if(Element > T->Right->Element )
+           T = SingleRotateWithRight(T); //右单旋
+else
+   T = DoubleRotateWithRight(T); //右左双旋
+}
+T->Height = Max(Height(T->Left ), Height(T->Right )) + 1;
+return T;
+}
+AvlTree Delete(ElementType Element, AvlTree T)
+{
+Position TmpCell;
+if(T == NULL)              
+   printf("没找到该元素，无法删除！\n");
+else if(Element < T->Element)
+   T->Left = Delete(Element, T->Left);
+else if(Element > T->Element)
+   T->Right = Delete(Element, T->Right);
+else if(T->Left && T->Right){
+TmpCell = FindMin(T->Right);
+T->Element = TmpCell->Element;
+T->Right = Delete(T->Element, T->Right);
+}
+else
+{
+TmpCell = T;
+if(T->Left == NULL)
+   T = T->Right;
+else if(T->Right == NULL)
+   T = T->Left;
+free(TmpCell);    
+}
+return T;
+}  
+
+void PreOrder_1(AvlTree T)                      
+{
+if(T)
+{
+printf("%d  ", T->Element);
+PreOrder_1(T->Left);
+PreOrder_1(T->Right);
+}
+}
+ 
+int Height(AvlTree T)                        
+{
+if(T == NULL)
+   return -1;
+else
+   return 1 + Max(Height(T->Left ), Height(T->Right ));    
+ }
+ int Max(ElementType A, ElementType B)        
+{
+  if(A > B)
+     return A;
+  else
+   return B;    
+}
+Position SingleRotateWithLeft(Position K2)           //左单旋
+{
+Position K1;
+K1 = K2->Left ;
+K2->Left = K1->Right ;
+K1->Right = K2;
+K2->Height = Max(Height(K2->Left ), Height(K2->Right )) + 1;
+K1->Height = Max(Height(K1->Left ), Height(K1->Right )) + 1;
+return K1;
+}
+Position SingleRotateWithRight(Position K2)          //右单旋
+{
+Position K1;
+K1 = K2->Right ;
+K2->Right = K1->Left ;
+K1->Left = K2;
+K2->Height = Max(Height(K2->Left ), Height(K2->Right )) + 1;
+K1->Height = Max(Height(K1->Left ), Height(K1->Right )) + 1;
+return K1;
+}
+Position DoubleRotateWithLeft(Position K3)          //左右双旋
+{
+K3->Left = SingleRotateWithRight(K3->Left );
+return SingleRotateWithLeft(K3);
+}
+Position DoubleRotateWithRight(Position K3)         //右左双旋
+{
+K3->Right = SingleRotateWithLeft(K3->Right );
+return SingleRotateWithRight(K3);
+}

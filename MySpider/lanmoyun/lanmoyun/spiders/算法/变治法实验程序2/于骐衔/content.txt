@@ -1,0 +1,208 @@
+import copy
+class TreeNode:
+   def __init__(self, val):
+       self.val = val
+       self.left = None
+       self.right = None
+       self.root = None
+class AVLTree:
+   def __init__(self):
+       self.root = None
+   def left_height(self, node):
+       if node is None:
+           return 0
+       return self.tree_height(node.left)
+   def right_height(self, node):
+       if node is None:
+           return 0
+       return self.tree_height(node.right)
+   def tree_height(self, node):
+       if node is None:
+           return 0
+       return max(self.tree_height(node.left), self.tree_height(node.right)) + 1
+   def left_rotate(self, node):
+       if node is None:
+           return
+       new_node = copy.deepcopy(node)
+       if(node.left):
+           new_node.left = node.left
+           node.left.root = new_node
+       else:
+           new_node.left = None
+       if(node.right.left):
+           new_node.right = node.right.left
+           new_node.right.root = new_node
+       else:
+           new_node.right = None
+       node.val = node.right.val
+       if(node.right.right):
+           node.right = node.right.right
+           node.right.root = node
+       else:
+           node.right = None
+       node.left = new_node
+       new_node.root = node
+   def right_rotate(self, node):
+       if node is None:
+           return
+       new_node = copy.deepcopy(node)
+       if(node.right):
+           new_node.right = node.right
+           node.right.root = new_node
+       else:
+           new_node.right = None
+       if(node.left.right):
+           new_node.left = node.left.right
+           new_node.left.root = new_node
+       else:
+           new_node.left = None
+       node.val = node.left.val
+       if(node.left.left):
+           node.left = node.left.left
+           node.left.root = node
+       else:
+           node.left = None
+       node.right = new_node
+       new_node.root = node
+   def add(self, val):
+       node = TreeNode(val)
+       if self.root is None:
+           self.root = node
+           return
+       queue = [self.root]
+       while queue:
+           temp_node = queue.pop(0)
+           if node.val < temp_node.val:
+               if temp_node.left is None:
+                   temp_node.left = node
+                   node.root = temp_node
+                   return node.root
+               else:
+                   queue.append(temp_node.left)
+           if node.val >= temp_node.val:
+               if temp_node.right is None:
+                   temp_node.right = node
+                   node.root = temp_node
+                   return node.root
+               else:
+                   queue.append(temp_node.right)
+   def jude_node(self, node):
+       if self.right_height(node) - self.left_height(node) > 1:
+           if node.right and self.left_height(node.right) > self.right_height(node.right):
+               self.right_rotate(node.right)
+               self.left_rotate(node)
+           else:
+               self.left_rotate(node)
+           return
+       elif self.left_height(node) - self.right_height(node) > 1:
+           if node.left and self.right_height(node.left) > self.left_height(node.left):
+               self.left_rotate(node.left)
+               self.right_rotate(node)
+           else:
+               self.right_rotate(node)
+           return
+       else:
+           if node == None:
+               return
+           self.jude_node(node.root)
+   def in_order(self, node):
+       if node is None:
+           return
+       self.in_order(node.left)
+       print(node.val, end=" ")
+       self.in_order(node.right)
+   def find(self,key,node):
+       if node == None:
+           return None
+       elif key > node.val:
+           return self.find(key,node.right)
+       elif key < node.val:
+           return self.find(key,node.left)
+       else:
+           return node
+   def findmax(self,node):
+       if node.right == None:
+           return node
+       else:
+           node = node.right
+           return self.findmax(node)
+   def findmin(self,node):
+       if node.left == None:
+           return node
+       else:
+           node = node.left
+           return self.findmin(node)
+   def delkey(self,key,node):
+       temp = self.find(key,node)
+       if temp == None:
+           print('元素查找失败！')
+           return
+       elif temp == self.root:
+           if self.left_height(temp) >= self.right_height(temp):
+               max = self.findmax(temp.left)
+               max.val, temp.val = temp.val, max.val
+               self.delkey(max.val,max)
+           else:
+               min = self.findmin(temp.right)
+               min.val, temp.val = temp.val, min.val
+               self.delkey(min.val,min)
+           return
+       elif temp.root.left == temp:
+           if temp.left == None and temp.right == None:
+               temp.root.left = None
+               self.jude_node(temp.root)
+           else:
+               if self.left_height(temp)>=self.right_height(temp):
+                   max = self.findmax(temp.left)
+                   max.val,temp.val = temp.val,max.val
+                   self.delkey(max.val,max)
+               else:
+                   min = self.findmin(temp.right)
+                   min.val,temp.val = temp.val,min.val
+                   self.delkey(min.val,min)
+           return
+       else:
+           if temp.left == None and temp.right == None:
+               temp.root.right = None
+               self.jude_node(temp.root)
+           else:
+               if self.left_height(temp)>=self.right_height(temp):
+                   max = self.findmax(temp.left)
+                   max.val,temp.val = temp.val,max.val
+                   self.delkey(max.val,max)
+               else:
+                   min = self.findmin(temp.right)
+                   min.val,temp.val = temp.val,min.val
+                   self.delkey(min.val,min)
+           return
+if __name__ == '__main__':
+   a = AVLTree()
+   node_array = [8,4,12,1,7,3,10,9,15,13]
+   print('原始数据：',node_array)
+   for item in node_array:
+       temp=a.add(item)
+       a.jude_node(temp)
+   print("中序遍历结果为：")
+   a.in_order(a.root)
+   print()
+   print('1.插入操作  2.删除操作  3.树平衡度  4.退出')
+   while True:
+       t = (int)(input('请输入'))
+       if t == 1:
+           temp = a.add((int)(input('请输入要加入的元素：')))
+           a.jude_node(temp)
+           print('中序遍历')
+           a.in_order(a.root)
+           print()
+       elif t == 2:
+           key = (int)(input('请输入删除的元素：'))
+           a.delkey(key,a.root)
+           print('中序遍历')
+           a.in_order(a.root)
+           print()
+       elif t == 3:
+           ld = a.left_height(a.root)
+           rd = a.right_height(a.root)
+           print("平衡度：",ld-rd)
+       else:
+           break

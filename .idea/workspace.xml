@@ -2,10 +2,147 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b053db28-cca6-427b-a9cc-c2593e2a7ebc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/MySpider/lanmoyun/lanmoyun/spiders/dongtaiguihua.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/.idea/demo.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/.idea/demo1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/demo1/.idea/demo1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/demo1/picture/.idea/picture.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/demo1/picture/jishe/.idea/jishe.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/demo1/picture/jishe/demo2/.idea/demo2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/demo1/picture/jishe/demo2/demo2/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/demo1/picture/jishe/demo2/tongjiju/.idea/tongjiju.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/demo1/xiaoshuo/.idea/xiaoshuo.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exercise/demo1/.idea/demo1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lesson/.idea/lesson.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/Bird.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/Game.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/Pipe.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/arrow.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/end_screen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/audios/enemy.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/audios/explode.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/audios/jump.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/audios/moonlight.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/fonts/font.TTF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/fonts/simkai.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/bird.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/bullet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/gamebar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/gameover.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/health_green.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/health_red.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/pipe_body.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/pipe_head.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/resources/images/youwin.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/start_screen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/switch_screen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/Bird/检测.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/apple-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/apple-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/apple.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/apple_flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/background.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/banana-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/banana-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/banana.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/banana_flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/basaha-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/basaha-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/basaha.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/basaha_flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/blank.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/boom.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/developing.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/dojo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/flash.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/flash1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/flash_mask.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fork.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/apple-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/apple-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/apple.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/banana-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/banana-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/banana.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/basaha-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/basaha-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/basaha.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/boom.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/peach-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/peach-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/peach.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/sandia-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/sandia-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/fruit/sandia.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/game-over.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/home-desc.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/home-mask.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/lose.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/new-game.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/new.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/ninja.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/peach-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/peach-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/peach.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/peach_flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/quit.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/sandia-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/sandia-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/sandia.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/sandia_flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/score.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/smoke.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/xf.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/xx.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/xxf.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/xxx.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/images/xxxf.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/boom.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/boom.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/boom.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/menu.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/menu.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/menu.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/over.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/over.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/over.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/splatter.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/splatter.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/splatter.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/start.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/start.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/start.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/throw.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/throw.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mypython/MyGame/source/sound/throw.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/我的统计学/work9.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/multiprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/multiprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiprocessing.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/.idea/study.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/bike.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/die_visual.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/python_github.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/requests.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/study1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/treePlotter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/trees.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/收盘价折线图.svg" beforeDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,22 +158,25 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="85" />
+    <option name="y" value="25" />
+    <option name="width" value="1750" />
+    <option name="height" value="980" />
+  </component>
   <component name="ProjectId" id="1TgvoGoq9VGwsZRbgdSLSxVWnFu" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/mypython" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunManager" selected="Python.multiprocessing">
     <configuration name="二维码的生成" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -51,6 +191,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/二维码的生成" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -72,6 +213,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/multiprocessing.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -98,8 +240,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1573894725962</updated>
+      <workItem from="1590455063032" duration="79000" />
+      <workItem from="1600591477340" duration="24000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -113,5 +260,25 @@
         </entry>
       </map>
     </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1600591499631">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1600591499631" />
   </component>
 </project>

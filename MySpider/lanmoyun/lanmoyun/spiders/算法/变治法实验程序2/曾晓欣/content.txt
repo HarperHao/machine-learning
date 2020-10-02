@@ -1,0 +1,142 @@
+class TreeNode(object):
+   def __init__(self):
+       self.data = 0
+       self.left = None
+       self.right = None
+       self.height = 0
+
+
+class BinaryTree(object):
+   def __init__(self):
+       self.root = None
+
+   def max(self, height1, height2):
+       if height1 > height2:
+           return height1
+       else:
+           return height2
+
+   def leftleft(self, t):
+       node = t.left
+       t.left = node.right
+       node.right = t
+       t.height = self.max(self.getHeight(t.right), self.getHeight(t.left)) + 1
+       node.height = self.max(self.getHeight(node.right), self.getHeight(node.left)) + 1
+       return node
+
+   def rightright(self, t):
+       node = t.right
+       t.right = node.left
+       node.left = t
+       t.height = self.max(self.getHeight(t.right), self.getHeight(t.left)) + 1
+       node.height = self.max(self.getHeight(node.right), self.getHeight(node.left)) + 1
+       return node
+
+   def leftright(self, t):
+       t.left = self.rightright(t.left)
+       return self.leftleft(t)
+
+   def rightleft(self, t):
+       t.right = self.leftleft(t.right)
+       return self.rightright(t)
+
+   def insert(self, data, t):
+       if t is None:
+           node = TreeNode()
+           node.data = data
+           return node
+       elif data == t.data:
+           return t
+       elif data < t.data:
+           t.left = self.insert(data, t.left)
+           if self.getHeight(t.left) - self.getHeight(t.right) >= 2:
+               if data < t.left.data:
+                   t = self.leftleft(t)
+               else:
+                   t = self.leftright(t)
+       else:
+           t.right = self.insert(data, t.right)
+           if self.getHeight(t.right) - self.getHeight(t.left) >= 2:
+               if data > t.right.data:
+                   t = self.rightright(t)
+               else:
+                   t = self.rightleft(t)
+       t.height = self.max(self.getHeight(t.left), self.getHeight(t.right)) + 1
+       return t
+
+   def delete(self, data, t):
+       if t is None:
+           return t
+       elif t.data == data:
+           if t.left is None:
+               return t.right
+           elif t.right is None:
+               return t.left
+           else:
+               if self.getHeight(t.left) > self.getHeight(t.right):
+                   node = t.left
+                   while node.right is not None:
+                       node = node.right
+                   r = self.delete(node.data, t)
+                   t.data = node.data
+                   return r
+               else:
+                   node = t.right
+                   while node.left is not None:
+                       node = node.left
+                   t = self.delete(node.data, t)
+                   t.data = node.data
+                   return t
+       elif data < t.data:
+           t.left = self.delete(data, t.left)
+           if self.getHeight(t.right) - self.getHeight(t.left) >= 2:
+               if self.getHeight(t.right.left) > self.getHeight(t.right.right):
+                   t = self.rightleft(t)
+               else:
+                   t = self.rightright(t)
+       elif data > t.data:
+           t.right = self.delete(data, t.right)
+           if self.getHeight(t.left) - self.getHeight(t.right) >= 2:
+               if self.getHeight(t.left.right) > self.getHeight(t.left.left):
+                   t = self.leftright(t)
+               else:
+                   t = self.leftleft(t)
+       t.height = self.max(self.getHeight(t.left), self.getHeight(t.right)) + 1
+       return t
+
+   def show(self, root):
+       if root is not None:
+           print(root.data, "    ", root.height + 1)
+           self.show(root.left)
+           self.show(root.right)
+       else:
+           return 0
+
+   def Insert(self, data):
+       self.root = self.insert(data, self.root)
+       return self.root
+
+   def Delete(self, data):
+       self.root = self.delete(data, self.root)
+
+   def Show(self):
+       self.show(self.root)
+
+   
+
+if __name__ == '__main__':
+   b = BinaryTree()
+   tree = [99, 80, 30, 90, 45, 60]
+   for i in tree:
+       b.Insert(i)
+   print("按中序遍历输出为：")
+   print("Node  Height")
+   b.Show()
+   b.Insert(66)
+   print("插入66后按中序遍历输出为：")
+   print("Node  Height")
+   b.Show()
+   b.Delete(45)
+   print("删除45后按中序遍历输出为：")
+   print("Node  Height")
+   b.Show()

@@ -1,0 +1,43 @@
+实验名称：01背包
+实验目的：学习01背包状态转移方程的运行原理
+实验题目：动态规划法实现01背包
+实验源代码：
+package 动态规划01背包;
+public class Demo {
+   private static void ans(int allWeight, int[] weight, int[] value, int[][] f){
+       //初始化第一行
+       int i = 0,j = 0;
+       for(j = 1;j <= allWeight; j++) {
+           if (j < weight[i]) {
+               f[i][j] = 0;
+           } else {
+               f[i][j] = value[i];
+           }
+       }
+
+       //填充剩下的物品
+       for (i = 1; i < 5; i++) {
+           for (j = 1; j <= allWeight; j++) {
+               if (j < weight[i]) {
+                   f[i][j] = f[i - 1][j];
+               } else {
+                   f[i][j] = Math.max(f[i - 1][j - weight[i]] + value[i],f[i - 1][j]);
+               }
+           }
+       }
+       for (i = 0; i < 5; i++) {
+           for (j = 1; j <= allWeight; j++) {
+               System.out.print(f[i][j] + "\t\t");
+           }
+           System.out.println();
+       }
+
+   }
+   public static void main(String[] args) {
+       int allWeight = 10; // 背包的总重量
+       int[] weight = {2,2,6,5,4};  //每个物品的重量
+       int[] value = {6,3,5,4,6};  //每个物品的价值
+       int[][] f = new int[5][11];  //状态转移方程
+       ans(allWeight,weight,value,f);
+   }
+}

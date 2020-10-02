@@ -1,0 +1,65 @@
+题目：减治法——折半查找（可视化）
+代码：
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+
+def Reduction(lists, k):
+   """
+   :param lists: 元素列表
+   :param k: 查找元素
+   :return: int,list
+   """
+   list_scatters = [lists]
+   low = 0
+   high = len(lists) - 1
+   while low <= high:
+       mid = int((low + high) / 2)
+       if k < lists[mid]:
+           high = mid - 1
+           list_scatters.append(lists[low:high + 1])
+       elif k > lists[mid]:
+           low = mid + 1
+           list_scatters.append(lists[low:high + 1])
+       else:
+           return mid + 1, list_scatters
+   return 0, []
+
+
+def draw(list_scatters):
+   """
+   :param list_scatters: list
+   :return: gif
+   """
+   fig, ax = plt.subplots()
+
+   def init():
+       # 初始化函数用于绘制一块干净的画布，为后续绘图做准备
+       ax.spines['right'].set_color('none')
+       ax.spines['top'].set_color('none')
+       ax.spines['left'].set_color('none')
+
+   def update(lists):
+       plt.scatter(lists, [0 for _ in range(len(lists))], s=1 / len(lists) * 300)
+       plt.title("还剩{}个点".format(len(lists)))
+
+   plt.yticks(())
+   ani = animation.FuncAnimation(fig, update, frames=list_scatters, init_func=init, interval=5000)
+   ani.save("123.gif", writer='pillow')
+
+
+if __name__ == "__main__":
+   # lists = list(map(float, input("请按顺序输入要查找的表(以空格隔开)：").split()))
+   lists = [_ for _ in range(31)]
+   k = float(input("请输入想要查找的数字："))
+   num, list_scatters = Reduction(lists, k)
+   if num != 0:
+       print("这个数字是你输入的数字的第{}个".format(num))
+       if len(list_scatters[-1]) != 1:
+           list_scatters.append([k])
+       else:
+           pass
+       # print(list_scatters)
+       draw(list_scatters)
+   else:
+       print("查找失败！")

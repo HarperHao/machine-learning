@@ -1,0 +1,36 @@
+#拓扑排序
+
+V , E = [] , []
+n=int(input("请输入顶点数量"))
+print("请依输入点的名称")
+for i in range(n):
+   i=input()
+   V.append(i)
+print(V)
+m=int(input("请输入边的数量"))
+print("请依输入边")
+for i in range(m):
+   V1=input()
+   V2=input()
+   E.append([V1,V2])
+print(E)
+
+def find(V,E):
+   if not V:
+       return
+   for i in V:
+       flag = 0
+       for j in E:
+           if i == j[1]:
+               flag=flag+1
+       if flag == 0:
+           print(i,end=" ")
+           V.remove(i)
+           for j in E[:]:
+               if j[0] == i:
+                   E.remove(j)
+   find(V,E)
+
+
+print("拓扑排列： ",end="")
+find(V,E)

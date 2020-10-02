@@ -1,0 +1,19 @@
+n=int(input("请输入排序数字个数:"))
+alist=[]
+for i in range(n):
+   alist.append(i+1)
+d = [-1] * len(alist)
+while 1:
+   print(alist)
+   m = None
+   for i in range(len(alist)):
+       if 0 <= i + d[i] < len(alist) and alist[i + d[i]] < alist[i]:
+           if m is None or alist[m] < alist[i]:
+               m = i
+   if m is None: break
+   t = m + d[m]
+   alist[m], alist[t] = alist[t], alist[m]
+   d[m], d[t] = d[t], d[m]
+   for i in range(len(alist)):
+       if alist[i] > alist[t]:
+           d[i] *= -1

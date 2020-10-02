@@ -1,0 +1,18 @@
+def Rese(s1, s2):
+   len_s1 = len(s1)
+   len_s2 = len(s2)
+   record = [[0 for i in range(len_s2 + 1)] for j in range(len_s1 + 1)]
+   for i in range(len_s1):
+       for j in range(len_s2):
+           if s1[i] == s2[j]:
+               record[i + 1][j + 1] = record[i][j] + 1
+           elif record[i + 1][j] > record[i][j + 1]:
+               record[i + 1][j + 1] = record[i + 1][j]
+           else:
+               record[i + 1][j + 1] = record[i][j + 1]
+
+   return record[-1][-1]
+s1 = str(input("请输入第一个字符串"))
+s2 = str(input("请输入第二个字符串"))
+res = Rese(s1, s2)
+print(res)

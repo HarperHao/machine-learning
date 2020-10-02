@@ -1,0 +1,69 @@
+º∆À„n¥Œ∑Ω
+#include <stdio.h>
+#include <stdlib.h>
+
+int GetBinArray(int number, int arr[], int size)
+{
+int idx = 0;
+while (number > 0)
+{
+if (number & 1)
+arr[idx++] = 1;
+else
+arr[idx++] = 0;
+if (idx == size)
+break;
+number = number >> 1;
+}
+ return idx;
+}
+int Pow_Bin_RightToLeft(int number, int p)
+{
+ if (p == 0)
+   return 1;
+ int size = sizeof(int)*8;
+ int *pint = (int *)malloc(size);
+ int length = GetBinArray(p, pint, size);
+ int idx;
+ int item = number;
+ int ret = 1;
+ for (idx = 0; idx < length; idx++)
+ {
+   if (pint[idx] == 1)
+     ret = ret * item;
+   item *= item;
+ }
+ free(pint);
+ return ret;
+}
+int Pow_Bin_LeftToRight(int number, int p)
+{
+ if (p == 0)
+   return 1;
+ int size = sizeof(int)*8;
+ int *pint = (int *)malloc(size);
+ int length = GetBinArray(p, pint, size);
+ int ret = number;
+ int idx;
+ for (idx = length-1-1; idx >= 0; --idx)
+ {
+   ret *= ret;
+   if(pint[idx] == 1)
+     ret *= number;
+ }
+ free(pint);
+ return ret;
+}
+
+int main(int argc, char *argv[])
+{
+printf("Please input number and pow:\n");
+ int number,p;
+ scanf("%d%d", &number, &p);
+ int ret = Pow_Bin_RightToLeft(number, p);
+ int ret1 = Pow_Bin_LeftToRight(number, p);
+ printf("Pow_Bin_RightToLeft: %d^%d == %d\n", number, p, ret);
+ printf("Pow_Bin_LeftToRight: %d^%d == %d\n", number, p, ret1);
+ main(0, NULL);
+return 0;
+}

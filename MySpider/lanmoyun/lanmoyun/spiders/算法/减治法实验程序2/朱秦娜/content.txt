@@ -1,0 +1,17 @@
+listm=[]
+m=int(input("input m:"))
+n=int(input("input n:"))
+for i in range(0,m):
+   listm.append(i)
+k=1
+i=0
+while len(listm)>1:
+  if i<len(listm) and k==n:
+      listm.remove(listm[i])
+      k=0
+      i=i-1
+      print(listm)
+  i = i + 1
+  k = k + 1
+  if i==len(listm):
+      i=0

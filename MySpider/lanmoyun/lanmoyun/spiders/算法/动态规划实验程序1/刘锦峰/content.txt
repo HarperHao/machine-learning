@@ -1,0 +1,36 @@
+n = int(input("请输入一共有多少个物品："))
+value = []
+value.append(0)
+weight= []
+weight.append(0)
+print("请输入每个物品的价值：",end = " ")
+all = input().split(" ")
+for l in all:      
+   value.append(int(l))
+print("请输入每个物品的重量：",end = " ")
+all1 = input().split(" ")
+for k in all1:
+   weight.append(int(k))
+w=int(input("请输入背包的重量："))
+
+max_value = [([0]*(w+1)) for i in range(0,n+1)]
+for i in range(1,n+1):
+   for j in range(1,w+1):
+       if(j>=weight[i]):
+           max_value[i][j] = max(max_value[i-1][j],max_value[i-1][j-weight[i]]+value[i])
+       else:
+           max_value[i][j] = max_value[i-1][j]
+print("当背包重量为%d时，能拿物品的最大价值为：%d"%(w,max_value[n][w]))
+item = [0 for i in range(n+2)]
+m = n
+while m>=1:
+   i = m
+   if(max_value[i][w] == max_value[i-1][w]):
+       item[i] = 0
+   else:
+       item[i] = 1
+       w-=weight[i]
+   m-=1
+print("所能拿的物品为(1为拿，0为不拿）：",end = " ")
+for i in range(1,n+1):
+       print(item[i],end = " ")

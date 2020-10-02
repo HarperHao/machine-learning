@@ -1,0 +1,61 @@
+2、LU分解求逆矩阵
+def up(U):
+n = len(U[0])
+L = [[0]*n for i in range(n)]
+for row1 in range(n):
+for row2 in range(row1 + 1, n):
+m = U[row2][row1]/U[row1][row1]
+L[row2][row1] = m
+for col in range(row1, n):
+U[row2][col] -= U[row1][col]*m
+L[row1][row1] = 1
+return L, U
+
+def PrintSet(L, U):
+n = len(U[0])
+print("Matrix L :")
+for i in range(n):
+print(L[i])
+print("\nMatrix U :")
+for i in range(n):
+print(U[i])
+
+def Ni(L, U):
+n = len(U[0])
+u = [[0]*n for i in range(n)]
+r = [[0]*n for i in range(n)]
+for i in range(0, n):
+u[i][i]=1/U[i][i]
+k=i-1
+while k >= 0:
+s=0
+for j in range(k + 1, i + 1):
+s=s+U[k][j]*u[j][i]
+u[k][i]=-s/U[k][k]
+k -= 1
+for i in range(0, n):
+r[i][i]=1
+for k in range(i + 1, n):
+for j in range(i, k):
+r[k][i]=r[k][i]-L[k][j]*r[j][i]
+
+out1 = [[0]*n for i in range(0, n)]
+for i in range(0, n):
+for j in range(0, n):
+for k in range(0, n):
+out1[i][j]+=u[i][k]*r[k][j];
+
+print("\nA的逆矩阵为：")
+for i in range(n):
+for j in range(n):
+print("%.2f" % out1[i][j], end = " ")
+print()
+return out1
+
+matrix = [[2, -1, 1],[4, 1, -1],[1, 1, 1]]
+print("A矩阵：")
+print(matrix)
+print()
+L, U = up(matrix)
+PrintSet(L, U)
+ni = Ni(L, U)

@@ -1,0 +1,478 @@
+#include <stdio.h>
+#include <graphics.h>
+#include<Windows.h>
+#include <conio.h>
+#include<stdlib.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+#define M 20
+#define FINITY 5000
+typedef int vertexttype;
+typedef int edgetype;
+
+
+void creat();
+int  print();
+void QuickSort();
+void getedge();
+void kruskal();
+int  print3();
+
+typedef struct
+{
+vertexttype vexs[M];
+edgetype edges[M][M];
+int n, e;
+
+}Mgraph;
+
+typedef struct edgedata
+{
+int beg, en;
+int length;
+
+}edge;
+
+edge tree[M];
+void outtextxy(
+   int x,
+   int y,
+   TCHAR c
+);
+   void showmap1()
+{
+   initgraph(1280,720);
+   setlinecolor(CYAN);      
+   setfillcolor(BLUE);        
+   fillcircle(125, 75, 25);
+fillcircle(625, 125, 25);
+fillcircle(925,125,25);
+fillcircle(325,175,25);
+fillcircle(775,325,25);
+fillcircle(425,375,25);
+fillcircle(975,525,25);
+fillcircle(275,575,25);
+fillcircle(575,675,25);
+line(145,86,306,165);
+line(350,170,603,130);
+line(650,125,900,125);
+line(335,196,415,355);
+line(610,145,440,355);
+line(640,145,762,307);
+line(912,145,790,305);
+line(143,93,407,359);
+line(448,371,751,326);
+line(796,344,957,508);
+line(928,149,970,501);
+line(408,395,291,557);
+line(441,395,565,655);
+line(765,348,590,656);
+line(950,534,598,669);
+line(298,583,552,665);
+line(132,98,266,553);
+TCHAR a[] = _T("鄂尔多斯");
+outtextxy(100, 20, a);
+TCHAR b[] = _T("呼和浩特");
+outtextxy(300, 120, b);
+TCHAR c[] = _T("沈阳");
+outtextxy(610, 70, c);
+TCHAR d[] = _T("辽源");
+outtextxy(900, 70, d);
+TCHAR e[] = _T("广州");
+outtextxy(250, 625, e);
+TCHAR f[] = _T("深圳");
+outtextxy(630, 670, f);
+TCHAR g[] = _T("武汉");
+outtextxy(1025, 525, g);
+TCHAR h[] = _T("太原");
+outtextxy(350, 370, h);
+TCHAR i[] = _T("北京");
+outtextxy(825, 325, i);
+TCHAR j[] = _T("270");
+outtextxy(225, 100, j);
+TCHAR k[] = _T("1243");
+outtextxy(450, 125, k);
+TCHAR l[] = _T("239");
+outtextxy(775, 100, l);
+TCHAR m[] = _T("2346");
+outtextxy(152, 350, m);
+TCHAR n[] = _T("473");
+outtextxy(250, 250, n);
+TCHAR o[] = _T("485");
+outtextxy(375, 250, o);
+TCHAR p[] = _T("1297");
+outtextxy(475, 250, p);
+TCHAR q[] = _T("823");
+outtextxy(700, 200, q);
+TCHAR r[] = _T("491");
+outtextxy(600, 325, r);
+TCHAR s[] = _T("806");
+outtextxy(825, 200, s);
+TCHAR t[] = _T("2037");
+outtextxy(950, 300, t);
+TCHAR u[] = _T("2043");
+outtextxy(325, 450, u);
+TCHAR v[] = _T("132");
+outtextxy(400, 650, v);
+TCHAR w[] = _T("2132");
+outtextxy(500,500,w);
+TCHAR x[] = _T("2298");
+outtextxy(650, 475, x);
+TCHAR y[] = _T("1267");
+outtextxy(850, 450, y);
+TCHAR z[] = _T("1071");
+outtextxy(825, 600, z);
+   _getch();              
+   closegraph();
+}
+void showmap2()
+{
+initgraph(1280,720);
+   setlinecolor(CYAN);      
+   setfillcolor(BLUE);        
+   fillcircle(125, 75, 25);
+fillcircle(625, 125, 25);
+fillcircle(925,125,25);
+fillcircle(325,175,25);
+fillcircle(775,325,25);
+fillcircle(425,375,25);
+fillcircle(975,525,25);
+fillcircle(275,575,25);
+fillcircle(575,675,25);
+line(796,344,957,508);
+line(145,86,306,165);
+line(143,93,407,359);
+line(448,371,751,326);
+line(650,125,900,125);
+line(950,534,598,669);
+line(912,145,790,305);
+line(298,583,552,665);
+initgraph(1280,720);
+   setlinecolor(CYAN);      
+   setfillcolor(BLUE);    
+fillcircle(125, 75, 25);
+fillcircle(625, 125, 25);
+fillcircle(925,125,25);
+fillcircle(325,175,25);
+fillcircle(775,325,25);
+fillcircle(425,375,25);
+fillcircle(975,525,25);
+fillcircle(275,575,25);
+fillcircle(575,675,25);
+line(796,344,957,508);
+line(145,86,306,165);
+line(143,93,407,359);
+line(448,371,751,326);
+line(650,125,900,125);
+line(950,534,598,669);
+line(912,145,790,305);
+line(298,583,552,665);
+TCHAR a[] = _T("鄂尔多斯");
+TCHAR b[] = _T("呼和浩特");
+TCHAR c[] = _T("沈阳");
+TCHAR d[] = _T("辽源");
+TCHAR e[] = _T("广州");
+TCHAR f[] = _T("深圳");
+TCHAR g[] = _T("武汉");
+TCHAR h[] = _T("太原");
+TCHAR i[] = _T("北京");
+TCHAR j[] = _T("270");
+TCHAR n[] = _T("473");
+TCHAR r[] = _T("491");
+TCHAR s[] = _T("806");
+TCHAR l[] = _T("239");
+TCHAR v[] = _T("132");
+TCHAR y[] = _T("1267");
+TCHAR z[] = _T("1071");
+outtextxy(825, 325, i);
+outtextxy(100, 20, a);
+outtextxy(300, 120, b);
+outtextxy(610, 70, c);
+outtextxy(900, 70, d);
+outtextxy(250, 625, e);
+outtextxy(630, 670, f);
+outtextxy(1025, 525, g);
+outtextxy(350, 370, h);
+outtextxy(825, 325, i);
+outtextxy(225, 100, j);
+outtextxy(250, 250, n);
+outtextxy(600, 325, r);
+outtextxy(825, 200, s);
+outtextxy(775, 100, l);
+outtextxy(850, 450, y);
+outtextxy(825, 600, z);
+outtextxy(400, 650, v);
+_getch();            
+   closegraph();          
+}
+
+
+void creat (Mgraph *g,char *s,int c)
+{
+int i,j,k,w;
+FILE *rf;
+rf=fopen(s,"r");
+if(rf)
+{
+fscanf(rf,"%d%d",&g->n,&g->e);
+for(i=0;i<g->n;i++)
+fscanf(rf,"%d",&g->vexs[i]);
+for(i=0;i<g->n;i++)
+for(j=0;j<g->n;j++)
+if(i==j)
+g->edges[i][j]=0;
+else
+g->edges[i][j]=FINITY;
+for(k=0;k<g->e;k++)
+{
+fscanf(rf,"%d%d%d",&i,&j,&w);
+g->edges[i][j]=w;
+if(c==0)g->edges[j][i]=w;
+}
+fclose(rf);
+}
+else g->n=0;
+}
+void Showmatrix(Mgraph g)
+{
+for(int i=0;i<g.n;i++)
+{
+for(int j=0;j<g.n;j++)
+printf("%d\t",g.edges[i][j]);
+printf("\n");
+}
+}
+
+
+void QuickSort(edge edges[],int left,int right)
+{
+edge x;
+int i, j, flag;
+if (left < right)
+{
+i = left;
+j = right;
+x = edges[i];
+while (i < j)
+{
+while (i < j&&x.length < edges[j].length)
+j--;
+if (i < j)
+edges[i++] = edges[j];
+while (i < j&&x.length > edges[i].length)
+i++;
+if (i < j)
+edges[j--] = edges[i];
+
+}
+edges[i] = x;
+QuickSort(edges, left, i - 1);
+QuickSort(edges, i + 1, right);
+
+}
+
+}
+
+void GetEdge(Mgraph g, edge edges[])
+{
+int i, j, k = 0;
+for(i=0;i<g.n;i++)
+for(j=0;j<i;j++)
+if (g.edges[i][j] != 0 && g.edges[i][j] < FINITY)
+{
+edges[k].beg = i;
+edges[k].en = j;
+edges[k++].length = g.edges[i][j];
+}
+
+}
+
+Mgraph kruskal(Mgraph g)
+{
+int i, j, k = 0, ltfl;
+int cnvx[M];
+edge edges[M*M];
+
+GetEdge(g, edges);
+QuickSort(edges, 0, g.e - 1);
+for (i = 0;i < g.n;i++)
+cnvx[i] = i;
+for (i = 0;i < g.n - 1;i++)
+{
+while (cnvx[edges[k].beg] == cnvx[edges[k].en])
+k++;
+tree[i] = edges[k];
+ltfl = cnvx[edges[k].en];
+for (j = 0;j < g.n;j++)
+if (cnvx[j] == ltfl)
+cnvx[j] = cnvx[edges[k].beg];
+k++;
+
+}
+printf("\n\t\t建立最小生成树成功\n");
+return g;
+}
+
+void trans(char * name,vertexttype a)
+{
+if(a==0)
+{
+strcpy(name,"鄂尔多斯");
+//return name;
+}
+else if(a==1)
+{
+strcpy(name,"呼和浩特");
+//return name;
+}
+else if(a==2)
+{
+strcpy(name,"沈阳");
+//return name;
+}
+else if(a==3)
+{
+strcpy(name,"辽源");
+//return name;
+}
+else if(a==4)
+{
+strcpy(name,"太原");
+//return name;
+}
+else if(a==5)
+{
+strcpy(name,"北京");
+//return name;
+}
+else if(a==6)
+{
+strcpy(name,"广州");
+//return name;
+}
+else if(a==7)
+{
+strcpy(name,"深圳");
+//return name;
+}
+else if(a==8)
+{
+strcpy(name,"武汉");
+//return name;
+}
+else
+strcpy(name,"无");
+//else //return NULL;
+}
+
+
+void show(Mgraph g)
+{
+int j,len=0;
+char name1[M];
+char name2[M];
+for(j=0;j<g.n-1;j++)
+{
+trans(name1,g.vexs[tree[j].beg]);
+trans(name2,g.vexs[tree[j].en]);
+printf("   %s-----%s     距离：%6d\n",name1,name2,tree[j].length);
+len+=tree[j].length;
+}
+printf("最小代价为：%d",len);
+             
+}
+
+
+int main()
+{
+top:
+Mgraph g;
+edge tree[M-1];
+char filename[20];
+int i,j=1;
+system("mode con:cols=90 lines=100");
+system("color 3D");
+while(j==1)
+{
+system("cls");
+printf("\n");
+printf("\t\t***********欢迎进入构造城市最小连通图程序***********\n\n\n");
+printf("\t\t 1.加载图的信息\n\n");
+printf("\t\t 2.图的邻接矩阵表示法\n\n");
+printf("\t\t 3.生成图的最小生成树\n\n");
+printf("\t\t 4.图的最小生成树图示\n\n");
+printf("\t\t 5.文字表示图的最小生成树\n\n");
+printf("\t\t 6.退出程序\n\n");
+printf("\n");
+printf("\t\t******************************************************\n");
+printf("\t\t 请选择操作选项( 1 ~ 5 ),按回车结束:\n\n\n");
+scanf("%d",&i);
+getchar();
+switch(i)
+{
+case(1):
+{
+system("cls");
+printf("请输入图的文件名\n");
+gets(filename);
+showmap1();
+goto top;
+break;
+
+}
+case 2:
+{
+  system("cls");
+              creat(&g,filename,0);
+  Showmatrix(g);
+  int a;
+  printf("\n输入任意数字返回:");
+  scanf("%d",&a);
+  if(a>=0||a<0)
+  goto top;
+  break;
+}
+case 3:
+{
+system("cls");
+kruskal(g);
+int a;
+  printf("\n输入任意数字返回:");
+  scanf("%d",&a);
+  if(a>=0||a<0)
+  goto top;
+  break;
+}
+case 4:
+{
+              system("cls");
+  showmap2();
+goto top;
+break;
+}
+
+case 5:
+{
+system("cls");
+show(g);
+int a;
+   printf("\n输入任意数字返回:");
+   scanf("%d",&a);
+   if(a>=0||a<0)
+  goto top;
+  break;
+}
+case 6:
+{
+              system("cls");
+              j=0;
+  printf("\n\n\n\n\n\n\n\n\n\n\t\t\t\t谢谢使用！\n\t\t\t\t  再见！\n\n\n\n\n\n\n\n");
+  break;
+}
+}
+return 0;
+}
+}

@@ -1,0 +1,55 @@
+变质法 Gauss消去法 LU分解
+import numpy as np
+def det(A):    
+   if len(A) <= 0:
+       return None
+   elif len(A) == 1:
+       return A[0][0]
+   else:
+       s = 0
+       for i in range(len(A)):
+           n = [[row[a] for a in range(len(A)) if a != i] for row in A[1:]]  
+           s += A[0][i] * det(n) * (-1) ** (i )
+       return s
+def Master_Sequential(A,n):  
+   for i in range(0,n):
+       Master = np.zeros([i+1,i+1])
+       for row in range(0,i+1):
+           for a in range(0,i+1):
+               Master[row][a]=A[row][a]
+       if det(Master)==0:
+           done=False
+           return done
+def LU_decomposition(A):
+   n=len(A[0])
+   L = np.zeros([n,n])
+   U = np.zeros([n, n])
+   for i in range(n):
+       L[i][i]=1
+       if i==0:
+           U[0][0] = A[0][0]
+           for j in range(1,n):
+               U[0][j]=A[0][j]
+               L[j][0]=A[j][0]/U[0][0]
+       else:
+               for j in range(i, n):#U
+                   temp=0
+                   for k in range(0, i):
+                       temp = temp+L[i][k] * U[k][j]
+                   U[i][j]=A[i][j]-temp
+               for j in range(i+1, n):#L
+                   temp = 0
+                   for k in range(0, i ):
+                       temp = temp + L[j][k] * U[k][i]
+                   L[j][i] = (A[j][i] - temp)/U[i][i]
+   return L,U
+
+if __name__ == '__main__':
+   n=3
+   A=[[1,1,1],[6,7,8],[1,5,1]]
+   print('原矩阵：\n',A)
+   if Master_Sequential(A,n) != False:
+       L,U=LU_decomposition(A)
+       print('L：\n',L, '\nU：\n',U)
+   else:
+       print("A的k阶主子式不全非零，不满足LU分解条件。")

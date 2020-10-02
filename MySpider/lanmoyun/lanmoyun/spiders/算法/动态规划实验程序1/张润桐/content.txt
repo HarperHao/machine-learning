@@ -1,0 +1,48 @@
+import random
+from pandas import *
+
+
+def jz_cheng(n):
+   for i in range(n):
+       count[i][i] = 0
+   for m in range(1, n):
+       for i in range(n - m):
+           j = i + m
+           count[i][j] = count[i + 1][j] + jz[i][0] * jz[i][1] * jz[j][1]
+           pos[i][j] = i + 1
+           for k in range(i + 1, j):
+               flag = count[i][k] + count[k + 1][j] + jz[i][0] * jz[k][1] * jz[j][1]
+               if flag < count[i][j]:
+                   count[i][j] = flag
+                   pos[i][j] = k + 1
+
+
+def printjz(left, right):
+   if left == right:
+       print("A" + str(left + 1), end='')
+   else:
+       print("(", end='')
+       printjz(left, pos[left][right] - 1)
+       printjz(pos[left][right], right)
+       print(")", end='')
+
+if __name__ == "__main__":
+   n = int(input("请输入矩阵个数："))
+   jz = [[0] * 2 for i in range(n)]
+   for i in range(n):
+       if i == 0:
+           jz[i][0] = random.randrange(100)
+           jz[i][1] = random.randrange(100)
+       else:
+           jz[i][0] = jz[i - 1][1]
+           jz[i][1] = random.randrange(100)
+   count = [[0] * n for i in range(n)]
+   pos = [[0] * n for j in range(n)]
+   jz_cheng(n)
+   Pos = DataFrame(pos, index=list(range(1, n + 1)), columns=list(range(1, n + 1)))
+   Count = DataFrame(count, index=list(range(1, n + 1)), columns=list(range(1, n + 1)))
+   print(jz)
+   print("括号所在的位置：\n", Pos)
+   print("数乘的次数：\n", Count)
+   print("最终结果为：")
+   printjz(0, n - 1)

@@ -1,0 +1,142 @@
+class TreeNode(object):
+   def __init__(self):
+       self.value = 0
+       self.left = None
+       self.right = None
+       self.height = 0
+
+
+class Tree(object):
+   def __init__(self):
+       self.root = None
+
+   def l_l(self, r):
+       node = r.left
+       r.left = node.right
+       node.right = r
+       r.height = self.Max(self.Height(r.right), self.Height(r.left)) + 1
+       node.height = self.Max(self.Height(node.right), self.Height(node.left)) + 1
+       return node
+
+   def r_r(self, r):
+       node = r.right
+       r.right = node.left
+       node.left = r
+       r.height = self.Max(self.Height(r.right), self.Height(r.left)) + 1
+       node.height = self.Max(self.Height(node.right), self.Height(node.left)) + 1
+       return node
+
+   def l_r(self, r):
+       r.left = self.r_r(r.left)
+       return self.l_l(r)
+
+   def r_l(self, r):
+       r.right = self.l_l(r.right)
+       return self.r_r(r)
+
+   def Max(self, h1, h2):
+       if h1 > h2:
+           return h1
+       elif h1 <= h2:
+           return h2
+
+   def insert(self, value, r):
+       if r is None:
+           node = TreeNode()
+           node.value = value
+           return node
+       elif value == r.value:
+           return r
+       elif value < r.value:
+           r.left = self.insert(value, r.left)
+           if self.Height(r.left) - self.Height(r.right) >= 2:
+               if value < r.left.value:
+                   r = self.l_l(r)
+               else:
+                   r = self.l_r(r)
+       else:
+           r.right = self.insert(value, r.right)
+           if self.Height(r.right) - self.Height(r.left) >= 2:
+               if value > r.right.value:
+                   r = self.r_r(r)
+               else:
+                   r = self.r_l(r)
+       r.height = self.Max(self.Height(r.left), self.Height(r.right)) + 1
+       return r
+
+   def delete(self, value, r):
+       if r is None:
+           print("¿Õ¡£")
+           return r
+       elif r.value == value:
+           if r.left is None:
+               return r.right
+           elif r.right is None:
+               return r.left
+           else:
+               if self.Height(r.left) > self.Height(r.right):
+
+                   node = r.left
+                   while node.right is not None:
+                       node = node.right
+                   r = self.delete(node.value, r)
+                   r.value = node.value
+                   return r
+               else:
+                   node = r.right
+                   while node.left is not None:
+                       node = node.left
+                   r = self.delete(node.value, r)
+                   r.value = node.value
+                   return r
+       elif value < r.value:
+           r.left = self.delete(value, r.left)
+           if self.Height(r.right) - self.Height(r.left) >= 2:
+               if self.Height(r.right.left) > self.Height(r.right.right):
+                   r = self.r_l(r)
+               else:
+                   r = self.r_r(r)
+       elif value > r.value:
+           r.right = self.delete(value, r.right)
+           if self.Height(r.left) - self.Height(r.right) >= 2:
+               if self.Height(r.left.right) > self.Height(r.left.left):
+                   r = self.l_r(r)
+               else:
+                   r = self.l_l(r)
+       r.height = self.Max(self.Height(r.left), self.Height(r.right)) + 1
+       return r
+
+   def preorder(self, root):
+
+       if root != None:
+           print(root.value, end="  ")
+           self.preorder(root.left)
+           self.preorder(root.right)
+       else:
+           return 0
+
+   def Height(self, node):
+       if node == None:
+           return -1
+       return node.height
+
+   def Preorder(self):
+       self.preorder(self.root)
+
+   def Insert(self, value):
+       self.root = self.insert(value, self.root)
+       return self.root
+
+   def Delete(self, value):
+       self.root = self.delete(value, self.root)
+
+
+if __name__ == '__main__':
+   tree = Tree()
+   a = [5, 9, 6, 2, 4, 1, 7, 3]
+   for i in a:
+       tree.Insert(i)
+   tree.Delete(9)
+   tree.Insert(1)
+   print("×îÖÕAVLÊ÷Îª£º")
+   tree.Preorder()

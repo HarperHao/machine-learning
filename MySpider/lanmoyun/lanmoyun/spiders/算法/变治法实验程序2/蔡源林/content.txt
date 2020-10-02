@@ -1,0 +1,426 @@
+2-3树的创建插入删除
+
+#include <iostream>
+#include <stack>
+#include <stdlib.h>
+using namespace std;
+
+typedef struct Tree23Node * Tree23;
+
+typedef struct Tree23Node {
+int datal;
+int datar;
+Tree23 lchild,mchild,rchild;
+} Tree23Node;
+
+#define  INT_MAX 0x3f3f3f3f
+
+stack<Tree23> s;
+
+int compare(int x, Tree23 t)
+{
+if (x < t->datal)
+return 1;
+else if (x > t->datar)
+return 3;
+else if ( x < t->datar && x > t->datal)
+return 2;
+else
+return 4;
+}
+
+Tree23 createNode(int key)
+{
+Tree23 t = new Tree23Node;
+t->datal = key;
+t->datar = INT_MAX;
+t->lchild = t->mchild = t->rchild = NULL;
+return t;
+}
+void newRoot(Tree23 *root,int key,Tree23 midSub)
+{
+Tree23 t = createNode(key);
+t->lchild = *root;
+t->mchild = midSub;
+*root = t;
+}
+
+bool isleaf(Tree23 root)
+{
+if (root && root->datal < INT_MAX && root->lchild == NULL &&
+root->mchild == NULL && root->rchild == NULL)
+return true;
+return false;
+}
+
+Tree23 findNode(Tree23 root, int key)
+{
+Tree23 t = NULL;
+while (root){
+if (!isleaf(root))
+s.push(root);
+if (isleaf(root))
+t = root;
+switch (compare(key,root)) {
+case 1: root = root->lchild;
+break;
+case 2: root = root->mchild;
+break;
+case 3: root = root->rchild;
+break;
+case 4: return NULL;
+}
+}
+return t;
+}
+
+void put(Tree23 *root, int key,Tree23 q)
+{
+if (key < (*root)->datal){
+(*root)->datar = (*root)->datal;
+(*root)->datal = key;
+(*root)->rchild = (*root)->mchild;
+(*root)->mchild = q;
+}
+else {
+(*root)->datar = key;
+(*root)->rchild = q;
+}
+}
+
+void split(Tree23 p,int *key,Tree23 *q)
+{
+Tree23 t = createNode(INT_MAX);
+
+if (*key < p->datal) {
+t->datal = p->datar;
+/*swap *key and p->datal */
+p->datar = *key;
+*key = p->datal;
+p->datal = p->datar;
+/* set p->datar to non sense */
+p->datar = INT_MAX;
+}
+else if (*key > p->datar) {
+t->datal = *key;
+*key = p->datar;
+p->datar = INT_MAX;
+}
+else {
+t->datal = p->datar;
+p->datar = INT_MAX;
+}
+t->lchild = p->rchild;
+p->rchild = NULL;
+t->mchild = *q;
+*q = t;
+}
+
+Tree23 del()
+{
+if (!s.empty()){
+Tree23 t = s.top();
+s.pop();
+return t;
+}
+return NULL;
+}
+
+void insert23(Tree23 *root,int key)
+{
+Tree23 p,q,temp;
+
+if (*root == NULL) {
+/* tree is empty */
+newRoot(root,key,NULL);
+}
+else {
+/* insert into an empty tree */
+p = findNode(*root,key);
+if (p == NULL) {
+cout<<"The key is currently in the tree."<<endl;
+return;
+}
+q = NULL;
+for(;;) {
+if (p->datar == INT_MAX) {
+/* two sub node */
+put(&p,key,q);
+break;
+}
+else {
+/* three sub node */
+split(p,&key,&q);
+if ( p == *root) {
+/* split the root */
+newRoot(root,key,q);
+break;
+}
+else
+/* remove a node from stack */
+p = del();
+}
+}
+}
+}
+
+void visit(Tree23 T)
+{
+if (T->datar < INT_MAX) {
+cout<<"("<<T->datal<<","<<T->datar<<") ";
+}
+else if (T->datal < INT_MAX) {
+cout<<"("<<T->datal<<",) ";
+}
+else cout<<"(,) ";
+}
+void inOrder(Tree23 T)
+{
+if(T)
+{
+visit(T);
+//cout<<endl;
+if (T->lchild == NULL)
+return;
+cout<<"(";
+inOrder(T->lchild);
+cout<<",";
+inOrder(T->mchild);
+cout<<",";
+inOrder(T->rchild);
+cout<<")";
+}
+
+}
+
+Tree23 search23(Tree23 root,int key)
+{
+while (root) {
+s.push(root);
+switch (compare(key,root)) {
+case 1: root = root->lchild;
+break;
+case 2: root = root->mchild;
+break;
+case 3: root = root->rchild;
+break;
+case 4: return root;
+}
+}
+return NULL;
+}
+Tree23 min23(Tree23 root)
+{
+while(root->lchild){
+s.push(root);
+root = root->lchild;
+}
+s.push(root);
+return root;
+}
+
+void deletex(Tree23 t,int key)
+{
+/* delete key from node t */
+if(key == t->datal){
+/* delete first key */
+if(t->datar < INT_MAX){
+/* three sub node*/
+t->datal = t->datar;
+t->datar = INT_MAX;
+}
+else
+/* two sub node */
+t->datal = INT_MAX;
+}
+else
+/* delete second key */
+t->datar = INT_MAX;
+}
+
+void leftRotate(Tree23 &p,Tree23 &q,Tree23 &r)
+{
+p->datal = r->datal;
+r->datal = q->datal;
+q->datal = q->datar;
+q->datar = INT_MAX;
+
+p->mchild = q->lchild;
+q->lchild = q->mchild;
+q->mchild = q->rchild;
+q->rchild = NULL;
+}
+
+void leftCombine(Tree23 &p,Tree23 &q,Tree23 &r)
+{
+p->datal = r->datal;
+p->datar = q->datal;
+p->mchild = q->lchild;
+p->rchild = q->mchild;
+delete q;
+if (r->datar == INT_MAX){
+/* r is two sub node*/
+r->datal = INT_MAX;
+r->mchild = NULL;
+}
+else{
+r->datal = r->datar;
+r->datar = INT_MAX;
+r->mchild = r->rchild;
+r->rchild = NULL;
+}
+}
+
+
+void middleRotate(Tree23 &p,Tree23 &q,Tree23 &r)
+{
+p->datal = r->datal;
+r->datal = q->datar;
+q->datar = INT_MAX;
+p->mchild = q->rchild;
+q->rchild = NULL;
+}
+
+void middleCombine(Tree23 &p, Tree23 &q, Tree23 &r)
+{
+q->datar = r->datal;
+q->rchild = p->lchild;
+delete p;
+if(r->datar < INT_MAX) {
+r->datal = r->datar;
+r->datar = INT_MAX;
+r->mchild = r->rchild;
+r->rchild = NULL;
+}
+else {
+r->datal = INT_MAX;
+r->mchild = NULL;
+}
+
+}
+
+void rightRotate(Tree23 &p,Tree23 &q,Tree23 &r)
+{
+p->datal = r->datar;
+r->datar = q->datar;
+q->datar = INT_MAX;
+p->mchild = q->rchild;
+q->rchild = NULL;
+}
+
+void rightCombine(Tree23 &p,Tree23 &q,Tree23 &r)
+{
+q->datar = r->datar;
+r->datar = INT_MAX;
+q->rchild = p->lchild;
+delete p;
+r->rchild = NULL;
+}
+bool delete23(Tree23 *root, int key)
+{
+Tree23 t = search23(*root,key);
+Tree23 p;
+Tree23 r ;
+Tree23 q = NULL;
+if (t == NULL)
+return false;
+else{
+if (!isleaf(t)){
+if (t->datal == key){
+p = min23(t->mchild);
+t->datal = p->datal;
+key = p->datal;
+}
+else{
+p = min23(t->rchild);
+t->datar = p->datal;
+key = p->datal;
+}
+
+}
+else
+p = t;
+
+deletex(p,key);
+del();
+for(;;){
+if (p->datal == INT_MAX && p->datar == INT_MAX){
+r = del();
+if (r == NULL)
+break;
+if (r->lchild == p){
+/* */
+q = r->mchild;
+if (q->datar < INT_MAX){
+/* rotate when p is the left child of r */
+leftRotate(p,q,r);
+}
+else{
+/* combine when p is the left child of r*/
+leftCombine(p,q,r);
+}
+}
+else if (r->mchild == p) {
+q = r->lchild;
+if (q->datar < INT_MAX){
+middleRotate(p,q,r);
+}
+else{
+middleCombine(p,q,r);
+}
+
+}
+else {
+q = r->mchild;
+if (q->datar < INT_MAX){
+rightRotate(p,q,r);
+}
+else{
+rightCombine(p,q,r);
+}
+}
+p = r;
+}
+else
+break;
+
+}
+if (p->datal == INT_MAX){
+*root = p->lchild;
+delete p;
+}
+
+}
+
+}
+int main()
+{
+Tree23 tree = NULL;
+for(int i = 0; i < 6; i++){
+insert23(&tree,i);
+inOrder(tree);
+cout<<endl;
+cout<<"-----------------------------------------"<<endl;
+}
+
+insert23(&tree,1);
+inOrder(tree);
+cout<<endl;
+cout<<"--------------------------------------------"<<endl;
+
+insert23(&tree,99);
+inOrder(tree);
+cout<<endl;
+cout<<"--------------------------------------------"<<endl;
+
+while(!s.empty())
+s.pop();
+delete23(&tree,99);
+inOrder(tree);
+cout<<endl;
+
+cout<<"--------------------------------------------"<<endl;
+
+system("pause");
+return 0;
+}

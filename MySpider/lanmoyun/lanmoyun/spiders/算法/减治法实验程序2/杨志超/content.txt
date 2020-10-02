@@ -1,0 +1,84 @@
+实验名称：
+减治法的应用
+实验目的：
+了解减治法，运用减治法实现字典顺序生成全排列
+实验题目：
+字典顺序生成全排列
+实验源代码
+#include<stdio.h>
+void Swap(int list[], int a, int b)
+{
+int temp = 0;
+temp = list[a];
+list[a] = list[b];
+list[b] = temp;
+return;
+}
+void Sort(int list[], int a, int n)
+{
+int temp = 0;
+for (int i = 1; i < n - a; i++)
+{
+for (int j = a + 1; j < n - 1; j++)
+{
+if (list[j] > list[j + 1])
+{
+temp = list[j];
+list[j] = list[j + 1];
+list[j + 1] = temp;
+}
+}
+}
+return;
+}
+int judge(int list[],int n)
+{
+int i=0,flag=0,t=n;;
+for(i=0;i<n;i++,t--)
+if(list[i]!=t)
+flag=1;
+return flag;
+}
+void dictorder(int list[], int n)
+{
+int num = 1,i,j,t, a = 0, b = 0,flag;
+t=n;
+flag=judge(list,n);
+while (flag)
+{
+flag=judge(list,n);
+for (int i = 0; i < n; ++i)
+printf("%d ", list[i]);
+printf("\n");
+for (int i = n - 1; i > 0; i--)
+{
+if (list[i - 1] < list[i])
+{
+a = i - 1;
+break;
+}
+}
+for (int j = n - 1; j > a; j--)
+{
+if (list[j] > list[a])
+{
+b = j;
+break;
+}
+}
+Swap(list, a, b);
+Sort(list, a, n);
+}
+return;
+}
+int main()
+{
+int n,b[20];
+printf("请输入一个数n，以实现1到n之间所有数的全排列：\n");
+scanf("%d",&n);
+printf("字典顺序生成的全排列如下：\n");
+for(int i=0;i<n;i++)
+b[i]=i+1;
+dictorder(b,n);
+return 0;
+}

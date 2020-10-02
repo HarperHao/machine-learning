@@ -1,0 +1,12 @@
+变治法实现二进制幂：
+def Binary(List,a):
+   Sum=1
+   for i in range(len(List)):
+       Sum=Sum**2
+       if List[i]==1:
+           Sum=Sum*a
+   return Sum
+
+if __name__=='__main__':
+   List=[1,0,1]
+   print(Binary(List,a=3))

@@ -1,0 +1,74 @@
+用变治法解决二进制幂问题
+#include <stdio.h>
+#include <stdlib.h>
+
+int arr(int number, int arr[], int size)
+{
+int idx = 0;
+while (number > 0)
+{
+if (number & 1)
+arr[idx++] = 1;
+else
+arr[idx++] = 0;
+if (idx == size)
+break;
+number = number >> 1;
+}
+ return idx;
+}
+
+int r_to_l(int number, int p)
+{
+ if (p == 0)
+   return 1;
+ int size = sizeof(int)*8;
+ int *pint = (int *)malloc(size);
+ int length = arr(p, pint, size);
+ int idx;
+ int item = number;
+ int ret = 1;
+ for (idx = 0; idx < length; idx++)
+ {
+   if (pint[idx] == 1)
+     ret = ret * item;
+   item *= item;
+ }
+ free(pint);
+ return ret;
+}
+
+int l_to_r(int number, int p)
+{
+ if (p == 0)
+   return 1;
+ int size = sizeof(int)*8;
+ int *pint = (int *)malloc(size);
+ int length = arr(p, pint, size);
+ int ret = number;
+ int idx;
+ for (idx = length-1-1; idx >=0; --idx)
+ {
+   ret *= ret;
+   if(pint[idx] == 1)
+     ret *= number;
+ }
+ free(pint);
+ return ret;
+}
+
+int main(int argc, char *argv[])
+{
+printf("Please input number and pow:\n");
+ int number,p;
+ printf("请输入a的大小：\n");
+ scanf("%d",&number);
+ printf("请输入几次幂：\n");
+ scanf("%d",&p);
+ int ret =r_to_l(number, p);
+ int ret1 = l_to_r(number, p);
+ printf("从左到右逐位扫描算法为：%d^%d == %d\n", number, p, ret);
+ printf("从左到右逐位扫描算法为：%d^%d == %d\n", number, p, ret1);
+ main(0, NULL);
+return 0;
+}

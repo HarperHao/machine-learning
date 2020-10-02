@@ -1,0 +1,44 @@
+解决背包问题
+#include<iostream>
+using namespace std;
+
+void knapsack(int *v, int *w, int c, int n, int**m)
+{
+int jmax = (w[n] > c) ? c : w[n]-1;
+for (int j = 0; j <= jmax; j++)m[n][j] = 0;
+for (int j = w[n]; j <= c; j++)m[n][j] = v[n];
+for (int i = n - 1; i > 1; i--)
+{
+jmax = (w[i] > c) ? c : w[i] - 1;
+for (int j = 0; j <= jmax; j++)m[i][j] = m[i + 1][j];
+for (int j = w[n]; j <= c; j++)
+m[i][j] = (m[i + 1][j] > m[i + 1][j - w[i]] + v[i])   ?   m[i + 1][j]  :  m[i + 1][j - w[i]] + v[i];
+}
+m[1][c] = m[2][c];
+if (c >= w[1])m[1][c] = (m[1][c] > m[2][c - w[1]] + v[1]) ? m[1][c] : m[2][c - w[1]] + v[1];
+}
+
+
+int main()
+{
+int n = 5;
+int c = 10;
+int w[6] ={ 0, 2, 2, 6, 5, 4 };
+int v[6] = { 0, 6, 3, 5, 4, 6 };
+int **m = new int*[6];
+for (int i = 0; i < 6; i++)m[i] = new int[6];
+knapsack(v, w, c, n, m);
+cout << " 最优值为  " << m[1][c] <<"\n最优解为取第  ";
+for (int i = 1; i < n; i++)
+{
+if (m[i][c] != m[i + 1][c])
+{
+cout << i << "   ";
+c -= w[i];
+}
+}
+if (m[n][c])cout << n;
+cout << " 个物品";
+system("pause>nul");
+return 0;
+}

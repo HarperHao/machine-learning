@@ -1,0 +1,12 @@
+2. 动态规划法中完美背包的python实现
+def backPackIII(A, V, m):
+   n = len(A)
+   if n <= 0 or m <= 0:
+       return 0
+   dp = [0 for _ in range(m+1)]
+   for i in range(n):
+       for j in range(A[i], m+1):
+           dp[j] = max(dp[j-A[i]] + V[i], dp[j])
+   return dp[-1]
+print(backPackIII([2,3,5,7],[1,5,2,4],10))
+print(backPackIII([11,12,13,15,17,9],[1,5,2,4,10,2],50))

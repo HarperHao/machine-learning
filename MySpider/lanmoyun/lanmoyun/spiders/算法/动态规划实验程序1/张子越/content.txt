@@ -1,0 +1,21 @@
+#二项式系数求解
+import numpy as np
+def binomial(n, k):
+   if k == 0:
+       return 1
+   elif k == 1:
+       return n
+   else:
+       t = np.array([[0] * (k + 1)] * n, dtype='int64')
+       for i in range(n):
+           t[i, 0] = 1
+           t[i, 1] = i + 1
+       for i in range(n):
+           for j in range(2, k+1):
+               if i+1 < j:
+                   t[i, j] = 0
+               else:
+                   t[i, j] = t[i-1, j] + t[i-1, j-1]
+       return t[n-1, k]
+t = binomial(5, 3)
+print(t)

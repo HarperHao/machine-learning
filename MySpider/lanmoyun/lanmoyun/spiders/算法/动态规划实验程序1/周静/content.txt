@@ -1,0 +1,66 @@
+# 最长公共子序列
+#思路：构建和重建
+#回溯
+#重建完之后，对其进行类似前序的遍历 得到全部 LCS
+#LCS并不唯一
+class Tree:
+   def __init__(self, data=None, left=None, right=None):
+       self.data = data
+       self.left = left
+       self.right = right
+def lcs_dynamic_programing(source, target):
+   table = lcs_table(source, target)
+   return backtrack(table, source, target, len(source), len(target))
+def lcs_table(source, target):
+   rows = len(source)
+   cols = len(target)
+   lcs_table = [[0] * (cols + 1) for _ in range(rows + 1)]
+   for i in range(1, rows + 1):
+       for j in range(1, cols + 1):
+           if source[i - 1] == target[j - 1]:
+               lcs_table[i][j] = lcs_table[i - 1][j - 1] + 1
+           else:
+               lcs_table[i][j] = max(lcs_table[i - 1][j], lcs_table[i][j - 1])
+   return lcs_table
+def backtrack_single(table, source, target, i, j):    # 回溯   i: 行  j:列
+   if i == 0 or j == 0:
+       return []
+   if source[i - 1] == target[j - 1]:
+       return _backtrack(table, source, target, i - 1, j - 1) + [target[j - 1]]
+   if table[i][j - 1] > table[i - 1][j]:
+       return _backtrack(table, source, target, i, j - 1)
+   else:
+       return _backtrack(table, source, target, i - 1, j)
+   #返回LCS列表
+def backtrack(table, source, target, i, j):
+   tree = Tree()
+   if i == 0 or j == 0:
+       return Tree()
+   if source[i - 1] == target[j - 1]:
+       tree.data = target[j - 1]
+       tree.left = backtrack(table, source, target, i - 1, j - 1)
+       return Tree(data=target[j - 1], left=backtrack(table, source, target, i - 1, j - 1))
+   if table[i][j - 1] > table[i - 1][j]:
+       return Tree(left=backtrack(table, source, target, i, j - 1))
+   elif table[i][j - 1] == table[i - 1][j]:
+       left = backtrack(table, source, target, i, j - 1)
+       right = backtrack(table, source, target, i - 1, j)
+       return Tree(left=left, right=right)
+   else:
+       return Tree(right=backtrack(table, source, target, i - 1, j))
+
+def traverse_tree(root):
+   if root is None:
+       return []
+   if root.left == None and root.right == None:
+       return [str(root.data)]
+   return [str(root.data) + p for p in traverse_tree(root.left) + traverse_tree(root.right)]
+def main():
+   examples = [("1232412", "243121"), ("124541", "14521441")]
+   for s, t in examples:
+       tree = lcs_dynamic_programing(s, t)
+       paths = traverse_tree(tree)
+       paths = [i.replace("None", "")[::-1] for i in paths]
+       print(f"LCS between {s} and {t}: {paths}")
+if __name__ == "__main__":
+   main()
